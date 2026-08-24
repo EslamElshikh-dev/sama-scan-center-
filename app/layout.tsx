@@ -10,8 +10,8 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(site.siteUrl),
   title: {
-    default: "مركز سما سكان للأشعة في الرياض | حي المربع",
-    template: "%s | مركز سما سكان",
+    default: "سما سكان سنتر | sama scan center",
+    template: "%s | سما سكان سنتر",
   },
   description: site.description,
   applicationName: site.nameAr,
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     locale: "ar_SA",
     url: site.siteUrl,
     siteName: site.nameAr,
-    title: "مركز سما سكان للأشعة في الرياض",
+    title: "سما سكان سنتر | sama scan center",
     description: site.description,
     images: [
       {
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "مركز سما سكان للأشعة في الرياض",
+    title: "سما سكان سنتر | sama scan center",
     description: site.description,
     images: ["/opengraph-image"],
   },
@@ -68,6 +68,9 @@ export const metadata: Metadata = {
       "max-snippet": -1,
       "max-video-preview": -1,
     },
+  },
+  verification: {
+    google: "qNw9Z7TgmnJGswXKDRmfMOfDrXNPDJdHMNeJVSq-T3w",
   },
   formatDetection: {
     telephone: false,
