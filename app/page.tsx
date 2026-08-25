@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CtaSection } from "@/components/cta-section";
@@ -5,6 +6,46 @@ import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { MapEmbed } from "@/components/map-embed";
 import { neighborhoods, services, site } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: { absolute: site.pageTitle },
+  description: site.description,
+  alternates: { canonical: site.siteUrl },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/sama-scan-icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    shortcut: "/sama-scan-icon.png",
+    apple: [
+      { url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" },
+    ],
+  },
+  openGraph: {
+    type: "website",
+    locale: "ar_SA",
+    url: site.siteUrl,
+    siteName: site.nameAr,
+    title: site.pageTitle,
+    description: site.description,
+    images: [
+      {
+        url: `${site.siteUrl}${site.socialImage}`,
+        secureUrl: `${site.siteUrl}${site.socialImage}`,
+        type: "image/png",
+        width: 1200,
+        height: 630,
+        alt: "شعار مركز سما سكان للأشعة والتصوير الطبي في الرياض",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.pageTitle,
+    description: site.description,
+    images: [`${site.siteUrl}${site.socialImage}`],
+  },
+};
 
 const faqs = [
   {

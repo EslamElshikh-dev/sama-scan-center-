@@ -2,6 +2,8 @@ export const site = {
   nameAr: "مركز سما سكان",
   nameEn: "Sama Scan Radiology Center",
   shortName: "سما سكان",
+  pageTitle: "مركز سما سكان للأشعة | sama scan center",
+  socialImage: "/sama-scan-share-v2.png",
   description:
     "مركز سما سكان للأشعة والتصوير الطبي في حي المربع بالرياض: رنين مغناطيسي، سونار وموجات فوق صوتية، دوبلر ودوبلكس، وتصوير ثلاثي ورباعي الأبعاد.",
   phoneDisplay: "+966 55 961 7558",
@@ -21,7 +23,7 @@ export const site = {
   longitude: 46.7053643,
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-    "https://sama-scan-riyadh.vercel.app",
+    "https://samascan.vercel.app",
 } as const;
 
 export type Service = {
