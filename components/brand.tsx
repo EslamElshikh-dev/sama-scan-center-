@@ -1,18 +1,25 @@
+import Image from "next/image";
 import Link from "next/link";
 
-export function Brand() {
+type BrandProps = {
+  priority?: boolean;
+};
+
+export function Brand({ priority = false }: BrandProps) {
   return (
     <Link href="/" className="brand" aria-label="مركز سما سكان - الرئيسية">
-      <span className="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 52 52" role="img">
-          <circle cx="26" cy="26" r="22" />
-          <circle cx="26" cy="26" r="13" />
-          <path d="M13 27h7l3-7 5 14 3-7h8" />
-        </svg>
-      </span>
+      <Image
+        className="brand-logo"
+        src="/sama-scan-logo.png"
+        alt="شعار مركز سما سكان للأشعة"
+        width={367}
+        height={341}
+        sizes="(max-width: 640px) 56px, 68px"
+        priority={priority}
+      />
       <span className="brand-copy">
         <b>مركز سما سكان</b>
-        <small>SAMA SCAN · RIYADH</small>
+        <small>RADIOLOGY CENTER · RIYADH</small>
       </span>
     </Link>
   );

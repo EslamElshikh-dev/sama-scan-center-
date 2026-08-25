@@ -7,10 +7,10 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "مركز سما سكان للأشعة والتصوير الطبي في حي المربع بالرياض.",
     start_url: "/",
     display: "standalone",
-    background_color: "#f5fbfc",
-    theme_color: "#071b2e",
+    background_color: "#f0f4f4",
+    theme_color: "#4fadd4",
     lang: "ar",
     dir: "rtl",
-    icons: [{ src: "/icon.svg", sizes: "any", type: "image/svg+xml" }],
+    icons: [{ src: "/sama-scan-icon.png", sizes: "512x512", type: "image/png" }],
   };
 }

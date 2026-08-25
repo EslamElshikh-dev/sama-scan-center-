@@ -17,7 +17,7 @@ export default function OpenGraphImage() {
           padding: "82px 90px",
           color: "white",
           background:
-            "linear-gradient(135deg, #061725 0%, #092a43 58%, #087f7a 100%)",
+            "linear-gradient(135deg, #061725 0%, #19516b 58%, #4fadd4 100%)",
           fontFamily: "sans-serif",
         }}
       >
@@ -28,7 +28,7 @@ export default function OpenGraphImage() {
           <div
             style={{
               marginTop: 10,
-              color: "#74eee5",
+              color: "#9cdcea",
               fontSize: 26,
               fontWeight: 700,
               letterSpacing: 7,
@@ -36,7 +36,7 @@ export default function OpenGraphImage() {
           >
             RADIOLOGY CENTER · RIYADH
           </div>
-          <div style={{ width: 490, height: 2, marginTop: 50, background: "#6de8de" }} />
+          <div style={{ width: 490, height: 2, marginTop: 50, background: "#9cdcea" }} />
           <div style={{ marginTop: 36, color: "#d4e8ed", fontSize: 30 }}>
             MRI · Ultrasound · Doppler · 3D &amp; 4D
           </div>
@@ -53,7 +53,7 @@ export default function OpenGraphImage() {
             alignItems: "center",
             justifyContent: "center",
             background: "rgba(6, 23, 37, .55)",
-            border: "3px solid #62e9df",
+            border: "3px solid #9cdcea",
             borderRadius: "50%",
           }}
         >
@@ -64,7 +64,7 @@ export default function OpenGraphImage() {
               height: 210,
               alignItems: "center",
               justifyContent: "center",
-              border: "2px dashed rgba(98, 233, 223, .55)",
+              border: "2px dashed rgba(156, 220, 234, .62)",
               borderRadius: "50%",
             }}
           >
@@ -75,9 +75,9 @@ export default function OpenGraphImage() {
                 height: 112,
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#eafffd",
-                background: "#0d6671",
-                border: "3px solid #b0fff9",
+                color: "#f0f4f4",
+                background: "#287a9e",
+                border: "3px solid #9cdcea",
                 borderRadius: "50%",
                 fontSize: 58,
                 fontWeight: 800,
