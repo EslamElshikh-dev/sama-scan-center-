@@ -581,14 +581,22 @@ p {
   width: 118px;
   height: 118px;
   place-items: center;
+  overflow: hidden;
   color: var(--brand-cloud);
-  background: radial-gradient(circle at 35% 30%, #4fadd4, #0a2e46 70%);
+  background: radial-gradient(circle at 35% 30%, rgba(156, 220, 234, 0.3), #0a2e46 74%);
   border: 2px solid rgba(156, 220, 234, 0.68);
   border-radius: 50%;
   box-shadow: 0 0 0 16px rgba(156, 220, 234, 0.07), 0 0 65px rgba(79, 173, 212, 0.32);
   font-family: Arial, sans-serif;
   font-size: 3.4rem;
   font-weight: 900;
+}
+
+.scan-core-logo {
+  width: 106px;
+  height: 106px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 17px rgba(3, 17, 28, 0.34));
 }
 
 .scan-orbit {
@@ -1550,7 +1558,11 @@ p {
   .scan-core {
     width: 94px;
     height: 94px;
-    font-size: 2.7rem;
+  }
+
+  .scan-core-logo {
+    width: 84px;
+    height: 84px;
   }
 
   .scan-orbit {

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CtaSection } from "@/components/cta-section";
 import { Icon } from "@/components/icons";
@@ -107,7 +108,15 @@ export default function HomePage() {
                 <div className="scan-orbit orbit-one" />
                 <div className="scan-orbit orbit-two" />
                 <div className="scan-core">
-                  <span>S</span>
+                  <Image
+                    className="scan-core-logo"
+                    src="/sama-scan-icon.png"
+                    alt=""
+                    width={512}
+                    height={512}
+                    sizes="118px"
+                    priority
+                  />
                 </div>
                 <div className="scan-line" />
               </div>

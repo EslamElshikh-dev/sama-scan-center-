@@ -1,10 +1,15 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 export const alt = "Sama Scan Radiology Center in Riyadh";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const logoBuffer = await readFile(join(process.cwd(), "public", "sama-scan-icon.png"));
+  const logoDataUrl = `data:image/png;base64,${logoBuffer.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -52,7 +57,7 @@ export default function OpenGraphImage() {
             height: 330,
             alignItems: "center",
             justifyContent: "center",
-            background: "rgba(6, 23, 37, .55)",
+            background: "rgba(6, 23, 37, .48)",
             border: "3px solid #9cdcea",
             borderRadius: "50%",
           }}
@@ -64,27 +69,19 @@ export default function OpenGraphImage() {
               height: 210,
               alignItems: "center",
               justifyContent: "center",
-              border: "2px dashed rgba(156, 220, 234, .62)",
+              background: "rgba(240, 244, 244, .07)",
+              border: "2px dashed rgba(156, 220, 234, .66)",
               borderRadius: "50%",
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                width: 112,
-                height: 112,
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#f0f4f4",
-                background: "#287a9e",
-                border: "3px solid #9cdcea",
-                borderRadius: "50%",
-                fontSize: 58,
-                fontWeight: 800,
-              }}
-            >
-              S
-            </div>
+            {/* ImageResponse renders this embedded asset into the generated social image. */}
+            <img
+              src={logoDataUrl}
+              alt=""
+              width={190}
+              height={190}
+              style={{ objectFit: "contain" }}
+            />
           </div>
         </div>
       </div>
