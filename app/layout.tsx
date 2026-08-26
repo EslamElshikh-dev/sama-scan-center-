@@ -10,8 +10,8 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(site.siteUrl),
   title: {
-    default: "سما سكان سنتر | sama scan center",
-    template: "%s | سما سكان سنتر",
+    default: site.pageTitle,
+    template: `%s | ${site.nameAr}`,
   },
   description: site.description,
   applicationName: site.nameAr,
@@ -20,9 +20,14 @@ export const metadata: Metadata = {
   publisher: site.nameAr,
   category: "healthcare",
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/sama-scan-icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    shortcut: "/sama-scan-icon.png",
+    apple: [
+      { url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" },
+    ],
   },
   keywords: [
     "مركز أشعة بالرياض",
@@ -35,17 +40,15 @@ export const metadata: Metadata = {
     "سونار ثلاثي الأبعاد الرياض",
     "سونار رباعي الأبعاد الرياض",
   ],
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "ar_SA",
-    url: site.siteUrl,
     siteName: site.nameAr,
-    title: "سما سكان سنتر | sama scan center",
+    title: site.pageTitle,
     description: site.description,
     images: [
       {
-        url: "/opengraph-image",
+        url: site.socialImage,
         width: 1200,
         height: 630,
         alt: "مركز سما سكان للأشعة والتصوير الطبي في الرياض",
@@ -54,9 +57,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "سما سكان سنتر | sama scan center",
+    title: site.pageTitle,
     description: site.description,
-    images: ["/opengraph-image"],
+    images: [site.socialImage],
   },
   robots: {
     index: true,
@@ -90,6 +93,17 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
+const imagingTests = services.map((service) => ({
+  "@type": "ImagingTest",
+  "@id": `${site.siteUrl}/services/${service.slug}#service`,
+  name: service.shortTitle,
+  alternateName: service.english,
+  description: service.summary,
+  url: `${site.siteUrl}/services/${service.slug}`,
+  imagingTechnique: `https://schema.org/${service.imagingTechnique}`,
+  provider: { "@id": `${site.siteUrl}/#medical-center` },
+}));
+
 const localBusinessSchema = {
   "@context": "https://schema.org",
   "@graph": [
@@ -103,16 +117,15 @@ const localBusinessSchema = {
       publisher: { "@id": `${site.siteUrl}/#medical-center` },
     },
     {
-      "@type": ["MedicalClinic", "LocalBusiness"],
+      "@type": ["MedicalClinic", "DiagnosticLab", "LocalBusiness"],
       "@id": `${site.siteUrl}/#medical-center`,
       name: site.nameAr,
       alternateName: site.nameEn,
       url: site.siteUrl,
       telephone: site.phoneE164,
       description: site.description,
-      medicalSpecialty: "Radiology",
-      currenciesAccepted: "SAR",
-      paymentAccepted: "Cash, Credit Card, NFC",
+      image: `${site.siteUrl}${site.socialImage}`,
+      logo: `${site.siteUrl}/sama-scan-icon.png`,
       address: {
         "@type": "PostalAddress",
         streetAddress: "4479 شارع فيصل بن تركي بن عبدالعزيز، حي المربع",
@@ -138,14 +151,10 @@ const localBusinessSchema = {
         contactType: "appointments",
         availableLanguage: ["Arabic"],
       },
-      availableService: services.map((service) => ({
-        "@type": "MedicalProcedure",
-        name: service.shortTitle,
-        alternateName: service.english,
-        url: `${site.siteUrl}/services/${service.slug}`,
-        procedureType: "Diagnostic",
-      })),
+      availableService: imagingTests.map((test) => ({ "@id": test["@id"] })),
+      availableTest: imagingTests.map((test) => ({ "@id": test["@id"] })),
     },
+    ...imagingTests,
   ],
 };
 

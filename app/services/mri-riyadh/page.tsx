@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import { ServiceDetailPage, type ServicePageContent } from "@/components/service-detail-page";
+import { createPageMetadata } from "@/lib/metadata";
 import { services } from "@/lib/site";
 
 const service = services.find((item) => item.slug === "mri-riyadh")!;
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "رنين مغناطيسي بالرياض MRI في حي المربع",
   description:
     "خدمة الرنين المغناطيسي MRI في مركز سما سكان بحي المربع بالرياض. تعرف على الاستعداد العام ومحاذير المعادن وتواصل لتأكيد الفحص والموعد.",
   keywords: ["رنين مغناطيسي الرياض", "مركز رنين مغناطيسي بالرياض", "MRI Riyadh", "أشعة رنين مغناطيسي"],
-  alternates: { canonical: "/services/mri-riyadh" },
-};
+  path: "/services/mri-riyadh",
+});
 
 const content: ServicePageContent = {
   service,

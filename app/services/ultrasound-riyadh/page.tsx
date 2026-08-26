@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import { ServiceDetailPage, type ServicePageContent } from "@/components/service-detail-page";
+import { createPageMetadata } from "@/lib/metadata";
 import { services } from "@/lib/site";
 
 const service = services.find((item) => item.slug === "ultrasound-riyadh")!;
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "سونار وموجات فوق صوتية بالرياض",
   description:
     "فحوصات السونار والموجات فوق الصوتية في مركز سما سكان بحي المربع بالرياض. معلومات عن التحضير والحجز وتأكيد نوع الفحص عبر الهاتف أو واتساب.",
   keywords: ["سونار الرياض", "موجات فوق صوتية الرياض", "أشعة سونار بالرياض", "Ultrasound Riyadh"],
-  alternates: { canonical: "/services/ultrasound-riyadh" },
-};
+  path: "/services/ultrasound-riyadh",
+});
 
 const content: ServicePageContent = {
   service,

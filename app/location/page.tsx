@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import { CtaSection } from "@/components/cta-section";
 import { Icon } from "@/components/icons";
 import { MapEmbed } from "@/components/map-embed";
 import { PageHero } from "@/components/page-hero";
+import { createPageMetadata } from "@/lib/metadata";
 import { neighborhoods, site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "موقع مركز سما سكان في حي المربع بالرياض",
   description:
     "عنوان وخريطة واتجاهات مركز سما سكان للأشعة في حي المربع بالرياض، ورقم الاتصال وواتساب لتأكيد الموعد وساعات العمل قبل الحضور.",
-  alternates: { canonical: "/location" },
-};
+  path: "/location",
+});
 
 export default function LocationPage() {
   return (

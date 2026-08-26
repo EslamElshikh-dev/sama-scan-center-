@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { PageHero } from "@/components/page-hero";
+import { createPageMetadata } from "@/lib/metadata";
 import { services, site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "تواصل وحجز موعد أشعة في الرياض",
   description:
     "اتصل أو تواصل عبر واتساب مع مركز سما سكان للأشعة في حي المربع بالرياض لتأكيد نوع الفحص والتعليمات والموعد.",
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

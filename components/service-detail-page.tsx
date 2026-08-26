@@ -37,6 +37,7 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
             alternateName: service.english,
             description: service.summary,
             url: `${site.siteUrl}/services/${service.slug}`,
+            imagingTechnique: `https://schema.org/${service.imagingTechnique}`,
             provider: { "@id": `${site.siteUrl}/#medical-center` },
           },
           {

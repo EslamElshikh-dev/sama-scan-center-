@@ -449,9 +449,19 @@ p {
   font-weight: 900;
 }
 
-.hero h1 span {
+.hero h1 .hero-title-brand {
   display: block;
+  color: white;
+  font-size: clamp(2.3rem, 4.2vw, 4.35rem);
+}
+
+.hero h1 .hero-title-slogan {
+  display: block;
+  margin-top: 14px;
   color: var(--brand-sky);
+  font-size: clamp(1.15rem, 2vw, 1.65rem);
+  font-weight: 800;
+  letter-spacing: 0;
 }
 
 .hero-lead {
@@ -1525,7 +1535,11 @@ p {
   }
 
   .hero h1 {
-    font-size: clamp(2.25rem, 12vw, 3.35rem);
+    font-size: inherit;
+  }
+
+  .hero h1 .hero-title-brand {
+    font-size: clamp(2rem, 10vw, 3rem);
   }
 
   .hero-lead {

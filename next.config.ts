@@ -4,6 +4,36 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  redirects: async () => [
+    {
+      source: "/:path*",
+      has: [{ type: "host", value: "sama-scan-riyadh.vercel.app" }],
+      destination: "https://samascan.vercel.app/:path*",
+      permanent: true,
+    },
+    {
+      source: "/:path*",
+      has: [
+        {
+          type: "host",
+          value: "sama-scan-riyadh-moqawel1215-3361s-projects.vercel.app",
+        },
+      ],
+      destination: "https://samascan.vercel.app/:path*",
+      permanent: true,
+    },
+    {
+      source: "/:path*",
+      has: [
+        {
+          type: "host",
+          value: "samascan-moqawel1215-3361s-projects.vercel.app",
+        },
+      ],
+      destination: "https://samascan.vercel.app/:path*",
+      permanent: true,
+    },
+  ],
   headers: async () => [
     {
       source: "/(.*)",

@@ -7,7 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [...staticPages, ...servicePages].map((path) => ({
     url: `${site.siteUrl}${path}`,
-    lastModified: new Date("2026-08-24T00:00:00+03:00"),
+    lastModified: new Date("2026-08-26T00:00:00+03:00"),
     changeFrequency: path === "" ? "weekly" : "monthly",
     priority: path === "" ? 1 : path === "/services" ? 0.9 : 0.8,
   }));

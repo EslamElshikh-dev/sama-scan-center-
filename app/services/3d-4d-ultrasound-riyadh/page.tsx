@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import { ServiceDetailPage, type ServicePageContent } from "@/components/service-detail-page";
+import { createPageMetadata } from "@/lib/metadata";
 import { services } from "@/lib/site";
 
 const service = services.find((item) => item.slug === "3d-4d-ultrasound-riyadh")!;
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "سونار ثلاثي ورباعي الأبعاد 3D و4D بالرياض",
   description:
     "سونار وتصوير بالموجات فوق الصوتية ثلاثي ورباعي الأبعاد 3D و4D في مركز سما سكان بحي المربع بالرياض. تواصل لتأكيد ملاءمة الفحص والموعد.",
   keywords: ["سونار ثلاثي الأبعاد الرياض", "سونار رباعي الأبعاد الرياض", "سونار 4D الرياض", "3D Ultrasound Riyadh"],
-  alternates: { canonical: "/services/3d-4d-ultrasound-riyadh" },
-};
+  path: "/services/3d-4d-ultrasound-riyadh",
+});
 
 const content: ServicePageContent = {
   service,

@@ -33,6 +33,7 @@ export type Service = {
   english: string;
   summary: string;
   keywords: string[];
+  imagingTechnique: "MRI" | "Ultrasound";
   icon: "scan" | "ultrasound" | "flow" | "cube";
 };
 
@@ -45,6 +46,7 @@ export const services: Service[] = [
     summary:
       "تصوير بالرنين المغناطيسي وفق الطلب الطبي، مع إرشادات واضحة قبل الفحص وتأكيد الموعد عبر الاتصال أو واتساب.",
     keywords: ["رنين مغناطيسي الرياض", "أشعة رنين مغناطيسي", "MRI الرياض"],
+    imagingTechnique: "MRI",
     icon: "scan",
   },
   {
@@ -55,6 +57,7 @@ export const services: Service[] = [
     summary:
       "فحوصات السونار والموجات فوق الصوتية بحسب نوع الطلب الطبي، مع تأكيد تعليمات التحضير قبل الحضور.",
     keywords: ["سونار الرياض", "موجات فوق صوتية الرياض", "أشعة سونار"],
+    imagingTechnique: "Ultrasound",
     icon: "ultrasound",
   },
   {
@@ -65,6 +68,7 @@ export const services: Service[] = [
     summary:
       "فحوصات بالموجات فوق الصوتية لدراسة تدفق الدم والأوعية بحسب إحالة الطبيب ونوع الفحص المطلوب.",
     keywords: ["أشعة دوبلر الرياض", "دوبلكس الرياض", "سونار دوبلر"],
+    imagingTechnique: "Ultrasound",
     icon: "flow",
   },
   {
@@ -75,6 +79,7 @@ export const services: Service[] = [
     summary:
       "تصوير بالموجات فوق الصوتية ثلاثي ورباعي الأبعاد حسب ملاءمة الحالة والطلب الطبي وتوجيه المختص.",
     keywords: ["سونار ثلاثي الأبعاد الرياض", "سونار رباعي الأبعاد الرياض", "4D الرياض"],
+    imagingTechnique: "Ultrasound",
     icon: "cube",
   },
 ];

@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaSection } from "@/components/cta-section";
 import { Icon } from "@/components/icons";
 import { PageHero } from "@/components/page-hero";
+import { createPageMetadata } from "@/lib/metadata";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "عن مركز سما سكان للأشعة بالرياض",
   description:
     "تعرف على مركز سما سكان للأشعة والتصوير الطبي في حي المربع بالرياض، وخدماته وطريقة التواصل وتأكيد الفحوصات قبل الزيارة.",
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 const values = [
   {

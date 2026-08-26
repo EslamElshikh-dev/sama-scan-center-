@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import { ServiceDetailPage, type ServicePageContent } from "@/components/service-detail-page";
+import { createPageMetadata } from "@/lib/metadata";
 import { services } from "@/lib/site";
 
 const service = services.find((item) => item.slug === "doppler-duplex-riyadh")!;
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "أشعة دوبلر ودوبلكس بالرياض",
   description:
     "أشعة الدوبلر والدوبلكس في مركز سما سكان بحي المربع بالرياض لتقييم تدفق الدم والأوعية حسب طلب الطبيب. تواصل لتأكيد الفحص والتحضير.",
   keywords: ["أشعة دوبلر الرياض", "دوبلكس الرياض", "سونار دوبلر بالرياض", "Doppler Ultrasound Riyadh"],
-  alternates: { canonical: "/services/doppler-duplex-riyadh" },
-};
+  path: "/services/doppler-duplex-riyadh",
+});
 
 const content: ServicePageContent = {
   service,

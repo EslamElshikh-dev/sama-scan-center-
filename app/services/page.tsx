@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { CtaSection } from "@/components/cta-section";
 import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageHero } from "@/components/page-hero";
+import { createPageMetadata } from "@/lib/metadata";
 import { services, site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "خدمات الأشعة والتصوير الطبي في الرياض",
   description:
     "خدمات مركز سما سكان في حي المربع بالرياض: الرنين المغناطيسي MRI، السونار والموجات فوق الصوتية، الدوبلر والدوبلكس، وسونار 3D و4D.",
-  alternates: { canonical: "/services" },
-};
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (

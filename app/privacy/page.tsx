@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/page-hero";
+import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = {
-  title: "الخصوصية والتنبيه الطبي",
-  description:
-    "سياسة الخصوصية والتنبيه الطبي لموقع مركز سما سكان للأشعة والتصوير الطبي في الرياض.",
-  alternates: { canonical: "/privacy" },
+  ...createPageMetadata({
+    title: "الخصوصية والتنبيه الطبي",
+    description:
+      "سياسة الخصوصية والتنبيه الطبي لموقع مركز سما سكان للأشعة والتصوير الطبي في الرياض.",
+    path: "/privacy",
+  }),
   robots: { index: true, follow: true },
 };
 
