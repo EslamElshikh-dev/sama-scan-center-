@@ -6,7 +6,7 @@ import { JsonLd } from "@/components/json-ld";
 import { LocationContactForm } from "@/components/location-contact-form";
 import { MapEmbed } from "@/components/map-embed";
 import { createPageMetadata } from "@/lib/metadata";
-import { neighborhoods, services, site } from "@/lib/site";
+import { neighborhoods, site } from "@/lib/site";
 
 export const metadata = createPageMetadata({
   title: site.pageTitle,
@@ -43,6 +43,45 @@ const faqs = [
   },
 ];
 
+const premiumServices = [
+  {
+    slug: "mri-riyadh",
+    english: "Advanced MRI Unit",
+    title: "وحدة الرنين المغناطيسي",
+    subtitle: "رؤية تشريحية دقيقة.. وتجربة أكثر هدوءًا.",
+    description:
+      "تجربة تصوير بالرنين المغناطيسي صُممت لتجمع بين الدقة والراحة. نستخدم تقنيات تصوير متقدمة تساعد على إظهار التفاصيل التشريحية والأنسجة بوضوح عالٍ، بما يدعم الطبيب في تقييم الجهاز العصبي والعضلي ومناطق متعددة من الجسم، دون استخدام الأشعة المؤينة.",
+    icon: "scan" as const,
+  },
+  {
+    slug: "ultrasound-riyadh",
+    english: "High-Frequency Ultrasound",
+    title: "وحدة الموجات فوق الصوتية",
+    subtitle: "تفاصيل حية تساعد على فهم الصورة الطبية بوضوح أكبر.",
+    description:
+      "فحوصات سونار عالية الدقة تتيح تقييم الأعضاء والأنسجة في الزمن الفعلي بصورة آمنة ولطيفة. تساعد الموجات فوق الصوتية الطبيب في تقييم مجموعة واسعة من الحالات وفق نوع الإحالة والمنطقة المطلوب فحصها، مع اهتمام واضح بجودة الصورة وراحة المراجع.",
+    icon: "ultrasound" as const,
+  },
+  {
+    slug: "doppler-duplex-riyadh",
+    english: "Color Doppler & Vascular Imaging",
+    title: "وحدة الدوبلر والدوبلكس الملون",
+    subtitle: "قراءة أدق لحركة الدم داخل الأوعية.",
+    description:
+      "تقنيات دوبلر ودوبلكس متقدمة لدراسة تدفق الدم داخل الأوردة والشرايين وتقييم كفاءة الدورة الدموية وفق طلب الطبيب. يقدّم الفحص معلومات مهمة تساعد على تقييم حالات الأوعية الدموية بصورة منظمة ودقيقة تدعم القرار الطبي.",
+    icon: "flow" as const,
+  },
+  {
+    slug: "3d-4d-ultrasound-riyadh",
+    english: "3D/4D Fetal Imaging",
+    title: "وحدة تصوير الأجنة ثلاثي ورباعي الأبعاد",
+    subtitle: "لحظات استثنائية.. بتفاصيل أقرب وأوضح.",
+    description:
+      "تجربة تصوير تجمع بين البعد الإنساني والدقة الطبية، مع صور ثلاثية ورباعية الأبعاد تساعد على إظهار ملامح وحركة الجنين بصورة أكثر وضوحًا. ويُجرى التقييم الطبي وفق عمر الحمل وطلب الطبيب وملاءمة الحالة، بما يضيف مزيدًا من الطمأنينة إلى رحلة المتابعة.",
+    icon: "cube" as const,
+  },
+];
+
 export default function HomePage() {
   return (
     <main id="main-content">
@@ -63,20 +102,20 @@ export default function HomePage() {
         <div className="container hero-grid">
           <div className="hero-copy reveal">
             <div className="location-pill">
-              <span /> مركز أشعة وتصوير طبي في حي المربع · الرياض
+              <span /> تصوير طبي متقدم · حي المربع · الرياض
             </div>
             <h1>
-              <span className="hero-title-brand">
-                مركز سما سكان للأشعة والتصوير الطبي في الرياض
-              </span>
+              <span className="hero-title-brand">مركز سما سكان للتصوير الطبي</span>
               <span className="hero-title-slogan">
-                صورة أوضح. خطوة أدق نحو التشخيص.
+                حيث تتحول الصورة الدقيقة إلى قرار طبي أكثر وضوحًا.
               </span>
             </h1>
             <p className="hero-lead">
-              في <strong>مركز سما سكان</strong> نسهّل عليك الوصول إلى خدمات
-              التصوير الطبي، من الرنين المغناطيسي إلى السونار والدوبلر، مع
-              تواصل مباشر لتأكيد الفحص وتعليمات التحضير قبل زيارتك.
+              لأن كل قرار علاجي يبدأ بصورة واضحة، صُمم <strong>سما سكان</strong> ليقدم
+              تجربة تصوير طبي تجمع بين التقنية المتقدمة، الدقة في التفاصيل، والاهتمام
+              براحة المراجع. من لحظة الحجز إلى استلام نتائج الفحص، نعمل على أن تكون
+              رحلتك أكثر سلاسة وهدوءًا، مع معلومات تشخيصية تساعد طبيبك على اتخاذ الخطوة
+              التالية بثقة أكبر.
             </p>
             <div className="button-row hero-actions">
               <a
@@ -86,26 +125,25 @@ export default function HomePage() {
                 rel="noopener noreferrer"
                 data-cta="hero_whatsapp"
               >
-                <Icon name="whatsapp" width="21" height="21" /> احجز عبر واتساب
+                <Icon name="whatsapp" width="21" height="21" /> احجز فحصك
               </a>
               <a
                 className="button button-ghost-dark"
                 href={site.phoneDial}
                 data-cta="hero_call"
               >
-                <Icon name="call" width="20" height="20" />
-                <span dir="ltr">{site.phoneDisplay}</span>
+                <Icon name="call" width="20" height="20" /> تواصل مع فريق العناية بالمرضى
               </a>
             </div>
             <ul className="hero-points" aria-label="مميزات التواصل والزيارة">
               <li>
-                <Icon name="check" /> تأكيد نوع الفحص قبل الحضور
+                <Icon name="check" /> مواعيد منظمة واهتمام بالتفاصيل
               </li>
               <li>
-                <Icon name="check" /> موقع مركزي في حي المربع
+                <Icon name="check" /> خصوصية وراحة طوال رحلة الفحص
               </li>
               <li>
-                <Icon name="check" /> اتصال وواتساب على رقم واحد
+                <Icon name="check" /> تواصل مباشر قبل الزيارة
               </li>
             </ul>
           </div>
@@ -147,7 +185,7 @@ export default function HomePage() {
             </div>
             <div className="visual-card visual-card-one">
               <Icon name="shield" width="22" height="22" />
-              <span><small>قبل الفحص</small><b>تعليمات واضحة</b></span>
+              <span><small>تجربة المراجع</small><b>راحة وخصوصية</b></span>
             </div>
             <div className="visual-card visual-card-two">
               <Icon name="map" width="22" height="22" />
@@ -156,25 +194,26 @@ export default function HomePage() {
           </div>
         </div>
         <div className="container trust-strip" aria-label="معلومات المركز">
-          <div><b>4</b><span>مجموعات خدمات تصوير مؤكدة</span></div>
-          <div><b>مباشر</b><span>حجز واستفسار عبر واتساب</span></div>
+          <div><b>4</b><span>وحدات تصوير متخصصة</span></div>
+          <div><b>مباشر</b><span>تواصل مع فريق المركز</span></div>
           <div><b>مركزي</b><span>موقع في قلب مدينة الرياض</span></div>
-          <div><b>مرن</b><span>الاتصال لتأكيد الفحص والموعد</span></div>
+          <div><b>مرن</b><span>تنسيق الموعد قبل الزيارة</span></div>
         </div>
       </section>
 
       <section className="section services-section" aria-labelledby="services-heading">
         <div className="container">
           <div className="section-head centered reveal">
-            <span className="eyebrow">خدمات تصوير طبي مستقلة</span>
-            <h2 id="services-heading">خدمات مركز سما سكان للأشعة بالرياض</h2>
+            <span className="eyebrow">تقنيات تصوير متقدمة</span>
+            <h2 id="services-heading">منظومة تشخيصية متكاملة.. تفاصيل أدق لقرار طبي أوضح.</h2>
             <p>
-              اختر الخدمة المطلوبة لمعرفة فكرة الفحص والتحضير العام، ثم تواصل
-              معنا لتأكيد التفاصيل وفق طلب الطبيب والحالة.
+              خلف كل فحص سؤال يحتاج إلى إجابة واضحة. لذلك صُممت وحدات سما سكان لتقدم
+              تجربة تصوير متكاملة تركز على جودة الصورة، دقة التفاصيل، وسهولة رحلة المراجع،
+              بما يساعد الطبيب على قراءة الحالة بصورة أكثر وضوحًا واطمئنانًا.
             </p>
           </div>
           <div className="service-grid">
-            {services.map((service, index) => (
+            {premiumServices.map((service, index) => (
               <article className="service-card reveal" key={service.slug}>
                 <div className="service-card-top">
                   <span className="service-number">0{index + 1}</span>
@@ -183,18 +222,72 @@ export default function HomePage() {
                   </span>
                 </div>
                 <p className="service-en" lang="en">{service.english}</p>
-                <h3>{service.shortTitle}</h3>
-                <p>{service.summary}</p>
+                <h3>{service.title}</h3>
+                <p>
+                  <strong>{service.subtitle}</strong>
+                  <br />
+                  {service.description}
+                </p>
                 <Link className="card-link" href={`/services/${service.slug}`}>
-                  تفاصيل الفحص <Icon name="arrow" width="18" height="18" />
+                  استكشف تفاصيل الفحص <Icon name="arrow" width="18" height="18" />
                 </Link>
               </article>
             ))}
           </div>
           <div className="section-action">
             <Link className="button button-secondary" href="/services">
-              استعرض جميع خدمات الأشعة <Icon name="arrow" width="18" height="18" />
+              استعرض منظومة التصوير الطبي <Icon name="arrow" width="18" height="18" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section services-section" aria-labelledby="features-heading">
+        <div className="container">
+          <div className="section-head centered reveal">
+            <span className="eyebrow">لماذا سما سكان؟</span>
+            <h2 id="features-heading">معيار يضع الدقة والراحة في قلب التجربة.</h2>
+            <p>
+              تجربة التصوير الطبي لا تبدأ من الجهاز وحده. تبدأ من احترام وقتك، فهم احتياجك،
+              والاهتمام بالتفاصيل التي تجعل الزيارة أكثر هدوءًا ووضوحًا من البداية للنهاية.
+            </p>
+          </div>
+          <div className="service-grid">
+            <article className="service-card reveal">
+              <div className="service-card-top">
+                <span className="service-number">01</span>
+                <span className="service-icon"><Icon name="scan" width="32" height="32" /></span>
+              </div>
+              <h3>تقارير تدعم القرار الطبي</h3>
+              <p>
+                نهتم بجودة الصورة وتنظيم معلومات الفحص لتقديم نتائج واضحة تساعد الطبيب
+                على تقييم الحالة وبناء قراره على بيانات تصويرية دقيقة.
+              </p>
+            </article>
+
+            <article className="service-card reveal">
+              <div className="service-card-top">
+                <span className="service-number">02</span>
+                <span className="service-icon"><Icon name="shield" width="32" height="32" /></span>
+              </div>
+              <h3>خصوصية وراحة مدروسة</h3>
+              <p>
+                بيئة هادئة وتجربة منظمة تراعي خصوصية كل مراجع، مع اهتمام بالتواصل الواضح
+                وتقليل القلق المرتبط بالفحوصات قدر الإمكان.
+              </p>
+            </article>
+
+            <article className="service-card reveal">
+              <div className="service-card-top">
+                <span className="service-number">03</span>
+                <span className="service-icon"><Icon name="clock" width="32" height="32" /></span>
+              </div>
+              <h3>مواعيد أكثر انضباطًا</h3>
+              <p>
+                تنسيق مسبق للفحص وتعليماته يساعد على تنظيم وقت الزيارة وتقليل الإجراءات
+                غير الضرورية، لتكون تجربتك أكثر سلاسة من الحجز حتى انتهاء الفحص.
+              </p>
+            </article>
           </div>
         </div>
       </section>
@@ -202,16 +295,34 @@ export default function HomePage() {
       <section className="section split-section" aria-labelledby="before-visit-heading">
         <div className="container split-grid">
           <div className="content-panel reveal">
-            <span className="eyebrow">قبل زيارتك</span>
-            <h2 id="before-visit-heading">ثلاث خطوات تقلّل الانتظار وتوضح المطلوب</h2>
+            <span className="eyebrow">رحلة المراجع</span>
+            <h2 id="before-visit-heading">طريقك إلى صورة أوضح.. سلس، منظم، ومباشر.</h2>
             <p>
-              تختلف متطلبات التصوير الطبي من فحص لآخر. مشاركة اسم الفحص المكتوب
-              في الإحالة عند الحجز تساعد على إعطائك التعليمات المناسبة.
+              صممنا خطوات الحجز والتحضير لتكون بسيطة قدر الإمكان، مع تواصل واضح يساعدك
+              على معرفة ما تحتاج إليه قبل الوصول إلى المركز.
             </p>
             <ol className="steps-list">
-              <li><span>1</span><div><b>تواصل مع المركز</b><p>اتصل أو أرسل اسم الفحص عبر واتساب.</p></div></li>
-              <li><span>2</span><div><b>أكد التعليمات</b><p>اسأل عن الصيام، التقارير السابقة وأي تحضير مطلوب.</p></div></li>
-              <li><span>3</span><div><b>احضر في الموعد</b><p>اصطحب الهوية والإحالة وأي صور أو تقارير مرتبطة عند الحاجة.</p></div></li>
+              <li>
+                <span>1</span>
+                <div>
+                  <b>التنسيق الذكي</b>
+                  <p>تواصل معنا واذكر اسم الفحص أو بيانات الإحالة الأساسية لنحدد معك الموعد ونراجع المتطلبات المناسبة.</p>
+                </div>
+              </li>
+              <li>
+                <span>2</span>
+                <div>
+                  <b>تحضير واضح ومخصص للفحص</b>
+                  <p>نوضح لك تعليمات التحضير المطلوبة قبل الزيارة بحسب نوع الفحص، حتى تصل وأنت مستعد وواثق من الخطوات.</p>
+                </div>
+              </li>
+              <li>
+                <span>3</span>
+                <div>
+                  <b>تجربة هادئة ومنظمة</b>
+                  <p>نستقبلك في مركزنا بحي المربع ونتابع خطوات الفحص باهتمام، مع الحرص على راحتك وخصوصيتك طوال الزيارة.</p>
+                </div>
+              </li>
             </ol>
           </div>
           <aside className="safety-panel reveal reveal-delay">
@@ -271,7 +382,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <CtaSection />
+      <CtaSection
+        title="لا تترك الغموض يؤخر خطوتك التالية."
+        text="عندما تكون الصورة أوضح، يصبح الحوار مع طبيبك أكثر دقة. في سما سكان نركز على جودة الفحص، وضوح التفاصيل، وتجربة مريحة تساعدك على الوصول إلى الخطوة التالية باطمئنان أكبر."
+        primaryLabel="احجز موعدك الآن"
+      />
     </main>
   );
 }
