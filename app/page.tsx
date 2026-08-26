@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CtaSection } from "@/components/cta-section";
 import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
+import { LocationContactForm } from "@/components/location-contact-form";
 import { MapEmbed } from "@/components/map-embed";
 import { createPageMetadata } from "@/lib/metadata";
 import { neighborhoods, services, site } from "@/lib/site";
@@ -239,7 +240,10 @@ export default function HomePage() {
               وبقية أحياء الرياض عبر الطرق الرئيسية المحيطة بوسط المدينة.
             </p>
           </div>
-          <MapEmbed />
+          <div className="location-contact-grid">
+            <MapEmbed />
+            <LocationContactForm />
+          </div>
         </div>
       </section>
 

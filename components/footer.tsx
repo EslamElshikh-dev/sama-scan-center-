@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Brand } from "@/components/brand";
 import { Icon } from "@/components/icons";
+import { MapEmbed } from "@/components/map-embed";
 import { navItems, services, site } from "@/lib/site";
 
 export function Footer() {
@@ -49,33 +50,27 @@ export function Footer() {
         <div>
           <h2>العنوان</h2>
           <p>{site.address}</p>
-          <a
-            className="text-link"
-            href={site.directions}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-cta="footer_directions"
-          >
-            الاتجاهات عبر خرائط Google <Icon name="arrow" width="17" height="17" />
-          </a>
+          <MapEmbed compact />
         </div>
       </div>
       <div className="container footer-bottom">
         <p>جميع الحقوق محفوظة لدى مركز سما سكان {new Date().getFullYear()} ©</p>
         <div className="es-dev-credit">
-          <span>
-            تم التصميم والتطوير بواسطة{" "}
+          <p className="es-dev-credit-line">
             <a href="https://eslam-elshikh.com/" target="_blank" rel="noopener noreferrer">
               المهندس إسلام الشيخ
             </a>
-          </span>
-          <span lang="en">
-            Developed By{" "}
-            <a href="https://eslam-elshikh.com/" target="_blank" rel="noopener noreferrer">
-              Eng. Eslam Elshikh
-            </a>
-          </span>
-          <small lang="en">Cybersecurity Engineer | Web Developer | Google Product Expert</small>
+            <span aria-hidden="true">|</span>
+            <span lang="en" dir="ltr">
+              Developed By:{" "}
+              <a href="https://eslam-elshikh.com/" target="_blank" rel="noopener noreferrer">
+                Eng. Eslam Elshikh
+              </a>
+            </span>
+          </p>
+          <small lang="en" dir="ltr">
+            Cybersecurity Engineer | Web Developer | Google Product Expert
+          </small>
         </div>
       </div>
     </footer>
