@@ -1008,6 +1008,7 @@ p {
 }
 
 .map-frame {
+  position: relative;
   min-height: 420px;
   overflow: hidden;
   background: #dfeaec;
@@ -1022,6 +1023,100 @@ p {
   min-height: 420px;
   height: 100%;
   border: 0;
+}
+
+.map-location-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  padding: 9px 13px;
+  color: var(--navy-950);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(79, 173, 212, 0.28);
+  border-radius: 999px;
+  box-shadow: 0 10px 28px rgba(5, 39, 58, 0.14);
+  backdrop-filter: blur(12px);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.map-location-badge svg {
+  color: var(--brand-blue);
+}
+
+.map-details-card {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 17px 19px;
+  color: var(--navy-950);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 18px;
+  box-shadow: 0 16px 38px rgba(5, 39, 58, 0.18);
+  backdrop-filter: blur(14px);
+}
+
+.map-details-card > div:first-child {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.map-details-card strong {
+  font-size: 0.9rem;
+}
+
+.map-details-card span {
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.65;
+}
+
+.map-card-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.map-card-actions a {
+  display: inline-flex;
+  gap: 6px;
+  min-height: 39px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  color: white;
+  background: var(--brand-blue);
+  border-radius: 11px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.map-card-actions a:last-child {
+  color: var(--navy-950);
+  background: var(--brand-ice);
+}
+
+.map-card-actions a:hover {
+  background: var(--navy-900);
+  transform: translateY(-1px);
+}
+
+.map-card-actions a:last-child:hover {
+  color: white;
+  background: var(--navy-900);
 }
 
 .location-contact-grid {
@@ -1747,6 +1842,33 @@ p {
   .location-contact-grid .map-frame,
   .location-contact-grid .map-frame iframe {
     min-height: 370px;
+  }
+
+  .map-location-badge {
+    top: 12px;
+    right: 12px;
+  }
+
+  .map-details-card {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    gap: 12px;
+    align-items: stretch;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .map-details-card span {
+    font-size: 0.66rem;
+  }
+
+  .map-card-actions {
+    width: 100%;
+  }
+
+  .map-card-actions a {
+    flex: 1;
   }
 
   .faq-list summary {
