@@ -212,11 +212,11 @@ export default function HomePage() {
               بما يساعد الطبيب على قراءة الحالة بصورة أكثر وضوحًا واطمئنانًا.
             </p>
           </div>
-          <div className="service-grid">
+          <div className="service-grid imaging-services-grid">
             {premiumServices.map((service, index) => (
-              <article className="service-card reveal" key={service.slug}>
+              <article className="service-card service-card-imaging reveal" key={service.slug}>
                 <div className="service-card-top">
-                  <span className="service-number">0{index + 1}</span>
+                  <span className="service-number"><small>SCAN</small>0{index + 1}</span>
                   <span className="service-icon">
                     <Icon name={service.icon} width="32" height="32" />
                   </span>
@@ -228,6 +228,9 @@ export default function HomePage() {
                   <br />
                   {service.description}
                 </p>
+                <span className="radiology-pulse" aria-hidden="true">
+                  <i /><i /><i /><i /><i /><i /><i />
+                </span>
                 <Link className="card-link" href={`/services/${service.slug}`}>
                   استكشف تفاصيل الفحص <Icon name="arrow" width="18" height="18" />
                 </Link>
@@ -242,7 +245,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section services-section" aria-labelledby="features-heading">
+      <section className="section services-section benefits-section" aria-labelledby="features-heading">
         <div className="container">
           <div className="section-head centered reveal">
             <span className="eyebrow">لماذا سما سكان؟</span>
@@ -252,12 +255,13 @@ export default function HomePage() {
               والاهتمام بالتفاصيل التي تجعل الزيارة أكثر هدوءًا ووضوحًا من البداية للنهاية.
             </p>
           </div>
-          <div className="service-grid">
-            <article className="service-card reveal">
+          <div className="service-grid benefits-grid">
+            <article className="service-card service-card-benefit reveal">
               <div className="service-card-top">
-                <span className="service-number">01</span>
+                <span className="service-number"><small>CARE</small>01</span>
                 <span className="service-icon"><Icon name="scan" width="32" height="32" /></span>
               </div>
+              <p className="service-en" lang="en">Diagnostic clarity</p>
               <h3>تقارير تدعم القرار الطبي</h3>
               <p>
                 نهتم بجودة الصورة وتنظيم معلومات الفحص لتقديم نتائج واضحة تساعد الطبيب
@@ -265,11 +269,12 @@ export default function HomePage() {
               </p>
             </article>
 
-            <article className="service-card reveal">
+            <article className="service-card service-card-benefit reveal">
               <div className="service-card-top">
-                <span className="service-number">02</span>
+                <span className="service-number"><small>CARE</small>02</span>
                 <span className="service-icon"><Icon name="shield" width="32" height="32" /></span>
               </div>
+              <p className="service-en" lang="en">Patient comfort</p>
               <h3>خصوصية وراحة مدروسة</h3>
               <p>
                 بيئة هادئة وتجربة منظمة تراعي خصوصية كل مراجع، مع اهتمام بالتواصل الواضح
@@ -277,11 +282,12 @@ export default function HomePage() {
               </p>
             </article>
 
-            <article className="service-card reveal">
+            <article className="service-card service-card-benefit reveal">
               <div className="service-card-top">
-                <span className="service-number">03</span>
+                <span className="service-number"><small>CARE</small>03</span>
                 <span className="service-icon"><Icon name="clock" width="32" height="32" /></span>
               </div>
+              <p className="service-en" lang="en">Organized visits</p>
               <h3>مواعيد أكثر انضباطًا</h3>
               <p>
                 تنسيق مسبق للفحص وتعليماته يساعد على تنظيم وقت الزيارة وتقليل الإجراءات
