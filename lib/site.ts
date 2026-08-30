@@ -87,6 +87,7 @@ export const services: Service[] = [
 export const navItems = [
   { href: "/", label: "الرئيسية" },
   { href: "/services", label: "خدمات الأشعة" },
+  { href: "/blog", label: "المدونة" },
   { href: "/about", label: "عن المركز" },
   { href: "/location", label: "الموقع" },
   { href: "/contact", label: "تواصل وحجز" },
