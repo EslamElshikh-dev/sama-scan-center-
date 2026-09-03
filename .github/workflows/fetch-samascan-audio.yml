@@ -5,6 +5,7 @@ on:
     branches:
       - main
 
+# Temporary one-run workflow used only to materialize generated Arabic audio.
 jobs:
   fetch-audio:
     runs-on: ubuntu-latest
