@@ -3954,7 +3954,7 @@ body {
 .sana-assistant {
   position: fixed;
   bottom: max(20px, env(safe-area-inset-bottom));
-  left: max(88px, calc(env(safe-area-inset-left) + 80px));
+  right: max(20px, env(safe-area-inset-right));
   z-index: 75;
   direction: rtl;
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
@@ -3963,8 +3963,8 @@ body {
 .sana-launcher {
   position: relative;
   display: grid;
-  width: 82px;
-  height: 82px;
+  width: 66px;
+  height: 66px;
   padding: 0;
   cursor: pointer;
   background:
@@ -4005,8 +4005,8 @@ body {
 }
 
 .sana-launcher-image {
-  width: 76px;
-  height: 76px;
+  width: 61px;
+  height: 61px;
 }
 
 .sana-launcher-image img,
@@ -4019,8 +4019,8 @@ body {
   position: absolute;
   right: 2px;
   bottom: 7px;
-  width: 15px;
-  height: 15px;
+  width: 12px;
+  height: 12px;
   background: #2ac67a;
   border: 3px solid white;
   border-radius: 50%;
@@ -4048,7 +4048,7 @@ body {
 .sana-hint {
   position: absolute;
   bottom: calc(100% + 18px);
-  left: 0;
+  right: 0;
   display: grid;
   width: 265px;
   padding: 13px 16px 14px;
@@ -4066,7 +4066,7 @@ body {
 .sana-hint::after {
   position: absolute;
   bottom: -8px;
-  left: 24px;
+  right: 24px;
   width: 16px;
   height: 16px;
   background: white;
@@ -4091,7 +4091,7 @@ body {
 .sana-panel {
   position: absolute;
   bottom: 0;
-  left: 0;
+  right: 0;
   display: flex;
   width: min(390px, calc(100vw - 36px));
   height: min(596px, calc(100svh - 40px));
@@ -4103,7 +4103,7 @@ body {
   box-shadow:
     0 30px 80px rgba(3, 25, 40, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.7) inset;
-  transform-origin: bottom left;
+  transform-origin: bottom right;
   animation: sana-panel-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -4443,21 +4443,17 @@ body {
 @media (max-width: 680px) {
   .sana-assistant {
     bottom: max(10px, env(safe-area-inset-bottom));
-    left: max(10px, env(safe-area-inset-left));
-  }
-
-  .sana-assistant:not(.is-open) {
-    bottom: max(132px, calc(env(safe-area-inset-bottom) + 124px));
+    right: max(10px, env(safe-area-inset-right));
   }
 
   .sana-launcher {
-    width: 72px;
-    height: 72px;
+    width: 58px;
+    height: 58px;
   }
 
   .sana-launcher-image {
-    width: 66px;
-    height: 66px;
+    width: 53px;
+    height: 53px;
   }
 
   .sana-launcher-label {

@@ -28,7 +28,7 @@ function getReply(message: string) {
   const value = message.trim().toLowerCase();
 
   if (includesAny(value, ["السلام", "هلا", "مرحبا", "أهلين", "صباح", "مساء"])) {
-    return "هلا والله 👋 أنا سَنَة، مساعدة سما سكان. أقدر أساعدك في اختيار صفحة الفحص، تعليمات التحضير العامة، الحجز أو الوصول للمركز.";
+    return "هلا والله 👋 أنا سما، مساعدة سما سكان. أقدر أساعدك في اختيار صفحة الفحص، تعليمات التحضير العامة، الحجز أو الوصول للمركز.";
   }
 
   if (includesAny(value, ["حجز", "موعد", "احجز", "واتساب", "اتصال", "تواصل"])) {
@@ -87,7 +87,7 @@ export function SanaAssistant() {
     {
       id: 1,
       role: "assistant",
-      text: "هلا، أنا سَنَة من سما سكان 👋 كيف أقدر أساعدك اليوم؟",
+      text: "هلا، أنا سما من سما سكان 👋 كيف أقدر أساعدك اليوم؟",
     },
   ]);
   const messagesRef = useRef<HTMLDivElement>(null);
@@ -146,7 +146,7 @@ export function SanaAssistant() {
             setShowHint(false);
           }}
         >
-          <b>هلا، أنا سَنَة</b>
+          <b>هلا، أنا سما</b>
           <span>أساعدك في الحجز ومعلومات الفحوصات</span>
         </button>
       ) : null}
@@ -155,7 +155,7 @@ export function SanaAssistant() {
         <button
           className="sana-launcher"
           type="button"
-          aria-label="فتح محادثة سَنَة، مساعدة سما سكان"
+          aria-label="فتح محادثة سما، مساعدة سما سكان"
           onClick={() => {
             setOpen(true);
             setShowHint(false);
@@ -170,16 +170,16 @@ export function SanaAssistant() {
             />
           </span>
           <span className="sana-online-dot" aria-hidden="true" />
-          <span className="sana-launcher-label">اسأل سَنَة</span>
+          <span className="sana-launcher-label">اسأل سما</span>
         </button>
       ) : (
-        <section className="sana-panel" role="dialog" aria-label="محادثة سَنَة، مساعدة سما سكان">
+        <section className="sana-panel" role="dialog" aria-label="محادثة سما، مساعدة سما سكان">
           <header className="sana-panel-header">
             <span className="sana-header-avatar">
-              <Image src="/sana-assistant.webp" alt="سَنَة، مساعدة سما سكان" fill sizes="56px" />
+              <Image src="/sana-assistant.webp" alt="سما، مساعدة سما سكان" fill sizes="56px" />
             </span>
             <span className="sana-header-copy">
-              <b>سَنَة</b>
+              <b>سما</b>
               <small><i /> مساعدة سما سكان الذكية</small>
             </span>
             <button className="sana-close" type="button" onClick={() => setOpen(false)} aria-label="إغلاق المحادثة">
@@ -198,7 +198,7 @@ export function SanaAssistant() {
               </div>
             ))}
             {busy ? (
-              <div className="sana-typing" aria-label="سَنَة تكتب">
+              <div className="sana-typing" aria-label="سما تكتب">
                 <i /><i /><i />
               </div>
             ) : null}
@@ -217,7 +217,7 @@ export function SanaAssistant() {
               value={input}
               onChange={(event) => setInput(event.target.value)}
               placeholder="اكتب سؤالك هنا..."
-              aria-label="اكتب سؤالك لسَنَة"
+              aria-label="اكتب سؤالك لسما"
               maxLength={240}
               autoComplete="off"
             />
