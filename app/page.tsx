@@ -99,23 +99,22 @@ export default function HomePage() {
 
       <section className="hero">
         <div className="hero-grid-bg" aria-hidden="true" />
+        <div className="hero-rings" aria-hidden="true"><i /><i /><i /></div>
         <div className="container hero-grid">
           <div className="hero-copy reveal">
             <div className="location-pill">
-              <span /> تصوير طبي متقدم · حي المربع · الرياض
+              <span /> مركز أشعة تشخيصية · حي المربع · الرياض
             </div>
             <h1>
-              <span className="hero-title-brand">مركز سما سكان للتصوير الطبي</span>
+              <span className="hero-title-brand">مركز سما سكان للأشعة التشخيصية</span>
               <span className="hero-title-slogan">
-                حيث تتحول الصورة الدقيقة إلى قرار طبي أكثر وضوحًا.
+                صورة أوضح. تجربة أهدأ. خطوة طبية بثقة أكبر.
               </span>
             </h1>
             <p className="hero-lead">
-              لأن كل قرار علاجي يبدأ بصورة واضحة، صُمم <strong>سما سكان</strong> ليقدم
-              تجربة تصوير طبي تجمع بين التقنية المتقدمة، الدقة في التفاصيل، والاهتمام
-              براحة المراجع. من لحظة الحجز إلى استلام نتائج الفحص، نعمل على أن تكون
-              رحلتك أكثر سلاسة وهدوءًا، مع معلومات تشخيصية تساعد طبيبك على اتخاذ الخطوة
-              التالية بثقة أكبر.
+              تصوير طبي متقدم يجمع بين جودة الصورة، وضوح خطوات الفحص، والاهتمام
+              براحتك وخصوصيتك. نساعدك من تأكيد الموعد وتعليمات التحضير حتى اكتمال
+              تجربة الفحص بصورة منظمة ومطمئنة.
             </p>
             <div className="button-row hero-actions">
               <a
@@ -137,52 +136,40 @@ export default function HomePage() {
             </div>
             <ul className="hero-points" aria-label="مميزات التواصل والزيارة">
               <li>
-                <Icon name="check" /> مواعيد منظمة واهتمام بالتفاصيل
+                <Icon name="check" /> تنسيق واضح للموعد
               </li>
               <li>
-                <Icon name="check" /> خصوصية وراحة طوال رحلة الفحص
+                <Icon name="check" /> خصوصية وراحة أثناء الفحص
               </li>
               <li>
-                <Icon name="check" /> تواصل مباشر قبل الزيارة
+                <Icon name="check" /> تعليمات تحضير قبل الزيارة
               </li>
             </ul>
           </div>
 
-          <div className="hero-visual reveal reveal-delay" aria-label="رسم تجريدي للتصوير الطبي">
+          <div className="hero-visual reveal reveal-delay" aria-label="الواجهة الفعلية لمركز سما سكان">
             <div className="visual-glow" />
-            <div className="scan-console">
-              <div className="console-top">
-                <span className="console-status"><i /> SCAN READY</span>
-                <span>RIYADH · 24.6633°N</span>
+            <figure className="imaging-showcase">
+              <div className="imaging-photo">
+                <Image
+                  src="/center-exterior.webp"
+                  alt="الواجهة الفعلية لمركز سما سكان للأشعة في حي المربع بالرياض"
+                  fill
+                  sizes="(max-width: 900px) 92vw, 46vw"
+                  priority
+                />
+                <div className="imaging-scan-line" aria-hidden="true" />
+                <span className="imaging-corner corner-one" aria-hidden="true" />
+                <span className="imaging-corner corner-two" aria-hidden="true" />
               </div>
-              <div className="scan-window">
-                <div className="scan-orbit orbit-one" />
-                <div className="scan-orbit orbit-two" />
-                <div className="scan-core">
-                  <Image
-                    className="scan-core-logo"
-                    src="/sama-scan-icon.png"
-                    alt=""
-                    width={512}
-                    height={512}
-                    sizes="118px"
-                    priority
-                  />
-                </div>
-                <div className="scan-line" />
-              </div>
-              <div className="console-bottom">
+              <figcaption>
                 <div>
-                  <small>LOCATION</small>
-                  <strong>AL MURABBA</strong>
-                </div>
-                <div>
-                  <small>CENTER</small>
-                  <strong>SAMA SCAN</strong>
+                  <span className="console-status"><i /> SAMA SCAN · AL MURABBA</span>
+                  <small>الواجهة الفعلية للمركز في حي المربع</small>
                 </div>
                 <span className="signal" aria-hidden="true"><i /><i /><i /><i /></span>
-              </div>
-            </div>
+              </figcaption>
+            </figure>
             <div className="visual-card visual-card-one">
               <Icon name="shield" width="22" height="22" />
               <span><small>تجربة المراجع</small><b>راحة وخصوصية</b></span>
@@ -194,10 +181,10 @@ export default function HomePage() {
           </div>
         </div>
         <div className="container trust-strip" aria-label="معلومات المركز">
-          <div><b>4</b><span>وحدات تصوير متخصصة</span></div>
-          <div><b>مباشر</b><span>تواصل مع فريق المركز</span></div>
-          <div><b>مركزي</b><span>موقع في قلب مدينة الرياض</span></div>
-          <div><b>مرن</b><span>تنسيق الموعد قبل الزيارة</span></div>
+          <div><span className="trust-icon"><Icon name="scan" width="21" height="21" /></span><b>4 وحدات</b><span>تصوير طبي متخصصة</span></div>
+          <div><span className="trust-icon"><Icon name="call" width="21" height="21" /></span><b>تواصل مباشر</b><span>لتأكيد الفحص والموعد</span></div>
+          <div><span className="trust-icon"><Icon name="map" width="21" height="21" /></span><b>موقع مركزي</b><span>حي المربع في الرياض</span></div>
+          <div><span className="trust-icon"><Icon name="clock" width="21" height="21" /></span><b>زيارة منظمة</b><span>تعليمات واضحة قبل الحضور</span></div>
         </div>
       </section>
 
@@ -294,6 +281,66 @@ export default function HomePage() {
                 غير الضرورية، لتكون تجربتك أكثر سلاسة من الحجز حتى انتهاء الفحص.
               </p>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="section center-gallery-section" aria-labelledby="gallery-heading">
+        <div className="container">
+          <div className="gallery-heading-row reveal">
+            <div className="section-head">
+              <span className="eyebrow">من داخل سما سكان</span>
+              <h2 id="gallery-heading">بيئة فعلية مجهزة لتجربة تصوير أكثر هدوءًا.</h2>
+              <p>
+                تعرّف على أجهزة المركز ومساحات الاستقبال كما هي على أرض الواقع،
+                قبل زيارتك لنا في حي المربع بمدينة الرياض.
+              </p>
+            </div>
+            <Link className="button button-secondary" href="/location">
+              موقع المركز والاتجاهات <Icon name="map" width="19" height="19" />
+            </Link>
+          </div>
+
+          <div className="center-gallery-grid">
+            <figure className="gallery-card gallery-card-main reveal">
+              <Image
+                src="/center-mri.webp"
+                alt="جهاز الرنين المغناطيسي الفعلي داخل مركز سما سكان"
+                fill
+                sizes="(max-width: 760px) 100vw, 58vw"
+              />
+              <figcaption>
+                <span className="gallery-index">01</span>
+                <span><b>وحدة الرنين المغناطيسي</b><small>MRI UNIT</small></span>
+              </figcaption>
+            </figure>
+
+            <div className="gallery-stack">
+              <figure className="gallery-card reveal reveal-delay">
+                <Image
+                  src="/center-waiting.webp"
+                  alt="منطقة الانتظار الفعلية داخل مركز سما سكان"
+                  fill
+                  sizes="(max-width: 760px) 100vw, 38vw"
+                />
+                <figcaption>
+                  <span className="gallery-index">02</span>
+                  <span><b>صالة انتظار مريحة</b><small>PATIENT LOUNGE</small></span>
+                </figcaption>
+              </figure>
+              <figure className="gallery-card reveal reveal-delay">
+                <Image
+                  src="/center-ultrasound.webp"
+                  alt="جهاز السونار والموجات فوق الصوتية داخل مركز سما سكان"
+                  fill
+                  sizes="(max-width: 760px) 100vw, 38vw"
+                />
+                <figcaption>
+                  <span className="gallery-index">03</span>
+                  <span><b>وحدة الموجات فوق الصوتية</b><small>ULTRASOUND UNIT</small></span>
+                </figcaption>
+              </figure>
+            </div>
           </div>
         </div>
       </section>

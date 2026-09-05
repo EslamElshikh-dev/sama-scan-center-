@@ -4,6 +4,7 @@ import { FloatingActions } from "@/components/floating-actions";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { JsonLd } from "@/components/json-ld";
+import { RevealObserver } from "@/components/reveal-observer";
 import { services, site } from "@/lib/site";
 import "./globals.css";
 
@@ -163,6 +164,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="ar" dir="rtl">
       <body>
         <JsonLd data={localBusinessSchema} />
+        <RevealObserver />
         <Header />
         {children}
         <Footer />
