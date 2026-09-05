@@ -57,20 +57,17 @@ export function Footer() {
         <p>جميع الحقوق محفوظة لدى مركز سما سكان {new Date().getFullYear()} ©</p>
         <div className="es-dev-credit">
           <p className="es-dev-credit-line">
-            <a href="https://eslam-elshikh.com/" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.eslam-elshikh.com/" target="_blank" rel="noopener noreferrer">
               المهندس إسلام الشيخ
             </a>
             <span aria-hidden="true">|</span>
             <span lang="en" dir="ltr">
-              Developed By:{" "}
-              <a href="https://eslam-elshikh.com/" target="_blank" rel="noopener noreferrer">
+              Designed &amp; developed by{" "}
+              <a href="https://www.eslam-elshikh.com/" target="_blank" rel="noopener noreferrer">
                 Eng. Eslam Elshikh
               </a>
             </span>
           </p>
-          <small lang="en" dir="ltr">
-            Cybersecurity Engineer | Web Developer | Google Product Expert
-          </small>
         </div>
       </div>
     </footer>

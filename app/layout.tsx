@@ -117,6 +117,21 @@ const localBusinessSchema = {
       alternateName: site.nameEn,
       inLanguage: "ar-SA",
       publisher: { "@id": `${site.siteUrl}/#medical-center` },
+      creator: {
+        "@type": "Person",
+        "@id": "https://www.eslam-elshikh.com/#person",
+        name: "إسلام الشيخ",
+        alternateName: [
+          "المهندس إسلام الشيخ",
+          "المهندس اسلام الشيخ",
+          "اسلام الشيخ",
+          "إسلام الشيخ | Eslam Elshikh",
+          "Eslam Elshikh",
+          "Islam Elshikh",
+          "Eslam El Sheikh",
+        ],
+        url: "https://www.eslam-elshikh.com/",
+      },
     },
     {
       "@type": ["MedicalClinic", "DiagnosticLab", "LocalBusiness"],
