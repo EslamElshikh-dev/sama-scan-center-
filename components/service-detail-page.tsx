@@ -1,8 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CtaSection } from "@/components/cta-section";
 import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageHero } from "@/components/page-hero";
+import { blogPosts } from "@/lib/blog";
 import { services, site, type Service } from "@/lib/site";
 
 export type ServiceFaq = { question: string; answer: string };
@@ -15,15 +17,23 @@ export type ServicePageContent = {
   commonUsesTitle: string;
   commonUsesIntro: string;
   commonUses: string[];
+  patientJourney: { title: string; text: string }[];
   preparation: { title: string; text: string }[];
+  qualityTitle: string;
+  qualityIntro: string;
+  qualityFactors: string[];
   safetyTitle: string;
   safetyText: string;
   faqs: ServiceFaq[];
+  sources: { label: string; url: string }[];
 };
 
 export function ServiceDetailPage({ content }: { content: ServicePageContent }) {
   const { service } = content;
   const related = services.filter((item) => item.slug !== service.slug).slice(0, 3);
+  const relatedArticles = blogPosts
+    .filter((post) => post.relatedServices.includes(service.slug))
+    .slice(0, 3);
 
   return (
     <main id="main-content">
@@ -37,6 +47,7 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
             alternateName: service.english,
             description: service.summary,
             url: `${site.siteUrl}/services/${service.slug}`,
+            image: `${site.siteUrl}${service.image}`,
             imagingTechnique: `https://schema.org/${service.imagingTechnique}`,
             provider: { "@id": `${site.siteUrl}/#medical-center` },
           },
@@ -70,6 +81,15 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
             {content.overview.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
+            <figure className="service-photo-figure">
+              <Image
+                src={service.image}
+                alt={service.imageAlt}
+                fill
+                sizes="(max-width: 900px) 100vw, 58vw"
+              />
+              <figcaption>{service.imageCaption}</figcaption>
+            </figure>
             <div className="medical-note">
               <Icon name="shield" width="24" height="24" />
               <p>
@@ -107,6 +127,25 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
         </div>
       </section>
 
+      <section className="section patient-journey-section" aria-labelledby="journey-heading">
+        <div className="container">
+          <div className="section-head centered">
+            <span className="eyebrow">رحلتك داخل المركز</span>
+            <h2 id="journey-heading">من طلب الطبيب إلى استلام التقرير</h2>
+            <p>خطوات عملية تساعد على تنظيم الموعد، مع بقاء تفاصيل الفحص مرتبطة بالإحالة والحالة الصحية.</p>
+          </div>
+          <div className="patient-journey-grid">
+            {content.patientJourney.map((item, index) => (
+              <article key={item.title}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="section uses-section" aria-labelledby="uses-heading">
         <div className="container uses-grid">
           <div className="section-head">
@@ -116,6 +155,24 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
           </div>
           <ul className="feature-list">
             {content.commonUses.map((item) => (
+              <li key={item}>
+                <span><Icon name="check" width="19" height="19" /></span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section service-quality-section" aria-labelledby="quality-heading">
+        <div className="container uses-grid">
+          <div className="section-head">
+            <span className="eyebrow">صورة أدق تبدأ بتحضير صحيح</span>
+            <h2 id="quality-heading">{content.qualityTitle}</h2>
+            <p>{content.qualityIntro}</p>
+          </div>
+          <ul className="feature-list quality-list">
+            {content.qualityFactors.map((item) => (
               <li key={item}>
                 <span><Icon name="check" width="19" height="19" /></span>
                 {item}
@@ -189,6 +246,34 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
                 <Icon name="arrow" width="20" height="20" />
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section service-knowledge-section" aria-labelledby="knowledge-heading">
+        <div className="container">
+          <div className="section-head centered">
+            <span className="eyebrow">مكتبة سما سكان</span>
+            <h2 id="knowledge-heading">أدلة تثقيفية مرتبطة بـ{service.shortTitle}</h2>
+            <p>اقرأ عن الاستعداد والسلامة وخطوات الفحص، ثم أكد التعليمات الخاصة بحالتك مع المركز.</p>
+          </div>
+          <div className="related-article-grid service-article-grid">
+            {relatedArticles.map((post) => (
+              <article key={post.slug}>
+                <span>{post.category}</span>
+                <h3><Link href={`/blog/${post.slug}`}>{post.title}</Link></h3>
+                <p>{post.excerpt}</p>
+                <Link className="text-link" href={`/blog/${post.slug}`}>اقرأ الدليل <Icon name="arrow" width="17" height="17" /></Link>
+              </article>
+            ))}
+          </div>
+          <div className="service-sources">
+            <strong>المراجع الطبية المستخدمة في صياغة الصفحة</strong>
+            <ul>
+              {content.sources.map((source) => (
+                <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.label}</a></li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>

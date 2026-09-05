@@ -1,3 +1,5 @@
+import { newBlogPosts } from "@/lib/blog-2026";
+
 export type BlogSection = {
   heading: string;
   paragraphs: string[];
@@ -5,6 +7,11 @@ export type BlogSection = {
 };
 
 export type BlogFaq = { question: string; answer: string };
+
+export type BlogSource = {
+  label: string;
+  url: string;
+};
 
 export type BlogPost = {
   slug: string;
@@ -17,13 +24,18 @@ export type BlogPost = {
   published: string;
   modified: string;
   readingMinutes: number;
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
   intro: string[];
   sections: BlogSection[];
   faq: BlogFaq[];
   relatedServices: string[];
+  relatedPosts?: string[];
+  sources?: BlogSource[];
 };
 
-export const blogPosts: BlogPost[] = [
+const existingBlogPosts: BlogPost[] = [
   {
     slug: "best-radiology-center-riyadh",
     title: "كيف تختار أفضل معمل أشعة بالرياض؟ دليل عملي قبل الحجز",
@@ -321,6 +333,56 @@ export const blogPosts: BlogPost[] = [
     relatedServices: ["mri-riyadh", "ultrasound-riyadh"]
   }
 ];
+
+export const blogPosts: BlogPost[] = [...newBlogPosts, ...existingBlogPosts];
+
+export function getBlogImage(post: BlogPost) {
+  if (post.image && post.imageAlt) {
+    return {
+      src: post.image,
+      alt: post.imageAlt,
+      caption: post.imageCaption,
+    };
+  }
+
+  if (post.relatedServices.includes("mri-riyadh")) {
+    return {
+      src: "/center-mri.webp",
+      alt: "جهاز الرنين المغناطيسي داخل مركز سما سكان للأشعة في الرياض",
+      caption: "صورة فعلية من غرفة الرنين المغناطيسي في مركز سما سكان.",
+    };
+  }
+
+  if (post.relatedServices.some((slug) => slug.includes("ultrasound") || slug.includes("doppler"))) {
+    return {
+      src: "/center-ultrasound.webp",
+      alt: "جهاز الموجات فوق الصوتية داخل مركز سما سكان للأشعة في الرياض",
+      caption: "صورة فعلية من غرفة الموجات فوق الصوتية في مركز سما سكان.",
+    };
+  }
+
+  return {
+    src: "/center-waiting.webp",
+    alt: "منطقة استقبال المراجعين في مركز سما سكان للأشعة بحي المربع في الرياض",
+    caption: "صورة فعلية من مركز سما سكان للأشعة في حي المربع.",
+  };
+}
+
+export function getRelatedBlogPosts(post: BlogPost, limit = 3) {
+  const preferred = new Set(post.relatedPosts ?? []);
+  const serviceSet = new Set(post.relatedServices);
+
+  return blogPosts
+    .filter((candidate) => candidate.slug !== post.slug)
+    .map((candidate) => {
+      const sharedServices = candidate.relatedServices.filter((slug) => serviceSet.has(slug)).length;
+      const score = (preferred.has(candidate.slug) ? 20 : 0) + sharedServices * 4 + (candidate.category === post.category ? 2 : 0);
+      return { candidate, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(({ candidate }) => candidate);
+}
 
 export function getBlogPost(slug: string) {
   return blogPosts.find((post) => post.slug === slug);

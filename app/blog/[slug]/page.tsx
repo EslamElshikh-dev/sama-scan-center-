@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
-import { blogPosts, getBlogPost } from "@/lib/blog";
+import { blogPosts, getBlogImage, getBlogPost, getRelatedBlogPosts } from "@/lib/blog";
 import { createPageMetadata } from "@/lib/metadata";
 import { services, site } from "@/lib/site";
 
@@ -30,7 +31,15 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) notFound();
 
   const relatedServices = services.filter((service) => post.relatedServices.includes(service.slug));
+  const relatedArticles = getRelatedBlogPosts(post);
+  const articleImage = getBlogImage(post);
   const articleUrl = `${site.siteUrl}/blog/${post.slug}`;
+  const articleImageUrl = `${site.siteUrl}${articleImage.src}`;
+  const modifiedDate = new Intl.DateTimeFormat("ar-SA", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(`${post.modified}T12:00:00Z`));
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -45,6 +54,13 @@ export default async function BlogPostPage({ params }: Props) {
         inLanguage: "ar-SA",
         articleSection: post.category,
         keywords: post.keywords.join(", "),
+        image: {
+          "@type": "ImageObject",
+          url: articleImageUrl,
+          caption: articleImage.caption,
+        },
+        citation: post.sources?.map((source) => source.url),
+        isAccessibleForFree: true,
         author: { "@id": `${site.siteUrl}/#medical-center` },
         publisher: { "@id": `${site.siteUrl}/#medical-center` },
         mainEntityOfPage: { "@id": articleUrl },
@@ -73,16 +89,39 @@ export default async function BlogPostPage({ params }: Props) {
     <main id="main-content">
       <JsonLd data={schema} />
       <section className="article-hero-medical">
-        <div className="container article-hero-inner">
-          <nav className="article-breadcrumbs" aria-label="مسار الصفحة">
-            <Link href="/">الرئيسية</Link><span>/</span><Link href="/blog">المدونة</Link><span>/</span><span>{post.category}</span>
-          </nav>
-          <span className="eyebrow">{post.category}</span>
-          <h1>{post.title}</h1>
-          <p>{post.excerpt}</p>
-          <div className="article-meta-medical">
-            <span>{post.readingMinutes} دقائق قراءة</span><span>آخر تحديث: 30 أغسطس 2026</span><span>محتوى تثقيفي</span>
+        <div className="container article-hero-grid">
+          <div className="article-hero-inner">
+            <nav className="article-breadcrumbs" aria-label="مسار الصفحة">
+              <Link href="/">الرئيسية</Link><span>/</span><Link href="/blog">المدونة</Link><span>/</span><span>{post.category}</span>
+            </nav>
+            <span className="eyebrow">{post.category}</span>
+            <h1>{post.title}</h1>
+            <p>{post.excerpt}</p>
+            <div className="article-meta-medical">
+              <span>{post.readingMinutes} دقائق قراءة</span>
+              <span>آخر تحديث: <time dateTime={post.modified}>{modifiedDate}</time></span>
+              <span>مراجعة مصادر طبية</span>
+            </div>
           </div>
+          <figure className="article-hero-figure">
+            <Image
+              src={articleImage.src}
+              alt={articleImage.alt}
+              fill
+              priority
+              sizes="(max-width: 900px) 100vw, 38vw"
+            />
+            {articleImage.caption ? <figcaption>{articleImage.caption}</figcaption> : null}
+          </figure>
+        </div>
+      </section>
+
+      <section className="article-trust-bar" aria-label="معايير المحتوى الطبي">
+        <div className="container">
+          <span>محتوى تثقيفي واضح</span>
+          <span>مصادر طبية مرجعية</span>
+          <span>لا يستبدل تقييم الطبيب</span>
+          <span>مخصص لرحلة المريض قبل الفحص</span>
         </div>
       </section>
 
@@ -95,21 +134,36 @@ export default async function BlogPostPage({ params }: Props) {
 
             <div className="article-toc">
               <strong>في هذا الدليل</strong>
-              <ol>{post.sections.map((section) => <li key={section.heading}><a href={`#${section.heading}`}>{section.heading}</a></li>)}</ol>
+              <ol>{post.sections.map((section, index) => <li key={section.heading}><a href={`#section-${index + 1}`}>{section.heading}</a></li>)}</ol>
             </div>
 
-            {post.sections.map((section) => (
-              <section className="article-copy-section" id={section.heading} key={section.heading}>
+            {post.sections.map((section, index) => (
+              <section className="article-copy-section" id={`section-${index + 1}`} key={section.heading}>
                 <h2>{section.heading}</h2>
                 {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-                {section.bullets && <ul>{section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>}
+                {section.bullets ? <ul>{section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul> : null}
               </section>
             ))}
 
             <div className="medical-disclaimer">
               <strong>تنبيه طبي</strong>
-              <p>هذا المحتوى للتثقيف العام ولا يقدم تشخيصًا أو توصية علاجية. اتبع إحالة الطبيب وتعليمات فريق الأشعة، وأكد توفر الفحص وتحضيره قبل الحضور.</p>
+              <p>هذا المحتوى للتثقيف العام ولا يقدم تشخيصًا أو توصية علاجية. اتبع إحالة الطبيب وتعليمات فريق الأشعة، وأكد توفر الفحص وتحضيره قبل الحضور. عند وجود أعراض حادة أو مفاجئة اطلب تقييمًا طبيًا عاجلًا.</p>
             </div>
+
+            {post.sources?.length ? (
+              <section className="article-sources" aria-labelledby="sources-title">
+                <span className="eyebrow">المراجعة المرجعية</span>
+                <h2 id="sources-title">مصادر طبية موثوقة</h2>
+                <p>تمت صياغة المعلومات وتدقيقها بالرجوع إلى المصادر المهنية التالية، مع تبسيطها للقارئ دون نقل حرفي.</p>
+                <ul>
+                  {post.sources.map((source) => (
+                    <li key={source.url}>
+                      <a href={source.url} target="_blank" rel="noopener noreferrer">{source.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
 
             <section className="article-faq" aria-labelledby="faq-title">
               <span className="eyebrow">FAQ</span>
@@ -154,7 +208,7 @@ export default async function BlogPostPage({ params }: Props) {
         <div className="container">
           <div className="section-head"><span className="eyebrow">اقرأ أيضًا</span><h2>مقالات مرتبطة بالتصوير الطبي</h2></div>
           <div className="related-article-grid">
-            {blogPosts.filter((item) => item.slug !== post.slug).slice(0, 3).map((item) => (
+            {relatedArticles.map((item) => (
               <article key={item.slug}><span>{item.category}</span><h3><Link href={`/blog/${item.slug}`}>{item.title}</Link></h3><p>{item.excerpt}</p></article>
             ))}
           </div>

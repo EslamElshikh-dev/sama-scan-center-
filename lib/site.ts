@@ -35,6 +35,9 @@ export type Service = {
   keywords: string[];
   imagingTechnique: "MRI" | "Ultrasound";
   icon: "scan" | "ultrasound" | "flow" | "cube";
+  image: string;
+  imageAlt: string;
+  imageCaption: string;
 };
 
 export const services: Service[] = [
@@ -48,6 +51,9 @@ export const services: Service[] = [
     keywords: ["رنين مغناطيسي الرياض", "أشعة رنين مغناطيسي", "MRI الرياض"],
     imagingTechnique: "MRI",
     icon: "scan",
+    image: "/mri-room-sama-scan-riyadh.webp",
+    imageAlt: "جهاز الرنين المغناطيسي في مركز سما سكان للأشعة بحي المربع في الرياض",
+    imageCaption: "صورة فعلية من وحدة الرنين المغناطيسي في مركز سما سكان.",
   },
   {
     slug: "ultrasound-riyadh",
@@ -59,6 +65,9 @@ export const services: Service[] = [
     keywords: ["سونار الرياض", "موجات فوق صوتية الرياض", "أشعة سونار"],
     imagingTechnique: "Ultrasound",
     icon: "ultrasound",
+    image: "/ultrasound-room-sama-scan-riyadh.webp",
+    imageAlt: "غرفة السونار والموجات فوق الصوتية في مركز سما سكان بالرياض",
+    imageCaption: "صورة فعلية من غرفة الموجات فوق الصوتية في مركز سما سكان.",
   },
   {
     slug: "doppler-duplex-riyadh",
@@ -70,6 +79,9 @@ export const services: Service[] = [
     keywords: ["أشعة دوبلر الرياض", "دوبلكس الرياض", "سونار دوبلر"],
     imagingTechnique: "Ultrasound",
     icon: "flow",
+    image: "/ultrasound-exam-room-riyadh.webp",
+    imageAlt: "جهاز الدوبلر والدوبلكس بالموجات فوق الصوتية في مركز سما سكان بالرياض",
+    imageCaption: "جهاز الموجات فوق الصوتية المستخدم ضمن فحوص الدوبلر والدوبلكس.",
   },
   {
     slug: "3d-4d-ultrasound-riyadh",
@@ -81,6 +93,9 @@ export const services: Service[] = [
     keywords: ["سونار ثلاثي الأبعاد الرياض", "سونار رباعي الأبعاد الرياض", "4D الرياض"],
     imagingTechnique: "Ultrasound",
     icon: "cube",
+    image: "/center-ultrasound.webp",
+    imageAlt: "جهاز سونار ثلاثي ورباعي الأبعاد في مركز سما سكان بالرياض",
+    imageCaption: "صورة فعلية لجهاز الموجات فوق الصوتية داخل المركز.",
   },
 ];
 
