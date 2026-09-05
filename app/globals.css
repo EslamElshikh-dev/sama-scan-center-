@@ -3949,3 +3949,575 @@ body {
     font-size: 0.88rem;
   }
 }
+
+/* SANA smart assistant */
+.sana-assistant {
+  position: fixed;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  left: max(88px, calc(env(safe-area-inset-left) + 80px));
+  z-index: 75;
+  direction: rtl;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+.sana-launcher {
+  position: relative;
+  display: grid;
+  width: 82px;
+  height: 82px;
+  padding: 0;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 50% 25%, rgba(255, 255, 255, 0.98), rgba(224, 247, 251, 0.94) 68%, #9cdcea);
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow:
+    0 16px 38px rgba(4, 31, 48, 0.27),
+    0 0 0 1px rgba(79, 173, 212, 0.2);
+  isolation: isolate;
+  place-items: center;
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.sana-launcher::before {
+  position: absolute;
+  inset: -7px;
+  z-index: -1;
+  border: 1px solid rgba(79, 173, 212, 0.52);
+  border-radius: inherit;
+  content: "";
+  animation: sana-pulse 3s ease-out infinite;
+}
+
+.sana-launcher:hover {
+  box-shadow:
+    0 20px 44px rgba(4, 31, 48, 0.31),
+    0 0 0 1px rgba(79, 173, 212, 0.28);
+  transform: translateY(-4px) scale(1.025);
+}
+
+.sana-launcher-image,
+.sana-header-avatar {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(155deg, #e9f9fc, #b9e8f1);
+  border-radius: 50%;
+}
+
+.sana-launcher-image {
+  width: 76px;
+  height: 76px;
+}
+
+.sana-launcher-image img,
+.sana-header-avatar img {
+  object-fit: cover;
+  object-position: center 14%;
+}
+
+.sana-online-dot {
+  position: absolute;
+  right: 2px;
+  bottom: 7px;
+  width: 15px;
+  height: 15px;
+  background: #2ac67a;
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 3px 10px rgba(24, 146, 89, 0.32);
+}
+
+.sana-launcher-label {
+  position: absolute;
+  right: 50%;
+  bottom: -12px;
+  min-width: 70px;
+  padding: 3px 9px 4px;
+  color: white;
+  background: var(--navy-900);
+  border: 1px solid rgba(156, 220, 234, 0.4);
+  border-radius: 999px;
+  box-shadow: 0 6px 16px rgba(6, 23, 37, 0.18);
+  font-size: 0.66rem;
+  font-weight: 800;
+  line-height: 1.3;
+  transform: translateX(50%);
+  white-space: nowrap;
+}
+
+.sana-hint {
+  position: absolute;
+  bottom: calc(100% + 18px);
+  left: 0;
+  display: grid;
+  width: 265px;
+  padding: 13px 16px 14px;
+  cursor: pointer;
+  color: var(--navy-950);
+  text-align: right;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(79, 173, 212, 0.26);
+  border-radius: 18px 18px 5px 18px;
+  box-shadow: 0 18px 46px rgba(6, 39, 56, 0.18);
+  backdrop-filter: blur(14px);
+  animation: sana-hint-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sana-hint::after {
+  position: absolute;
+  bottom: -8px;
+  left: 24px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-right: 1px solid rgba(79, 173, 212, 0.2);
+  border-bottom: 1px solid rgba(79, 173, 212, 0.2);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.sana-hint b {
+  color: var(--navy-900);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.sana-hint span {
+  color: #617785;
+  font-size: 0.73rem;
+  line-height: 1.7;
+}
+
+.sana-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: min(390px, calc(100vw - 36px));
+  height: min(596px, calc(100svh - 40px));
+  overflow: hidden;
+  flex-direction: column;
+  background: #f7fbfc;
+  border: 1px solid rgba(79, 173, 212, 0.3);
+  border-radius: 28px;
+  box-shadow:
+    0 30px 80px rgba(3, 25, 40, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+  transform-origin: bottom left;
+  animation: sana-panel-in 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sana-panel-header {
+  position: relative;
+  display: flex;
+  min-height: 84px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  color: white;
+  background:
+    radial-gradient(circle at 14% 20%, rgba(156, 220, 234, 0.22), transparent 32%),
+    linear-gradient(135deg, #09243a, #0b4967);
+}
+
+.sana-panel-header::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(156, 220, 234, 0.5), transparent);
+  content: "";
+}
+
+.sana-header-avatar {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  border: 2px solid rgba(255, 255, 255, 0.88);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.2);
+}
+
+.sana-header-copy {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+  margin-left: auto;
+}
+
+.sana-header-copy b {
+  color: white;
+  font-size: 1.03rem;
+  line-height: 1.4;
+}
+
+.sana-header-copy small {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #d8f2f7;
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.sana-header-copy i {
+  width: 7px;
+  height: 7px;
+  background: #40d78b;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(64, 215, 139, 0.82);
+}
+
+.sana-close {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  padding: 0;
+  cursor: pointer;
+  color: white;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  border-radius: 12px;
+  place-items: center;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.sana-close:hover {
+  background: rgba(255, 255, 255, 0.17);
+  transform: rotate(4deg);
+}
+
+.sana-close svg,
+.sana-form button svg {
+  width: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.sana-safety-note {
+  padding: 7px 14px;
+  color: #526d7b;
+  background: #e8f5f8;
+  border-bottom: 1px solid rgba(79, 173, 212, 0.17);
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.sana-messages {
+  display: flex;
+  min-height: 0;
+  overflow: auto;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 10px;
+  padding: 17px 14px 14px;
+  overscroll-behavior: contain;
+  scrollbar-color: rgba(79, 173, 212, 0.45) transparent;
+  scrollbar-width: thin;
+}
+
+.sana-message {
+  width: fit-content;
+  max-width: 88%;
+  padding: 10px 13px;
+  border-radius: 17px;
+  font-size: 0.82rem;
+  line-height: 1.75;
+  box-shadow: 0 6px 15px rgba(7, 51, 71, 0.045);
+  white-space: pre-line;
+}
+
+.sana-message-assistant {
+  align-self: flex-start;
+  color: #1b394a;
+  background: white;
+  border: 1px solid rgba(79, 173, 212, 0.18);
+  border-bottom-right-radius: 5px;
+}
+
+.sana-message-user {
+  align-self: flex-end;
+  color: white;
+  background: linear-gradient(135deg, #237da4, #4fadd4);
+  border-bottom-left-radius: 5px;
+}
+
+.sana-typing {
+  display: flex;
+  width: 62px;
+  height: 39px;
+  align-items: center;
+  align-self: flex-start;
+  justify-content: center;
+  gap: 5px;
+  background: white;
+  border: 1px solid rgba(79, 173, 212, 0.18);
+  border-radius: 16px 16px 5px 16px;
+}
+
+.sana-typing i {
+  width: 6px;
+  height: 6px;
+  background: var(--brand-blue);
+  border-radius: 50%;
+  animation: sana-typing 1.05s ease-in-out infinite;
+}
+
+.sana-typing i:nth-child(2) {
+  animation-delay: 140ms;
+}
+
+.sana-typing i:nth-child(3) {
+  animation-delay: 280ms;
+}
+
+.sana-quick-topics {
+  display: flex;
+  overflow-x: auto;
+  flex: 0 0 auto;
+  gap: 7px;
+  padding: 8px 12px 10px;
+  scrollbar-width: none;
+}
+
+.sana-quick-topics::-webkit-scrollbar {
+  display: none;
+}
+
+.sana-quick-topics button {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: #176887;
+  background: #eef9fb;
+  border: 1px solid rgba(79, 173, 212, 0.32);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.5;
+  transition: color 160ms ease, background 160ms ease, transform 160ms ease;
+  white-space: nowrap;
+}
+
+.sana-quick-topics button:hover {
+  color: white;
+  background: #257e9f;
+  transform: translateY(-1px);
+}
+
+.sana-quick-topics button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.sana-form {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  margin: 0 12px 10px;
+  padding: 5px 6px 5px 10px;
+  background: white;
+  border: 1px solid rgba(79, 173, 212, 0.28);
+  border-radius: 17px;
+  box-shadow: 0 8px 22px rgba(7, 51, 71, 0.07);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.sana-form:focus-within {
+  border-color: var(--brand-blue);
+  box-shadow: 0 8px 22px rgba(7, 51, 71, 0.09), 0 0 0 3px rgba(79, 173, 212, 0.12);
+}
+
+.sana-form input {
+  min-width: 0;
+  height: 40px;
+  flex: 1 1 auto;
+  color: var(--navy-900);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 0.8rem;
+}
+
+.sana-form input::placeholder {
+  color: #8599a4;
+}
+
+.sana-form button {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 auto;
+  padding: 0;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(135deg, #177294, #4fadd4);
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 7px 15px rgba(22, 110, 145, 0.22);
+  place-items: center;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.sana-form button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.sana-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+.sana-form button svg {
+  width: 19px;
+  transform: scaleX(-1);
+}
+
+.sana-panel-footer {
+  display: grid;
+  min-height: 48px;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(3, 1fr);
+  background: white;
+  border-top: 1px solid rgba(79, 173, 212, 0.17);
+}
+
+.sana-panel-footer a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #305d70;
+  font-size: 0.71rem;
+  font-weight: 800;
+  transition: color 160ms ease, background 160ms ease;
+}
+
+.sana-panel-footer a + a {
+  border-right: 1px solid rgba(79, 173, 212, 0.15);
+}
+
+.sana-panel-footer a:hover {
+  color: #0f6e91;
+  background: #f0fafb;
+}
+
+.sana-panel-footer svg {
+  flex: 0 0 auto;
+}
+
+.sana-chat-open .floating-actions {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+}
+
+@keyframes sana-pulse {
+  0% { opacity: 0.78; transform: scale(0.94); }
+  72%, 100% { opacity: 0; transform: scale(1.2); }
+}
+
+@keyframes sana-hint-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes sana-panel-in {
+  from { opacity: 0; transform: translateY(18px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes sana-typing {
+  0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-4px); }
+}
+
+@media (max-width: 680px) {
+  .sana-assistant {
+    bottom: max(10px, env(safe-area-inset-bottom));
+    left: max(10px, env(safe-area-inset-left));
+  }
+
+  .sana-assistant:not(.is-open) {
+    bottom: max(132px, calc(env(safe-area-inset-bottom) + 124px));
+  }
+
+  .sana-launcher {
+    width: 72px;
+    height: 72px;
+  }
+
+  .sana-launcher-image {
+    width: 66px;
+    height: 66px;
+  }
+
+  .sana-launcher-label {
+    bottom: -11px;
+    min-width: 64px;
+    font-size: 0.61rem;
+  }
+
+  .sana-hint {
+    width: min(250px, calc(100vw - 24px));
+    padding: 11px 14px 12px;
+    border-radius: 16px 16px 5px 16px;
+  }
+
+  .sana-panel {
+    width: calc(100vw - 20px);
+    height: calc(100svh - 20px);
+    border-radius: 22px;
+  }
+
+  .sana-panel-header {
+    min-height: 78px;
+    padding: 10px 12px;
+  }
+
+  .sana-header-avatar {
+    width: 54px;
+    height: 54px;
+  }
+
+  .sana-messages {
+    padding: 14px 11px 11px;
+  }
+
+  .sana-message {
+    max-width: 91%;
+    font-size: 0.79rem;
+  }
+
+  .sana-quick-topics {
+    padding-inline: 10px;
+  }
+
+  .sana-form {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+}
+
+@media (max-height: 560px) and (min-width: 681px) {
+  .sana-panel {
+    height: calc(100svh - 24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sana-launcher::before,
+  .sana-hint,
+  .sana-panel,
+  .sana-typing i {
+    animation: none;
+  }
+}

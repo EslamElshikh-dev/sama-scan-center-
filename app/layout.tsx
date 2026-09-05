@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { JsonLd } from "@/components/json-ld";
 import { RevealObserver } from "@/components/reveal-observer";
+import { SanaAssistant } from "@/components/sana-assistant";
 import { services, site } from "@/lib/site";
 import "./globals.css";
 
@@ -169,6 +170,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         {children}
         <Footer />
         <FloatingActions />
+        <SanaAssistant />
         <ClickTracker />
       </body>
     </html>
