@@ -6,7 +6,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = ["", "/services", "/blog", "/about", "/location", "/contact", "/privacy", "/social"];
   const staticEntries: MetadataRoute.Sitemap = staticPages.map((path) => ({
     url: `${site.siteUrl}${path}`,
-    lastModified: new Date(path === "/blog" || path === "/services" || path === "/social" ? "2026-09-05T00:00:00+03:00" : "2026-08-26T00:00:00+03:00"),
+    lastModified: new Date(
+      ["", "/location", "/contact", "/social"].includes(path)
+        ? "2026-09-12T00:00:00+03:00"
+        : path === "/blog" || path === "/services"
+          ? "2026-09-05T00:00:00+03:00"
+          : "2026-08-26T00:00:00+03:00",
+    ),
     changeFrequency: path === "" || path === "/blog" ? "weekly" : "monthly",
     priority: path === "" ? 1 : path === "/services" || path === "/blog" ? 0.9 : path === "/social" ? 0.85 : 0.8,
   }));

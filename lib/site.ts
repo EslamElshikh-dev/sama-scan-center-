@@ -1,8 +1,27 @@
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+  "https://samascan.vercel.app";
+
+const address = {
+  streetAddress: "4479 شارع فيصل بن تركي بن عبدالعزيز، حي المربع",
+  locality: "الرياض",
+  region: "منطقة الرياض",
+  postalCode: "12584",
+  country: "SA",
+} as const;
+
+export const socialProfiles = [
+  "https://www.instagram.com/samascansenter/",
+  "https://www.tiktok.com/@samascansenter",
+  "https://www.snapchat.com/add/samascansenter",
+  "https://x.com/samascansenter",
+] as const;
+
 export const site = {
-  nameAr: "مركز سما سكان",
-  nameEn: "Sama Scan Radiology Center",
+  nameAr: "مركز سما سكان للأشعة",
+  nameEn: "Sama Scan Radiology Center Riyadh",
   shortName: "سما سكان",
-  pageTitle: "مركز سما سكان للأشعة | sama scan center",
+  pageTitle: "مركز سما سكان للأشعة في الرياض | حي المربع",
   socialImage: "/sama-scan-share-v2.png",
   description:
     "مركز سما سكان للأشعة والتصوير الطبي في حي المربع بالرياض: رنين مغناطيسي، سونار وموجات فوق صوتية، دوبلر ودوبلكس، وتصوير ثلاثي ورباعي الأبعاد.",
@@ -11,19 +30,24 @@ export const site = {
   phoneDial: "tel:+966559617558",
   whatsapp:
     "https://wa.me/966559617558?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20%D9%85%D8%B1%D9%83%D8%B2%20%D8%B3%D9%85%D8%A7%20%D8%B3%D9%83%D8%A7%D9%86%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D9%81%D8%AD%D8%B5",
-  mapsProfile: "https://maps.app.goo.gl/jskHEGrnXR49tjvp9?g_st=ac",
+  mapsProfile: "https://maps.app.goo.gl/P4aQryrJiom5xCL89?g_st=ac",
   directions:
     "https://www.google.com/maps/dir/?api=1&destination=24.663307,46.7053643",
   mapEmbed:
     "https://www.google.com/maps?q=24.663307,46.7053643&z=16&output=embed",
-  address:
-    "4479 شارع فيصل بن تركي بن عبدالعزيز، حي المربع، الرياض 12584، المملكة العربية السعودية",
+  address: `${address.streetAddress}، ${address.locality} ${address.postalCode}، المملكة العربية السعودية`,
+  streetAddress: address.streetAddress,
+  addressLocality: address.locality,
+  addressRegion: address.region,
+  postalCode: address.postalCode,
+  addressCountry: address.country,
   shortAddress: "حي المربع، الرياض",
   latitude: 24.663307,
   longitude: 46.7053643,
-  siteUrl:
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-    "https://samascan.vercel.app",
+  siteUrl,
+  appointmentUrl: `${siteUrl}/contact`,
+  googleBusinessWebsiteUrl: `${siteUrl}/?utm_source=google&utm_medium=organic&utm_campaign=google_business_profile&utm_content=website`,
+  googleBusinessAppointmentUrl: `${siteUrl}/contact?utm_source=google&utm_medium=organic&utm_campaign=google_business_profile&utm_content=appointment`,
 } as const;
 
 export type Service = {

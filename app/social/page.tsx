@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
-import { site } from "@/lib/site";
+import { site, socialProfiles } from "@/lib/site";
 import styles from "./social.module.css";
 
 const username = "@samascansenter";
 
-const socialProfiles = [
+const socialChannels = [
   {
     platform: "instagram",
     labelAr: "إنستقرام",
@@ -38,7 +38,7 @@ const socialProfiles = [
   },
 ] as const;
 
-type Platform = (typeof socialProfiles)[number]["platform"];
+type Platform = (typeof socialChannels)[number]["platform"];
 
 function SocialIcon({ platform }: { platform: Platform }) {
   if (platform === "instagram") {
@@ -100,7 +100,7 @@ const profileSchema = {
     "@id": `${site.siteUrl}/#medical-center`,
     name: site.nameAr,
     url: site.siteUrl,
-    sameAs: [...socialProfiles.map((profile) => profile.href), site.mapsProfile],
+    sameAs: [site.mapsProfile, ...socialProfiles],
   },
 };
 
@@ -135,7 +135,7 @@ export default function SocialPage() {
         </div>
 
         <div className={styles.links} aria-label="حسابات سما سكان على السوشيال ميديا">
-          {socialProfiles.map((profile) => (
+          {socialChannels.map((profile) => (
             <a
               key={profile.platform}
               className={styles.socialLink}

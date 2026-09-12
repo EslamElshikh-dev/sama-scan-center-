@@ -17,16 +17,35 @@ export function LocationContactForm() {
 
     if (!name || !phone || !service) return;
 
+    const trafficSource =
+      new URLSearchParams(window.location.search).get("utm_source") || "direct";
+    const sourceLabel =
+      trafficSource === "google" ? "ملف Google التجاري" : "الموقع الإلكتروني";
+
     const message = [
-      "مرحبًا مركز سما سكان،",
+      `مرحبًا ${site.nameAr}،`,
       "أرغب في طلب تواصل من الموقع.",
       "",
       `الاسم: ${name}`,
       `رقم الجوال: ${phone}`,
       `الخدمة المطلوبة: ${service}`,
       `تفاصيل إضافية: ${details || "لا توجد"}`,
+      `مصدر الطلب: ${sourceLabel}`,
     ].join("\n");
     const whatsappNumber = site.phoneE164.replace(/\D/g, "");
+
+    window.dataLayer ??= [];
+    window.dataLayer.push({
+      event: "generate_lead",
+      lead_channel: "whatsapp_form",
+      page_path: window.location.pathname,
+      traffic_source: trafficSource,
+    });
+    window.gtag?.("event", "generate_lead", {
+      lead_channel: "whatsapp_form",
+      page_path: window.location.pathname,
+      traffic_source: trafficSource,
+    });
 
     window.open(
       `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,

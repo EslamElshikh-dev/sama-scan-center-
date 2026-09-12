@@ -2,11 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { ClickTracker } from "@/components/click-tracker";
 import { FloatingActions } from "@/components/floating-actions";
 import { Footer } from "@/components/footer";
+import { GoogleAnalytics } from "@/components/google-analytics";
 import { Header } from "@/components/header";
 import { JsonLd } from "@/components/json-ld";
 import { RevealObserver } from "@/components/reveal-observer";
 import { SanaAssistant } from "@/components/sana-assistant";
-import { services, site } from "@/lib/site";
+import { neighborhoods, services, site, socialProfiles } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -114,7 +115,7 @@ const localBusinessSchema = {
       "@id": `${site.siteUrl}/#website`,
       url: site.siteUrl,
       name: site.nameAr,
-      alternateName: site.nameEn,
+      alternateName: [site.nameEn, "Sama Scan Riyadh", site.shortName],
       inLanguage: "ar-SA",
       publisher: { "@id": `${site.siteUrl}/#medical-center` },
     },
@@ -122,19 +123,20 @@ const localBusinessSchema = {
       "@type": ["MedicalClinic", "DiagnosticLab", "LocalBusiness"],
       "@id": `${site.siteUrl}/#medical-center`,
       name: site.nameAr,
-      alternateName: site.nameEn,
+      alternateName: [site.nameEn, "Sama Scan Riyadh", site.shortName],
       url: site.siteUrl,
+      mainEntityOfPage: { "@id": `${site.siteUrl}/#website` },
       telephone: site.phoneE164,
       description: site.description,
       image: `${site.siteUrl}${site.socialImage}`,
       logo: `${site.siteUrl}/sama-scan-icon.png`,
       address: {
         "@type": "PostalAddress",
-        streetAddress: "4479 شارع فيصل بن تركي بن عبدالعزيز، حي المربع",
-        addressLocality: "الرياض",
-        addressRegion: "منطقة الرياض",
-        postalCode: "12584",
-        addressCountry: "SA",
+        streetAddress: site.streetAddress,
+        addressLocality: site.addressLocality,
+        addressRegion: site.addressRegion,
+        postalCode: site.postalCode,
+        addressCountry: site.addressCountry,
       },
       geo: {
         "@type": "GeoCoordinates",
@@ -142,19 +144,31 @@ const localBusinessSchema = {
         longitude: site.longitude,
       },
       hasMap: site.mapsProfile,
-      sameAs: [site.mapsProfile],
-      areaServed: {
-        "@type": "City",
-        name: "الرياض",
-      },
+      sameAs: [site.mapsProfile, ...socialProfiles],
+      areaServed: [
+        { "@type": "City", name: "الرياض" },
+        ...neighborhoods.map((name) => ({
+          "@type": "Place",
+          name: `${name}، الرياض`,
+        })),
+      ],
       contactPoint: {
         "@type": "ContactPoint",
         telephone: site.phoneE164,
         contactType: "appointments",
         availableLanguage: ["Arabic"],
+        url: site.appointmentUrl,
       },
       availableService: imagingTests.map((test) => ({ "@id": test["@id"] })),
       availableTest: imagingTests.map((test) => ({ "@id": test["@id"] })),
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "خدمات الأشعة والتصوير الطبي",
+        itemListElement: imagingTests.map((test) => ({
+          "@type": "Offer",
+          itemOffered: { "@id": test["@id"] },
+        })),
+      },
     },
     ...imagingTests,
   ],
@@ -172,6 +186,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <FloatingActions />
         <SanaAssistant />
         <ClickTracker />
+        <GoogleAnalytics />
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Icon } from "@/components/icons";
+import { LocationContactForm } from "@/components/location-contact-form";
 import { PageHero } from "@/components/page-hero";
 import { createPageMetadata } from "@/lib/metadata";
 import { services, site } from "@/lib/site";
@@ -50,21 +51,19 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="section booking-guide" aria-labelledby="booking-heading">
+      <section className="section booking-guide" aria-label="نموذج طلب الحجز">
         <div className="container article-layout">
-          <article className="article-content">
+          <LocationContactForm />
+          <aside className="appointment-card simple-card">
             <span className="eyebrow">لتواصل أسرع</span>
-            <h2 id="booking-heading">جهّز هذه المعلومات قبل الاتصال</h2>
+            <h2>جهّز هذه المعلومات</h2>
             <ul className="feature-list compact-list">
               <li><span><Icon name="check" width="19" height="19" /></span>اسم الفحص كما هو مكتوب في الإحالة.</li>
               <li><span><Icon name="check" width="19" height="19" /></span>المنطقة والجهة المطلوبة عند وجودها.</li>
               <li><span><Icon name="check" width="19" height="19" /></span>التاريخ والوقت المفضلان للموعد.</li>
               <li><span><Icon name="check" width="19" height="19" /></span>أي تعليمات خاصة ذكرها الطبيب.</li>
             </ul>
-          </article>
-          <aside className="appointment-card simple-card">
-            <span className="eyebrow">اختر الخدمة</span>
-            <h2>صفحات الفحوصات</h2>
+            <span className="eyebrow">صفحات الفحوصات</span>
             <ul className="mini-service-list">
               {services.map((service) => (
                 <li key={service.slug}>
