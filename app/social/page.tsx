@@ -5,27 +5,30 @@ import { JsonLd } from "@/components/json-ld";
 import { site, socialProfiles } from "@/lib/site";
 import styles from "./social.module.css";
 
-const username = "@samascansenter";
+const primaryUsername = "@samascancenter";
 
 const socialChannels = [
   {
     platform: "instagram",
     labelAr: "إنستقرام",
     labelEn: "Instagram",
+    username: "@samascancenter",
     note: "صور المركز والتحديثات والمحتوى التوعوي",
-    href: "https://www.instagram.com/samascansenter/",
+    href: "https://www.instagram.com/samascancenter/",
   },
   {
     platform: "tiktok",
     labelAr: "تيك توك",
     labelEn: "TikTok",
+    username: "@samascancenter",
     note: "فيديوهات قصيرة ومحتوى توعوي من سما سكان",
-    href: "https://www.tiktok.com/@samascansenter",
+    href: "https://www.tiktok.com/@samascancenter",
   },
   {
     platform: "snapchat",
     labelAr: "سناب شات",
     labelEn: "Snapchat",
+    username: "@samascansenter",
     note: "يوميات المركز وآخر التحديثات",
     href: "https://www.snapchat.com/add/samascansenter",
   },
@@ -33,6 +36,7 @@ const socialChannels = [
     platform: "x",
     labelAr: "إكس",
     labelEn: "X",
+    username: "@samascansenter",
     note: "أخبار المركز والتنبيهات والمستجدات",
     href: "https://x.com/samascansenter",
   },
@@ -78,11 +82,11 @@ function SocialIcon({ platform }: { platform: Platform }) {
 export const metadata: Metadata = {
   title: "روابط سما سكان الرسمية | السوشيال ميديا",
   description:
-    "تابع الحسابات الرسمية لمركز سما سكان للأشعة في الرياض على إنستقرام وتيك توك وسناب شات وإكس باسم المستخدم الموحد @samascansenter.",
+    "تابع الحسابات الرسمية لمركز سما سكان للأشعة في الرياض: إنستقرام وتيك توك @samascancenter وإكس @samascansenter.",
   alternates: { canonical: "/social" },
   openGraph: {
     title: "روابط مركز سما سكان الرسمية",
-    description: `جميع حسابات سما سكان الرسمية باسم موحد ${username}`,
+    description: "روابط حسابات مركز سما سكان للأشعة الرسمية في الرياض.",
     url: "/social",
     images: [site.socialImage],
   },
@@ -129,9 +133,9 @@ export default function SocialPage() {
             تابع حساباتنا الرسمية واختَر المنصة المناسبة لك.
           </p>
           <span className={styles.handle} dir="ltr">
-            {username}
+            {primaryUsername}
           </span>
-          <span className={styles.handleHint}>اسم موحّد على جميع المنصات</span>
+          <span className={styles.handleHint}>إنستقرام وتيك توك</span>
         </div>
 
         <div className={styles.links} aria-label="حسابات سما سكان على السوشيال ميديا">
@@ -152,7 +156,7 @@ export default function SocialPage() {
               <span className={styles.linkCopy}>
                 <strong>{profile.labelAr}</strong>
                 <span className={styles.linkMeta}>
-                  <b dir="ltr">{username}</b>
+                  <b dir="ltr">{profile.username}</b>
                   <span aria-hidden="true">·</span>
                   <small>{profile.note}</small>
                 </span>

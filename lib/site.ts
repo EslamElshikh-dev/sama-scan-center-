@@ -11,8 +11,8 @@ const address = {
 } as const;
 
 export const socialProfiles = [
-  "https://www.instagram.com/samascansenter/",
-  "https://www.tiktok.com/@samascansenter",
+  "https://www.instagram.com/samascancenter/",
+  "https://www.tiktok.com/@samascancenter",
   "https://www.snapchat.com/add/samascansenter",
   "https://x.com/samascansenter",
 ] as const;
