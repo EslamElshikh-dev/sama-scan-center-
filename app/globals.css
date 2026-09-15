@@ -3753,6 +3753,88 @@ body {
   margin-top: 0;
 }
 
+.service-local-section,
+.riyadh-identity-section {
+  background: white;
+}
+
+.service-local-card,
+.riyadh-identity-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  gap: 28px;
+  align-items: center;
+  padding: clamp(26px, 4vw, 42px);
+  background:
+    radial-gradient(circle at 8% 20%, rgba(156, 220, 234, 0.28), transparent 34%),
+    linear-gradient(135deg, #f5fbfc, #ffffff);
+  border: 1px solid rgba(79, 173, 212, 0.24);
+  border-radius: 25px;
+  box-shadow: var(--shadow-sm);
+}
+
+.service-local-card .section-head,
+.riyadh-identity-card .section-head {
+  margin-bottom: 0;
+}
+
+.local-service-facts {
+  display: grid;
+  gap: 12px;
+}
+
+.local-service-facts article {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+  color: var(--teal-700);
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.local-service-facts span {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.local-service-facts b {
+  color: var(--ink);
+  font-size: 0.84rem;
+}
+
+.local-service-actions,
+.riyadh-identity-actions {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+.riyadh-identity-card {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.riyadh-identity-card h2 {
+  margin: 8px 0 10px;
+}
+
+.riyadh-identity-card p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 2;
+}
+
+.riyadh-identity-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
 .contact-card {
   position: relative;
   overflow: hidden;
@@ -3930,8 +4012,19 @@ body {
   }
 
   .booking-info-grid,
-  .contact-hours-card {
+  .contact-hours-card,
+  .service-local-card,
+  .riyadh-identity-card {
     grid-template-columns: 1fr;
+  }
+
+  .riyadh-identity-actions {
+    justify-content: stretch;
+  }
+
+  .riyadh-identity-actions .button {
+    width: 100%;
+    justify-content: center;
   }
 
   .booking-info-grid article {

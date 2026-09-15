@@ -32,6 +32,20 @@ const SOCIAL_HOST_PATTERN =
   /(^|\.)(instagram\.com|tiktok\.com|snapchat\.com|x\.com|twitter\.com|facebook\.com|linkedin\.com)$/i;
 const SOCIAL_SOURCE_PATTERN =
   /^(instagram|tiktok|snapchat|x|twitter|facebook|linkedin)$/i;
+const ATTRIBUTION_QUERY_PARAMETERS = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_content",
+  "utm_term",
+  "utm_id",
+  "gclid",
+  "gbraid",
+  "wbraid",
+  "gad_source",
+  "gad_campaignid",
+  "srsltid",
+] as const;
 
 function normalize(value: string | null) {
   return value?.trim().toLowerCase() ?? "";
@@ -47,15 +61,7 @@ function safeHost(value: string) {
 }
 
 function hasCampaignParameters(params: URLSearchParams) {
-  return [
-    "utm_source",
-    "utm_medium",
-    "utm_campaign",
-    "utm_content",
-    "gclid",
-    "gbraid",
-    "wbraid",
-  ].some((name) => params.has(name));
+  return ATTRIBUTION_QUERY_PARAMETERS.some((name) => params.has(name));
 }
 
 function classifyTraffic({
@@ -108,9 +114,13 @@ function createAttribution(): SessionAttribution {
     (GOOGLE_HOST_PATTERN.test(externalReferrerHost) ? "organic" : "");
   const campaign = normalize(params.get("utm_campaign"));
   const content = normalize(params.get("utm_content"));
-  const hasGoogleClickId = ["gclid", "gbraid", "wbraid"].some((name) =>
-    params.has(name),
-  );
+  const hasGoogleClickId = [
+    "gclid",
+    "gbraid",
+    "wbraid",
+    "gad_source",
+    "gad_campaignid",
+  ].some((name) => params.has(name));
 
   return {
     channel: classifyTraffic({
@@ -165,6 +175,22 @@ export function getSessionAttribution(): SessionAttribution {
   const current = createAttribution();
   storeAttribution(current);
   return current;
+}
+
+export function clearAttributionParametersFromAddressBar() {
+  const url = new URL(window.location.href);
+  let changed = false;
+
+  for (const parameter of ATTRIBUTION_QUERY_PARAMETERS) {
+    if (!url.searchParams.has(parameter)) continue;
+    url.searchParams.delete(parameter);
+    changed = true;
+  }
+
+  if (!changed) return;
+
+  const cleanAddress = `${url.pathname}${url.search}${url.hash}`;
+  window.history.replaceState(window.history.state, "", cleanAddress);
 }
 
 export function getAttributionLabel(attribution: SessionAttribution) {

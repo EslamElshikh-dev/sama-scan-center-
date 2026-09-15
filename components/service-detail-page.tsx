@@ -53,6 +53,32 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
           },
           {
             "@context": "https://schema.org",
+            "@type": "Service",
+            "@id": `${site.siteUrl}/services/${service.slug}#local-service`,
+            name: service.title,
+            alternateName: service.english,
+            serviceType: service.keywords,
+            description: service.summary,
+            url: `${site.siteUrl}/services/${service.slug}`,
+            provider: { "@id": `${site.siteUrl}/#medical-center` },
+            areaServed: {
+              "@type": "City",
+              name: "الرياض",
+            },
+            subjectOf: { "@id": `${site.siteUrl}/services/${service.slug}#service` },
+            availableChannel: {
+              "@type": "ServiceChannel",
+              serviceUrl: `${site.siteUrl}/contact`,
+              servicePhone: {
+                "@type": "ContactPoint",
+                telephone: site.phoneE164,
+                contactType: "appointments",
+                availableLanguage: ["Arabic"],
+              },
+            },
+          },
+          {
+            "@context": "https://schema.org",
             "@type": "FAQPage",
             mainEntity: content.faqs.map((item) => ({
               "@type": "Question",
@@ -163,6 +189,38 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
             <a className="button button-secondary" href={site.phoneDial} data-cta={`service_${service.slug}_booking_info_call`}>
               <Icon name="call" width="18" height="18" /> اتصل لتأكيد التفاصيل
             </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="section service-local-section" aria-labelledby="service-local-heading">
+        <div className="container service-local-card">
+          <div className="section-head">
+            <span className="eyebrow">حي المربع · وسط الرياض</span>
+            <h2 id="service-local-heading">{service.shortTitle} في مركز سما سكان بالرياض</h2>
+            <p>
+              يقع المركز في حي المربع بوسط الرياض، بجوار البنك العربي وأمام هايبر
+              لولو. تواصل قبل الحضور لتأكيد توفر {service.shortTitle} والموعد
+              وتعليمات التحضير المرتبطة بطلب الطبيب.
+            </p>
+          </div>
+          <div className="local-service-facts" aria-label="بيانات مركز سما سكان في الرياض">
+            <article>
+              <Icon name="map" width="24" height="24" />
+              <div><span>الموقع</span><b>حي المربع، الرياض 12584</b></div>
+            </article>
+            <article>
+              <Icon name="clock" width="24" height="24" />
+              <div><span>قبل الزيارة</span><b>أكد الفحص والموعد مباشرة</b></div>
+            </article>
+          </div>
+          <div className="booking-info-actions local-service-actions">
+            <a className="button" href={site.directions} target="_blank" rel="noopener noreferrer" data-cta={`service_${service.slug}_local_directions`}>
+              <Icon name="map" width="19" height="19" /> افتح الاتجاهات
+            </a>
+            <Link className="button button-secondary" href="/contact" data-cta={`service_${service.slug}_local_booking`}>
+              تواصل وحجز <Icon name="arrow" width="18" height="18" />
+            </Link>
           </div>
         </div>
       </section>

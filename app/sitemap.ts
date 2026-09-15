@@ -7,8 +7,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticEntries: MetadataRoute.Sitemap = staticPages.map((path) => ({
     url: `${site.siteUrl}${path}`,
     lastModified: new Date(
-      ["", "/location", "/contact", "/social"].includes(path)
-        ? "2026-09-12T00:00:00+03:00"
+      ["", "/about", "/location", "/contact", "/social"].includes(path)
+        ? "2026-09-15T00:00:00+03:00"
         : path === "/blog" || path === "/services"
           ? "2026-09-05T00:00:00+03:00"
           : "2026-08-26T00:00:00+03:00",
@@ -19,7 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const serviceEntries: MetadataRoute.Sitemap = services.map((service) => ({
     url: `${site.siteUrl}/services/${service.slug}`,
-    lastModified: new Date("2026-09-05T00:00:00+03:00"),
+    lastModified: new Date("2026-09-15T00:00:00+03:00"),
     changeFrequency: "monthly",
     priority: 0.85,
   }));

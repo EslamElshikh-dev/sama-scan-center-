@@ -26,6 +26,13 @@ export const socialProfiles = [
   "https://x.com/samascansenter",
 ] as const;
 
+export const brandAliases = [
+  "مركز سما سكان للأشعة التشخيصية بالرياض",
+  "سما سكان الرياض",
+  "Sama Scan Radiology Center Riyadh",
+  "Sama Scan Center Riyadh",
+] as const;
+
 export const site = {
   nameAr: "مركز سما سكان للأشعة",
   nameEn: "Sama Scan Radiology Center Riyadh",
@@ -40,6 +47,7 @@ export const site = {
   whatsapp:
     "https://wa.me/966559617558?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20%D9%85%D8%B1%D9%83%D8%B2%20%D8%B3%D9%85%D8%A7%20%D8%B3%D9%83%D8%A7%D9%86%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D9%81%D8%AD%D8%B5",
   mapsProfile: "https://maps.app.goo.gl/P4aQryrJiom5xCL89?g_st=ac",
+  googleBusinessCid: "249734721661275541",
   directions:
     "https://www.google.com/maps/dir/?api=1&destination=24.663307,46.7053643",
   mapEmbed:
@@ -55,8 +63,8 @@ export const site = {
   longitude: 46.7053643,
   siteUrl,
   appointmentUrl: `${siteUrl}/contact`,
-  googleBusinessWebsiteUrl: `${siteUrl}/?utm_source=google&utm_medium=organic&utm_campaign=google_business_profile&utm_content=website`,
-  googleBusinessAppointmentUrl: `${siteUrl}/contact?utm_source=google&utm_medium=organic&utm_campaign=google_business_profile&utm_content=appointment`,
+  googleBusinessWebsiteUrl: `${siteUrl}/?utm_source=google&utm_medium=organic&utm_campaign=gbp&utm_content=profile_website`,
+  googleBusinessAppointmentUrl: `${siteUrl}/contact?utm_source=google&utm_medium=organic&utm_campaign=gbp&utm_content=appointment`,
 } as const;
 
 export type Service = {
@@ -81,7 +89,12 @@ export const services: Service[] = [
     english: "MRI",
     summary:
       "تصوير بالرنين المغناطيسي وفق الطلب الطبي، مع إرشادات واضحة قبل الفحص وتأكيد الموعد عبر الاتصال أو واتساب.",
-    keywords: ["رنين مغناطيسي الرياض", "أشعة رنين مغناطيسي", "MRI الرياض"],
+    keywords: [
+      "رنين مغناطيسي بالرياض",
+      "مركز رنين مغناطيسي بالرياض",
+      "حجز MRI الرياض",
+      "تصوير رنين مغناطيسي",
+    ],
     imagingTechnique: "MRI",
     icon: "scan",
     image: "/mri-room-sama-scan-riyadh.webp",
@@ -95,7 +108,12 @@ export const services: Service[] = [
     english: "Ultrasound",
     summary:
       "فحوصات السونار والموجات فوق الصوتية بحسب نوع الطلب الطبي، مع تأكيد تعليمات التحضير قبل الحضور.",
-    keywords: ["سونار الرياض", "موجات فوق صوتية الرياض", "أشعة سونار"],
+    keywords: [
+      "سونار بالرياض",
+      "موجات فوق صوتية بالرياض",
+      "مركز سونار بالرياض",
+      "حجز سونار الرياض",
+    ],
     imagingTechnique: "Ultrasound",
     icon: "ultrasound",
     image: "/ultrasound-room-sama-scan-riyadh.webp",
@@ -109,7 +127,12 @@ export const services: Service[] = [
     english: "Doppler & Duplex",
     summary:
       "فحوصات بالموجات فوق الصوتية لدراسة تدفق الدم والأوعية بحسب إحالة الطبيب ونوع الفحص المطلوب.",
-    keywords: ["أشعة دوبلر الرياض", "دوبلكس الرياض", "سونار دوبلر"],
+    keywords: [
+      "أشعة دوبلر بالرياض",
+      "أشعة دوبلكس بالرياض",
+      "دوبلر أوعية دموية بالرياض",
+      "سونار دوبلر بالرياض",
+    ],
     imagingTechnique: "Ultrasound",
     icon: "flow",
     image: "/ultrasound-exam-room-riyadh.webp",
@@ -123,7 +146,12 @@ export const services: Service[] = [
     english: "3D & 4D Ultrasound",
     summary:
       "تصوير بالموجات فوق الصوتية ثلاثي ورباعي الأبعاد حسب ملاءمة الحالة والطلب الطبي وتوجيه المختص.",
-    keywords: ["سونار ثلاثي الأبعاد الرياض", "سونار رباعي الأبعاد الرياض", "4D الرياض"],
+    keywords: [
+      "سونار 3D بالرياض",
+      "سونار 4D بالرياض",
+      "سونار ثلاثي الأبعاد بالرياض",
+      "سونار رباعي الأبعاد بالرياض",
+    ],
     imagingTechnique: "Ultrasound",
     icon: "cube",
     image: "/center-ultrasound.webp",

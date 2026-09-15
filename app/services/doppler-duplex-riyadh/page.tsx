@@ -8,7 +8,7 @@ export const metadata = createPageMetadata({
   title: "أشعة دوبلر ودوبلكس بالرياض",
   description:
     "أشعة الدوبلر والدوبلكس في مركز سما سكان بحي المربع بالرياض لتقييم تدفق الدم والأوعية حسب طلب الطبيب. تواصل لتأكيد الفحص والتحضير.",
-  keywords: ["أشعة دوبلر الرياض", "دوبلكس الرياض", "سونار دوبلر بالرياض", "Doppler Ultrasound Riyadh"],
+  keywords: ["أشعة دوبلر بالرياض", "أشعة دوبلكس بالرياض", "دوبلر أوعية دموية بالرياض", "سونار دوبلر بالرياض", "Doppler Ultrasound Riyadh"],
   path: "/services/doppler-duplex-riyadh",
 });
 

@@ -8,8 +8,9 @@
 
 - الاسم: `مركز سما سكان للأشعة`
 - الهاتف: `+966 55 961 7558`
-- الموقع: `https://samascan.vercel.app/?utm_source=google&utm_medium=organic&utm_campaign=google_business_profile&utm_content=website`
-- رابط الحجز: `https://samascan.vercel.app/contact?utm_source=google&utm_medium=organic&utm_campaign=google_business_profile&utm_content=appointment`
+- الموقع: `https://samascan.vercel.app/?utm_source=google&utm_medium=organic&utm_campaign=gbp&utm_content=profile_website`
+- رابط الحجز في الموقع: `https://samascan.vercel.app/contact?utm_source=google&utm_medium=organic&utm_campaign=gbp&utm_content=appointment`
+- رابط واتساب المباشر للملف: `https://wa.me/966559617558?text=مرحباً%20مركز%20سما%20سكان،%20أرغب%20في%20حجز%20فحص.%0Aمصدر%20الطلب:%20ملف%20Google%20التجاري`
 - رابط ملف الخرائط: `https://maps.app.goo.gl/P4aQryrJiom5xCL89?g_st=ac`
 
 ## ساعات العمل الحالية

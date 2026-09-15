@@ -67,8 +67,8 @@ export default function AboutPage() {
             <h2>مركز تصوير تشخيصي يخدم المراجع قبل الفحص وبعده</h2>
             <p>
               يقدّم مركز سما سكان خدمات الرنين المغناطيسي، السونار والموجات فوق
-              الصوتية، الدوبلر والدوبلكس، والتصوير ثلاثي ورباعي الأبعاد. صُمم
-              ويعرض هذا الموقع الخدمات المتوفرة وصورًا فعلية من بيئة المركز،
+              الصوتية، الدوبلر والدوبلكس، والتصوير ثلاثي ورباعي الأبعاد. ويعرض
+              هذا الموقع الخدمات المتوفرة وصورًا فعلية من بيئة المركز،
               مع إرشادات تساعد المراجع على فهم خطوات الحجز والتحضير دون أن
               تحل محل الاستشارة أو التشخيص الطبي.
             </p>
@@ -88,6 +88,29 @@ export default function AboutPage() {
               <div><dt>الهاتف وواتساب</dt><dd dir="ltr">{site.phoneDisplay}</dd></div>
             </dl>
           </aside>
+        </div>
+      </section>
+
+      <section className="section riyadh-identity-section" aria-labelledby="riyadh-identity-heading">
+        <div className="container riyadh-identity-card">
+          <div>
+            <span className="eyebrow">هوية المركز الرسمية في الرياض</span>
+            <h2 id="riyadh-identity-heading">سما سكان حي المربع في المملكة العربية السعودية</h2>
+            <p>
+              هذا الموقع والملف التجاري مرتبطان بمركز سما سكان للأشعة التشخيصية
+              في حي المربع بمدينة الرياض. لا يمثل الموقع منشآت أخرى تحمل اسمًا
+              مشابهًا خارج المملكة، ويمكن التحقق من العنوان والهاتف عبر ملف
+              المركز الرسمي على خرائط Google.
+            </p>
+          </div>
+          <div className="riyadh-identity-actions">
+            <a className="button" href={site.mapsProfile} target="_blank" rel="noopener noreferrer" data-cta="about_official_google_profile">
+              <Icon name="map" width="19" height="19" /> الملف الرسمي على Google
+            </a>
+            <a className="button button-secondary" href={site.mapsProfile} target="_blank" rel="noopener noreferrer" data-cta="about_share_google_experience">
+              شارك تجربتك بصدق
+            </a>
+          </div>
         </div>
       </section>
 

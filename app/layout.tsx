@@ -7,7 +7,14 @@ import { Header } from "@/components/header";
 import { JsonLd } from "@/components/json-ld";
 import { RevealObserver } from "@/components/reveal-observer";
 import { SanaAssistant } from "@/components/sana-assistant";
-import { neighborhoods, openingHours, services, site, socialProfiles } from "@/lib/site";
+import {
+  brandAliases,
+  neighborhoods,
+  openingHours,
+  services,
+  site,
+  socialProfiles,
+} from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -107,6 +114,29 @@ const imagingTests = services.map((service) => ({
   provider: { "@id": `${site.siteUrl}/#medical-center` },
 }));
 
+const imagingServices = services.map((service) => ({
+  "@type": "Service",
+  "@id": `${site.siteUrl}/services/${service.slug}#local-service`,
+  name: service.title,
+  alternateName: service.english,
+  serviceType: service.keywords,
+  description: service.summary,
+  url: `${site.siteUrl}/services/${service.slug}`,
+  provider: { "@id": `${site.siteUrl}/#medical-center` },
+  areaServed: { "@type": "City", name: "الرياض" },
+  subjectOf: { "@id": `${site.siteUrl}/services/${service.slug}#service` },
+  availableChannel: {
+    "@type": "ServiceChannel",
+    serviceUrl: `${site.siteUrl}/contact`,
+    servicePhone: {
+      "@type": "ContactPoint",
+      telephone: site.phoneE164,
+      contactType: "appointments",
+      availableLanguage: ["Arabic"],
+    },
+  },
+}));
+
 const localBusinessSchema = {
   "@context": "https://schema.org",
   "@graph": [
@@ -115,7 +145,7 @@ const localBusinessSchema = {
       "@id": `${site.siteUrl}/#website`,
       url: site.siteUrl,
       name: site.nameAr,
-      alternateName: [site.nameEn, "Sama Scan Riyadh", site.shortName],
+      alternateName: [...brandAliases, site.shortName],
       inLanguage: "ar-SA",
       publisher: { "@id": `${site.siteUrl}/#medical-center` },
     },
@@ -123,7 +153,9 @@ const localBusinessSchema = {
       "@type": ["MedicalClinic", "DiagnosticLab", "LocalBusiness"],
       "@id": `${site.siteUrl}/#medical-center`,
       name: site.nameAr,
-      alternateName: [site.nameEn, "Sama Scan Riyadh", site.shortName],
+      alternateName: [...brandAliases, site.shortName],
+      disambiguatingDescription:
+        "مركز سما سكان للأشعة التشخيصية في حي المربع بمدينة الرياض في المملكة العربية السعودية.",
       url: site.siteUrl,
       mainEntityOfPage: { "@id": `${site.siteUrl}/#website` },
       telephone: site.phoneE164,
@@ -145,6 +177,16 @@ const localBusinessSchema = {
       },
       hasMap: site.mapsProfile,
       sameAs: [site.mapsProfile, ...socialProfiles],
+      identifier: {
+        "@type": "PropertyValue",
+        propertyID: "Google Business Profile CID",
+        value: site.googleBusinessCid,
+      },
+      knowsAbout: services.flatMap((service) => [
+        service.shortTitle,
+        service.english,
+        ...service.keywords,
+      ]),
       areaServed: [
         { "@type": "City", name: "الرياض" },
         ...neighborhoods.map((name) => ({
@@ -172,24 +214,25 @@ const localBusinessSchema = {
         opens: openingHours.opens,
         closes: openingHours.closes,
       },
-      availableService: imagingTests.map((test) => ({ "@id": test["@id"] })),
+      availableService: imagingServices.map((service) => ({ "@id": service["@id"] })),
       availableTest: imagingTests.map((test) => ({ "@id": test["@id"] })),
       hasOfferCatalog: {
         "@type": "OfferCatalog",
         name: "خدمات الأشعة والتصوير الطبي",
-        itemListElement: imagingTests.map((test) => ({
+        itemListElement: imagingServices.map((service) => ({
           "@type": "Offer",
-          itemOffered: { "@id": test["@id"] },
+          itemOffered: { "@id": service["@id"] },
         })),
       },
     },
     ...imagingTests,
+    ...imagingServices,
   ],
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar-SA" dir="rtl">
       <body>
         <JsonLd data={localBusinessSchema} />
         <RevealObserver />

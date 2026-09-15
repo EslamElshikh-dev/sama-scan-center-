@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import {
+  clearAttributionParametersFromAddressBar,
   getAnalyticsAttribution,
   getAttributionLabel,
   getSessionAttribution,
@@ -11,6 +12,7 @@ import {
 export function ClickTracker() {
   useEffect(() => {
     getSessionAttribution();
+    clearAttributionParametersFromAddressBar();
 
     const handleClick = (event: MouseEvent) => {
       if (!(event.target instanceof Element)) return;
