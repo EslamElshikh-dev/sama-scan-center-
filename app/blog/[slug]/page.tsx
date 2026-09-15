@@ -100,7 +100,7 @@ export default async function BlogPostPage({ params }: Props) {
             <div className="article-meta-medical">
               <span>{post.readingMinutes} دقائق قراءة</span>
               <span>آخر تحديث: <time dateTime={post.modified}>{modifiedDate}</time></span>
-              <span>مراجعة مصادر طبية</span>
+              <span>مدعوم بمصادر طبية</span>
             </div>
           </div>
           <figure className="article-hero-figure">
@@ -182,8 +182,8 @@ export default async function BlogPostPage({ params }: Props) {
               <span className="eyebrow">قبل الحجز</span>
               <h2>أرسل اسم الفحص كما في طلب الطبيب</h2>
               <p>يساعد ذلك فريق المركز على تأكيد توفر الخدمة وتعليمات التحضير والموعد المناسب.</p>
-              <a className="button" href={site.whatsapp} target="_blank" rel="noopener noreferrer">استفسر عبر واتساب</a>
-              <a className="button button-secondary" href={site.phoneDial}>اتصل بالمركز</a>
+              <a className="button" href={site.whatsapp} target="_blank" rel="noopener noreferrer" data-cta={`article_${post.slug}_whatsapp`}>استفسر عبر واتساب</a>
+              <a className="button button-secondary" href={site.phoneDial} data-cta={`article_${post.slug}_call`}>اتصل بالمركز</a>
             </div>
 
             {relatedServices.length > 0 && (

@@ -3,7 +3,7 @@ import { Icon } from "@/components/icons";
 import { LocationContactForm } from "@/components/location-contact-form";
 import { PageHero } from "@/components/page-hero";
 import { createPageMetadata } from "@/lib/metadata";
-import { services, site } from "@/lib/site";
+import { openingHours, services, site } from "@/lib/site";
 
 export const metadata = createPageMetadata({
   title: "تواصل وحجز موعد أشعة في الرياض",
@@ -41,13 +41,27 @@ export default function ContactPage() {
             <span className="eyebrow">تواصل صوتي</span>
             <h2>الاتصال بالمركز</h2>
             <p>
-              اتصل للاستفسار عن الفحص والموعد وساعات العمل أو للحصول على
+              اتصل للاستفسار عن الفحص والموعد أو للحصول على
               تعليمات التحضير الملائمة لطلب الطبيب.
             </p>
             <a className="button" href={site.phoneDial} data-cta="contact_call">
               <span dir="ltr">{site.phoneDisplay}</span> <Icon name="call" width="18" height="18" />
             </a>
           </article>
+        </div>
+      </section>
+
+      <section className="section contact-hours-section" aria-labelledby="contact-hours-title">
+        <div className="container contact-hours-card">
+          <span className="contact-hours-icon"><Icon name="clock" width="30" height="30" /></span>
+          <div>
+            <span className="eyebrow">مواعيد استقبال المركز</span>
+            <h2 id="contact-hours-title">{openingHours.weekdaysLabel}</h2>
+            <p>{openingHours.display}، و{openingHours.closedDay} مغلق. يُفضّل تأكيد موعد الفحص قبل الحضور.</p>
+          </div>
+          <a className="button button-secondary" href={site.phoneDial} data-cta="contact_hours_call">
+            تأكيد الموعد <Icon name="call" width="18" height="18" />
+          </a>
         </div>
       </section>
 

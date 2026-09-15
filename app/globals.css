@@ -3601,6 +3601,19 @@ body {
   font-weight: 800;
 }
 
+.location-facts small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.footer-hours {
+  margin: 12px 0 16px;
+  color: #b8ccd5;
+  font-size: 0.76rem;
+  line-height: 1.9;
+}
+
 .nearby-panel {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -3632,6 +3645,112 @@ body {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
+}
+
+.contact-hours-section {
+  padding-top: 0;
+  background: white;
+}
+
+.contact-hours-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 24px 28px;
+  background: linear-gradient(135deg, #f0f9fb, #fff);
+  border: 1px solid rgba(79, 173, 212, 0.24);
+  border-radius: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.contact-hours-icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  color: var(--teal-700);
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+}
+
+.contact-hours-card h2 {
+  margin: 5px 0 2px;
+  font-size: 1.35rem;
+}
+
+.contact-hours-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.service-booking-info,
+.editorial-standards {
+  background: linear-gradient(180deg, #f5fbfc, #eef8fa);
+}
+
+.booking-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.booking-info-grid article {
+  min-height: 230px;
+  padding: 25px;
+  background: white;
+  border: 1px solid rgba(79, 173, 212, 0.22);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.booking-info-grid article > span,
+.editorial-list article > span {
+  color: var(--brand-blue);
+  font: 900 0.78rem/1 Arial, sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.booking-info-grid h3,
+.editorial-list h3 {
+  margin: 18px 0 9px;
+  font-size: 1.05rem;
+}
+
+.booking-info-grid p,
+.editorial-list p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.9;
+}
+
+.booking-info-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 11px;
+  justify-content: center;
+  margin-top: 26px;
+}
+
+.editorial-list {
+  display: grid;
+  gap: 12px;
+}
+
+.editorial-list article {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 14px;
+  padding: 20px;
+  background: white;
+  border: 1px solid rgba(79, 173, 212, 0.2);
+  border-radius: 18px;
+}
+
+.editorial-list h3 {
+  margin-top: 0;
 }
 
 .contact-card {
@@ -3785,6 +3904,10 @@ body {
     grid-template-columns: 1fr 1fr;
   }
 
+  .booking-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .location-facts article:first-child {
     grid-column: 1 / -1;
   }
@@ -3804,6 +3927,20 @@ body {
   .location-facts,
   .nearby-panel {
     grid-template-columns: 1fr;
+  }
+
+  .booking-info-grid,
+  .contact-hours-card {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-info-grid article {
+    min-height: 0;
+  }
+
+  .contact-hours-card .button {
+    width: 100%;
+    justify-content: center;
   }
 
   .service-photo-figure {

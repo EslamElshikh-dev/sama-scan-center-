@@ -2,6 +2,12 @@
 
 import type { FormEvent } from "react";
 import { Icon } from "@/components/icons";
+import {
+  getAnalyticsAttribution,
+  getAttributionLabel,
+  getSessionAttribution,
+  sendAnalyticsEvent,
+} from "@/lib/attribution";
 import { services, site } from "@/lib/site";
 
 export function LocationContactForm() {
@@ -17,10 +23,7 @@ export function LocationContactForm() {
 
     if (!name || !phone || !service) return;
 
-    const trafficSource =
-      new URLSearchParams(window.location.search).get("utm_source") || "direct";
-    const sourceLabel =
-      trafficSource === "google" ? "ملف Google التجاري" : "الموقع الإلكتروني";
+    const attribution = getSessionAttribution();
 
     const message = [
       `مرحبًا ${site.nameAr}،`,
@@ -30,21 +33,15 @@ export function LocationContactForm() {
       `رقم الجوال: ${phone}`,
       `الخدمة المطلوبة: ${service}`,
       `تفاصيل إضافية: ${details || "لا توجد"}`,
-      `مصدر الطلب: ${sourceLabel}`,
+      `مصدر الطلب: ${getAttributionLabel(attribution)}`,
     ].join("\n");
     const whatsappNumber = site.phoneE164.replace(/\D/g, "");
 
-    window.dataLayer ??= [];
-    window.dataLayer.push({
-      event: "generate_lead",
+    sendAnalyticsEvent("whatsapp_form_open", {
       lead_channel: "whatsapp_form",
+      lead_stage: "contact_intent",
       page_path: window.location.pathname,
-      traffic_source: trafficSource,
-    });
-    window.gtag?.("event", "generate_lead", {
-      lead_channel: "whatsapp_form",
-      page_path: window.location.pathname,
-      traffic_source: trafficSource,
+      ...getAnalyticsAttribution(attribution),
     });
 
     window.open(
@@ -120,7 +117,7 @@ export function LocationContactForm() {
         عند الإرسال سيفتح واتساب بالبيانات المدخلة. تجنب كتابة معلومات طبية حساسة غير ضرورية.
       </p>
       <div className="location-form-actions">
-        <button className="button" type="submit" data-cta="location_form_whatsapp">
+        <button className="button" type="submit">
           إرسال
         </button>
       </div>

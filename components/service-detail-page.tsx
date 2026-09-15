@@ -127,6 +127,46 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
         </div>
       </section>
 
+      <section className="section service-booking-info" aria-labelledby="booking-info-heading">
+        <div className="container">
+          <div className="section-head centered">
+            <span className="eyebrow">معلومات عملية قبل الموعد</span>
+            <h2 id="booking-info-heading">الحجز وإجراء الفحص في سما سكان</h2>
+            <p>هذه التفاصيل تُؤكَّد حسب اسم الفحص والبروتوكول الوارد في طلب الطبيب.</p>
+          </div>
+          <div className="booking-info-grid">
+            <article>
+              <span>01</span>
+              <h3>تأكيد توفر الفحص</h3>
+              <p>أرسل اسم {service.shortTitle} والمنطقة المطلوب تصويرها كما وردا في الإحالة لتأكيد التوفر والموعد.</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>مدة الموعد والتحضير</h3>
+              <p>تختلف المدة والتعليمات باختلاف المنطقة والبروتوكول؛ يوضحها فريق المركز عند الحجز بدل إعطاء مدة عامة غير دقيقة.</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>الصور والتقرير</h3>
+              <p>أكد عند الحجز طريقة ووقت استلام الصور والتقرير حسب نوع الفحص، ثم راجع النتيجة مع الطبيب صاحب الإحالة.</p>
+            </article>
+            <article>
+              <span>04</span>
+              <h3>السعر والتغطية</h3>
+              <p>اذكر جهة التأمين أو برنامج الخصم إن وجد، واسأل عن السعر وما يشمله قبل تثبيت الموعد.</p>
+            </article>
+          </div>
+          <div className="booking-info-actions">
+            <a className="button" href={site.whatsapp} target="_blank" rel="noopener noreferrer" data-cta={`service_${service.slug}_booking_info_whatsapp`}>
+              <Icon name="whatsapp" width="19" height="19" /> أرسل طلب الفحص
+            </a>
+            <a className="button button-secondary" href={site.phoneDial} data-cta={`service_${service.slug}_booking_info_call`}>
+              <Icon name="call" width="18" height="18" /> اتصل لتأكيد التفاصيل
+            </a>
+          </div>
+        </div>
+      </section>
+
       <section className="section patient-journey-section" aria-labelledby="journey-heading">
         <div className="container">
           <div className="section-head centered">

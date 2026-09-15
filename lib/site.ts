@@ -10,6 +10,15 @@ const address = {
   country: "SA",
 } as const;
 
+export const openingHours = {
+  weekdays: ["السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس"],
+  weekdaysLabel: "السبت إلى الخميس",
+  opens: "09:00",
+  closes: "21:00",
+  display: "9:00 صباحًا – 9:00 مساءً",
+  closedDay: "الجمعة",
+} as const;
+
 export const socialProfiles = [
   "https://www.instagram.com/samascancenter/",
   "https://www.tiktok.com/@samascancenter",

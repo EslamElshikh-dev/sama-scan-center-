@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Brand } from "@/components/brand";
 import { Icon } from "@/components/icons";
 import { MapEmbed } from "@/components/map-embed";
-import { navItems, services, site } from "@/lib/site";
+import { navItems, openingHours, services, site } from "@/lib/site";
 
 export function Footer() {
   return (
@@ -50,6 +50,10 @@ export function Footer() {
         <div>
           <h2>العنوان</h2>
           <p>{site.address}</p>
+          <p className="footer-hours">
+            {openingHours.weekdaysLabel}: {openingHours.display}<br />
+            {openingHours.closedDay}: مغلق
+          </p>
           <MapEmbed compact />
         </div>
       </div>

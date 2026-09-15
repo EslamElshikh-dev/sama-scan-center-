@@ -3,7 +3,7 @@ import { Icon } from "@/components/icons";
 import { MapEmbed } from "@/components/map-embed";
 import { PageHero } from "@/components/page-hero";
 import { createPageMetadata } from "@/lib/metadata";
-import { neighborhoods, site } from "@/lib/site";
+import { neighborhoods, openingHours, site } from "@/lib/site";
 
 export const metadata = createPageMetadata({
   title: "موقع مركز سما سكان في حي المربع بالرياض",
@@ -18,7 +18,7 @@ export default function LocationPage() {
       <PageHero
         eyebrow="Al Murabba · Riyadh"
         title="موقع مركز سما سكان في حي المربع"
-        description="شاهد موقع المركز مباشرة على الخريطة التفاعلية، وتواصل معنا قبل التحرك لتأكيد الموعد وساعات العمل في يوم زيارتك."
+        description="شاهد موقع المركز مباشرة على الخريطة التفاعلية، وتعرّف على ساعات العمل وافتح الاتجاهات إلى حي المربع قبل موعدك."
         breadcrumbs={[{ label: "الموقع والاتجاهات", href: "/location" }]}
       />
 
@@ -35,7 +35,11 @@ export default function LocationPage() {
             </article>
             <article>
               <Icon name="clock" width="26" height="26" />
-              <div><span>ساعات العمل</span><b>يُرجى تأكيدها بالاتصال قبل الحضور</b></div>
+              <div>
+                <span>ساعات العمل</span>
+                <b>{openingHours.weekdaysLabel}: {openingHours.display}</b>
+                <small>{openingHours.closedDay}: مغلق</small>
+              </div>
             </article>
           </div>
           <MapEmbed />
@@ -57,7 +61,7 @@ export default function LocationPage() {
       </section>
       <CtaSection
         title="أكد موعدك قبل التوجه إلى المركز"
-        text="اتصل أو تواصل عبر واتساب للتأكد من الفحص المطلوب والتعليمات وساعات العمل في يوم الزيارة."
+        text="اتصل أو تواصل عبر واتساب للتأكد من الفحص المطلوب والتعليمات والموعد قبل الحضور."
       />
     </main>
   );

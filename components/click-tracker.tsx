@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect } from "react";
-
-declare global {
-  interface Window {
-    dataLayer?: Record<string, unknown>[];
-    gtag?: (...args: unknown[]) => void;
-  }
-}
+import {
+  getAnalyticsAttribution,
+  getAttributionLabel,
+  getSessionAttribution,
+  sendAnalyticsEvent,
+} from "@/lib/attribution";
 
 export function ClickTracker() {
   useEffect(() => {
+    getSessionAttribution();
+
     const handleClick = (event: MouseEvent) => {
       if (!(event.target instanceof Element)) return;
       const target = event.target.closest<HTMLElement>("[data-cta]");
@@ -20,8 +21,7 @@ export function ClickTracker() {
         ? target
         : target.closest<HTMLAnchorElement>("a");
       const href = anchor?.getAttribute("href") ?? "";
-      const trafficSource =
-        new URLSearchParams(window.location.search).get("utm_source") || "direct";
+      const attribution = getSessionAttribution();
       const destination = href.startsWith("tel:")
         ? "phone"
         : href.includes("wa.me")
@@ -37,31 +37,23 @@ export function ClickTracker() {
       if (anchor && destination === "whatsapp") {
         const whatsappUrl = new URL(anchor.href);
         const currentMessage = whatsappUrl.searchParams.get("text") ?? "";
-        if (!currentMessage.includes("مصدر الطلب:")) {
-          const sourceLabel =
-            trafficSource === "google"
-              ? "ملف Google التجاري"
-              : "الموقع الإلكتروني";
-          whatsappUrl.searchParams.set(
-            "text",
-            `${currentMessage}\nمصدر الطلب: ${sourceLabel}`.trim(),
-          );
-          anchor.href = whatsappUrl.toString();
-        }
+        const messageWithoutOldSource = currentMessage
+          .replace(/\n?مصدر الطلب:[^\n]*/g, "")
+          .trim();
+        whatsappUrl.searchParams.set(
+          "text",
+          `${messageWithoutOldSource}\nمصدر الطلب: ${getAttributionLabel(attribution)}`.trim(),
+        );
+        anchor.href = whatsappUrl.toString();
       }
 
       const eventData = {
         cta_name: target.dataset.cta,
         cta_destination: destination,
         page_path: window.location.pathname,
-        traffic_source: trafficSource,
+        ...getAnalyticsAttribution(attribution),
       };
-      window.dataLayer ??= [];
-      window.dataLayer.push({
-        event: "cta_click",
-        ...eventData,
-      });
-      window.gtag?.("event", "cta_click", eventData);
+      sendAnalyticsEvent("cta_click", eventData);
     };
 
     document.addEventListener("click", handleClick, { passive: true });

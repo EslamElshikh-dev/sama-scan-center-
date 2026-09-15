@@ -7,7 +7,7 @@ import { Header } from "@/components/header";
 import { JsonLd } from "@/components/json-ld";
 import { RevealObserver } from "@/components/reveal-observer";
 import { SanaAssistant } from "@/components/sana-assistant";
-import { neighborhoods, services, site, socialProfiles } from "@/lib/site";
+import { neighborhoods, openingHours, services, site, socialProfiles } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -158,6 +158,19 @@ const localBusinessSchema = {
         contactType: "appointments",
         availableLanguage: ["Arabic"],
         url: site.appointmentUrl,
+      },
+      openingHoursSpecification: {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "https://schema.org/Saturday",
+          "https://schema.org/Sunday",
+          "https://schema.org/Monday",
+          "https://schema.org/Tuesday",
+          "https://schema.org/Wednesday",
+          "https://schema.org/Thursday",
+        ],
+        opens: openingHours.opens,
+        closes: openingHours.closes,
       },
       availableService: imagingTests.map((test) => ({ "@id": test["@id"] })),
       availableTest: imagingTests.map((test) => ({ "@id": test["@id"] })),
