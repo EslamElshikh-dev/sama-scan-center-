@@ -52,3 +52,10 @@ The Supabase advisor reports only the expected informational [RLS enabled with n
 This version covers contact/booking operations, not clinical reports, radiology images, billing, insurance claims or automated WhatsApp/social delivery.
 
 Verification environment note: the local production server and native HTTP tests work. Chromium cannot start in this executor because its process-singleton socket is denied (`Operation not permitted`); agent-browser and a direct Playwright launch both fail before rendering. Desktop/mobile visual verification remains outstanding. No authentication bypass or public preview of CRM data was added.
+
+
+## Studio design refresh · September 30, 2026
+
+The dashboard now shares a navy/teal visual system across CRM and marketing. Grouped sidebar routes have category icons and active markers. Contextual route ribbons, a role-filtered search palette (Ctrl/Cmd+K) and a five-action mobile dock provide direct navigation. The home page includes a branded care illustration, quick-create actions, linked live KPI cards, richer empty states and seven-day chart totals. Forms, tables, headers and the developer footer use matching spacing and surfaces. Decorative motion is subtle and respects reduced-motion preferences.
+
+Authentication, role boundaries, data sources and record mutations are unchanged. The refresh adds no sample records, publishing connections or new dependencies. Validation includes TypeScript, lint, a production build and authenticated HTTP checks. Authenticated desktop/mobile browser rendering remains unverified because of the executor browser restriction documented above.
