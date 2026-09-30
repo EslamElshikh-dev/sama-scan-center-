@@ -20,3 +20,9 @@ test('CRM does not expose database errors or accept authorization failures as su
  for(const [code,status] of [['credentials',401],['forbidden',403],['conflict',409]]){const handler=createHandler(env,async()=>Response.json({ok:false,code}));assert.equal((await handler(req({action:'summary',token}))).status,status);}
  const handler=createHandler(env,async()=>new Response('internal SQL and secret',{status:500}));const res=await handler(req({action:'summary',token}));assert.equal(res.status,503);assert.equal((await res.text()).includes('secret'),false);
 });
+
+test('source outcomes use the same authenticated gateway',async()=>{
+ const handler=createHandler(env,async(_,options)=>{assert.equal(JSON.parse(options.body).action,'source_report');return Response.json({ok:true,data:{sources:[]}});});
+ assert.equal((await handler(req({action:'source_report',token,payload:{from:'2026-09-01',to:'2026-09-30'}}))).status,200);
+ assert.equal((await handler(req({action:'source_report',token:'forged'}))).status,401);
+});

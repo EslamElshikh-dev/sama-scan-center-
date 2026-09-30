@@ -10,7 +10,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:crm": "node --test tests/crm-postgres.test.mjs tests/crm-gateway.test.mjs tests/dashboard-session.test.mjs"
   },
   "dependencies": {
     "@libsql/client": "0.17.0",
@@ -31,6 +32,7 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",

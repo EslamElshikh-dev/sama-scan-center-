@@ -13,7 +13,7 @@ export async function POST(request:Request) {
  try {
   const raw=await request.text(); if(raw.length>15000)return reply("invalid",400);
   let body; try {body=JSON.parse(raw);}catch{return reply("invalid",400);}
-  if(!body||!["summary","list","contact_detail","save","save_user"].includes(body.action))return reply("invalid",400);
+  if(!body||!["summary","list","contact_detail","source_report","save","save_user"].includes(body.action))return reply("invalid",400);
   const upstream=await fetch(URL,{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json",apikey:KEY},body:JSON.stringify({action:body.action,payload:body.payload,token}),signal:AbortSignal.timeout(15000)});
   if(![200,400,401,403,404,409].includes(upstream.status))return reply("unavailable",503);
   return Response.json(await upstream.json(),{status:upstream.status,headers});
