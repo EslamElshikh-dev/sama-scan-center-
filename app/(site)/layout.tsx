@@ -15,7 +15,7 @@ import {
   site,
   socialProfiles,
 } from "@/lib/site";
-import "./globals.css";
+import "../globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.siteUrl),
