@@ -10,16 +10,18 @@ const originalFetch = globalThis.fetch;
 const token = "a".repeat(64);
 const env = { get: key => ({ SUPABASE_URL: "https://auth.example", SUPABASE_PUBLISHABLE_KEYS: '{"default":"public-test"}', SUPABASE_SECRET_KEYS: '{"default":"private-test"}' })[key] };
 const req = body => new Request("https://auth.example/login", { method: "POST", headers: { apikey: "public-test", "Content-Type": "application/json" }, body: JSON.stringify(body) });
-test("client rejects malformed, expired, wrong-user and untrusted-status sessions", async () => {
+test("client rejects malformed, expired, missing-role and untrusted-status sessions", async () => {
  try {
   let calls = 0;
-  globalThis.fetch = async () => { calls++; return Response.json({ ok: true, username: "admin", expiresAt: Date.now()+10000 }); };
+  globalThis.fetch = async () => { calls++; return Response.json({ ok: true, username: "admin", role: "admin", displayName: "Admin", expiresAt: Date.now()+10000 }); };
   assert.equal(await auth.verifySession("forged"), false); assert.equal(calls, 0);
   assert.equal(await auth.verifySession(token), true);
-  for (const result of [{ ok:true, username:"other", expiresAt:Date.now()+10000 }, { ok:true, username:"admin", expiresAt:1 }, { ok:false }]) {
+  globalThis.fetch = async () => Response.json({ok:true,username:"reception",role:"reception",displayName:"Reception",expiresAt:Date.now()+10000});
+  assert.deepEqual(await auth.sessionUser(token),{username:"reception",role:"reception",displayName:"Reception"});
+  for (const result of [{ ok:true, username:"other", expiresAt:Date.now()+10000 }, { ok:true, username:"admin", role:"admin", displayName:"Admin", expiresAt:1 }, { ok:false }]) {
    globalThis.fetch = async () => Response.json(result); assert.equal(await auth.verifySession(token), false);
   }
-  globalThis.fetch = async () => Response.json({ ok:true, username:"admin", expiresAt:Date.now()+10000 }, {status:401});
+  globalThis.fetch = async () => Response.json({ ok:true, username:"admin", role:"admin", displayName:"Admin", expiresAt:Date.now()+10000 }, {status:401});
   await assert.rejects(auth.verifySession(token), /AUTH_SERVICE_UNAVAILABLE/);
   globalThis.fetch = async () => { throw new Error("upstream secret must not escape"); };
   await assert.rejects(auth.verifySession(token), /^Error: AUTH_SERVICE_UNAVAILABLE$/);

@@ -1,15 +1,25 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Activity, BarChart3, Bell, CalendarDays, ChevronLeft, CircleHelp, ExternalLink, Eye, Globe2, ImagePlus, Info, MapPin, MessageCircle, MousePointer2, Phone, Send, ShieldCheck, Sparkles, Target, TrendingUp, Megaphone, UsersRound, X } from "lucide-react";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { BarChart3, Bell, CalendarDays, ChevronLeft, CircleHelp, ExternalLink, Eye, Globe2, ImagePlus, Info, MapPin, MessageCircle, MousePointer2, Phone, Send, ShieldCheck, Sparkles, Target, TrendingUp, Megaphone, UsersRound, X, ContactRound, ClipboardList, ListChecks, LayoutDashboard, LockKeyhole, ChartNoAxesCombined } from "lucide-react";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { snapshot, percentChange } from "@/lib/dashboard/snapshot";
 import { GoogleComparisonChart, SearchChart, CompetitorMixChart } from "@/components/dashboard-charts";
 
+import CRMWorkspace from "@/components/crm/workspace";
+import { roles, type User, type CRMView } from "@/lib/crm/types";
+
 const nav = [
-  { id: "overview", title: "نظرة عامة", icon: BarChart3 },
+  { id: "today", title: "مركز العمل", icon: LayoutDashboard },
+  { id: "contacts", title: "جهات الاتصال", icon: ContactRound },
+  { id: "inquiries", title: "طلبات الحجز", icon: ClipboardList },
+  { id: "appointments", title: "المواعيد", icon: CalendarDays },
+  { id: "followups", title: "المتابعات والمهام", icon: ListChecks },
+  { id: "crmreports", title: "تقارير CRM", icon: ChartNoAxesCombined },
+  { id: "team", title: "الفريق والصلاحيات", icon: LockKeyhole },
+  { id: "overview", title: "ملخص التسويق", icon: BarChart3 },
   { id: "google", title: "الملف التجاري", icon: MapPin },
   { id: "website", title: "أداء الموقع", icon: Globe2 },
   { id: "ads", title: "قياس الإعلانات", icon: Megaphone },
@@ -20,7 +30,9 @@ const nav = [
 ] as const;
 type View = typeof nav[number]["id"];
 const navGroups = [
-  { label: "لوحة المركز", ids: ["overview"] },
+  { label: "مساحة العمل", ids: ["today", "contacts", "inquiries", "appointments", "followups", "crmreports"] },
+  { label: "إدارة النظام", ids: ["team"] },
+  { label: "التسويق والنمو", ids: ["overview"] },
   { label: "الأداء والقياس", ids: ["google", "website", "ads"] },
   { label: "النمو والمحتوى", ids: ["competitors", "improvements", "publisher", "channels"] },
 ] as const;
@@ -62,8 +74,20 @@ function Metric({title, value, previous, icon: Icon, accent = false}: {title:str
   return <article className={`metric ${accent ? "metric-accent" : ""}`}><div className="metric-top"><span>{title}</span><span className="metric-icon"><Icon size={19}/></span></div><strong className="metric-value" dir="ltr">{format(value)}</strong><div className="metric-change"><span className="delta positive" dir="ltr">+{format(delta ?? 0, 1)}% <TrendingUp size={13}/></span><span>{format(previous)} سابقًا</span></div></article>;
 }
 function PeriodNote() { return <div className="filterbar"><div className="period"><CalendarDays size={17}/><span>فترة الملف: {periodLabel(gbp.current.from, gbp.current.to)}</span></div><div className="filter-status"><span>تقرير موثق بتاريخ {date(snapshot.issued)} · بيانات محفوظة</span></div></div>; }
-export default function Dashboard() {
-  const [view, setView] = useState<View>("overview");
+const crmViews = ["today", "contacts", "inquiries", "appointments", "followups", "crmreports", "team"];
+function NavigationButton({item,active,onSelect}:{item:typeof nav[number];active:boolean;onSelect:()=>void}) {
+  const {setOpenMobile}=useSidebar();
+  return <SidebarMenuButton isActive={active} onClick={()=>{onSelect();setOpenMobile(false);}} className={`nav-item ${item.id==="today"?"nav-overview":""}`}><span className="nav-icon"><item.icon/></span><span>{item.title}</span>{item.id==="today"&&<span className="nav-home-mark" aria-hidden="true"/>}</SidebarMenuButton>;
+}
+export default function Dashboard({user}:{user:User}) {
+  const allowed = (id:string) => user.role==="admin" || (user.role==="marketing" ? !crmViews.includes(id) : crmViews.includes(id)&&id!=="team");
+  const [view, updateView] = useState<View>(user.role==="marketing"?"overview":"today");
+  function setView(next:View) { if(!allowed(next))return;updateView(next);window.history.pushState(null,"",`/dashboard?view=${next}`);window.scrollTo({top:0,behavior:"instant"}); }
+  useEffect(()=>{
+    const readView=()=>{const value=(new URLSearchParams(window.location.search).get("view")||(user.role==="marketing"?"overview":"today")) as View;const permitted=user.role==="admin"||(user.role==="marketing"?!crmViews.includes(value):crmViews.includes(value)&&value!=="team");if(nav.some(n=>n.id===value)&&permitted)updateView(value);};
+    readView();window.addEventListener("popstate",readView);return()=>window.removeEventListener("popstate",readView);
+  },[user.role]);
+  const isCRM = crmViews.includes(view);
   const [notificationOpen, setNotificationOpen] = useState(true);
   const [greetingAvailable, setGreetingAvailable] = useState(true);
   const [clock, setClock] = useState("");
@@ -91,13 +115,14 @@ export default function Dashboard() {
   async function copyPost() { try { await navigator.clipboard.writeText(body); setCopied(true); setTimeout(() => setCopied(false), 2500); } catch { alert("تعذّر النسخ، حدّد النص وانسخه يدويًا."); } }
   return <SidebarProvider style={{ "--sidebar-width": "16rem" } as React.CSSProperties}>
     <Sidebar side="right" className="sama-sidebar"><SidebarHeader className="brand"><Image src="/sama-scan-logo.png" width={160} height={160} alt="شعار سما سكان"/><div><strong>سما سكان</strong><span>مركز الأشعة التشخيصية</span></div></SidebarHeader><SidebarContent>
-      {navGroups.map(group => <div className="sidebar-group" key={group.label}><div className="sidebar-caption">{group.label}</div><SidebarMenu className="nav-menu">{nav.filter(n => (group.ids as readonly string[]).includes(n.id)).map(n => <SidebarMenuItem key={n.id}><SidebarMenuButton isActive={view === n.id} onClick={() => setView(n.id)} className={`nav-item ${n.id === "overview" ? "nav-overview" : ""}`}><span className="nav-icon"><n.icon/></span><span>{n.title}</span>{n.id === "overview" && <span className="nav-home-mark" aria-hidden="true"/>}</SidebarMenuButton></SidebarMenuItem>)}</SidebarMenu></div>)}
-      <div className="sidebar-health"><span className="health-icon"><Activity size={20}/></span><strong>آخر تقرير متاح</strong><p>{date(snapshot.issued)}<br/>أرقام تاريخية موثقة، وليست قراءة مباشرة.</p><button onClick={() => setView("improvements")}>خطة التحسين <Target size={14}/></button></div>
-    </SidebarContent><SidebarFooter className="sidebar-bottom"><div className="user-avatar">س</div><div><strong>إدارة سما سكان</strong><span>لوحة خاصة بالمركز</span></div><ShieldCheck size={18}/></SidebarFooter></Sidebar>
-    <SidebarInset className="app-main"><header className="topbar"><div className="breadcrumb"><SidebarTrigger aria-label="فتح قائمة التنقل" className="mobile-menu"/><button className="breadcrumb-home" onClick={() => setView("overview")}>مساحة سما سكان</button><ChevronLeft size={15}/><strong>{active.title}</strong></div><div className="topbar-tools"><a href="/" target="_blank" rel="noreferrer"><Globe2 size={16}/><span>زيارة الموقع</span><ExternalLink size={13}/></a><span className="private-chip"><ShieldCheck size={14}/> لوحة خاصة</span><span className="riyadh-clock" suppressHydrationWarning>{clock ? `الرياض · ${clock}` : "الرياض"}</span>
-      <div className="notification-wrap"><button className={`icon-button notification-trigger ${greetingAvailable ? "has-notification" : ""}`} type="button" onClick={() => setNotificationOpen(v => !v)} aria-label="الإشعارات" aria-expanded={notificationOpen} aria-controls="sama-notifications"><Bell size={21}/>{greetingAvailable && <i className="notification-dot" aria-hidden="true"/>}</button>{notificationOpen && <div className="notification-popover" id="sama-notifications" role="status"><div className="notification-head"><span><Bell size={16}/> الإشعارات</span><button type="button" onClick={() => setNotificationOpen(false)} aria-label="إغلاق الإشعارات"><X size={17}/></button></div>{greetingAvailable ? <div className="notification-greeting"><span className="notification-avatar" aria-hidden="true">🧑🏻‍⚕️</span><div><strong>نورت يا دكتور 🧑🏻‍⚕️</strong><p>أهلًا بك في مساحة سما سكان. صورة الأداء وفرص النمو جاهزة لك.</p><small>مرحبًا بعودتك</small></div></div> : <p className="notification-empty">لا توجد إشعارات جديدة الآن</p>}</div>}</div>
+      {navGroups.filter(group=>group.ids.some(id=>allowed(id))).map(group => <div className="sidebar-group" key={group.label}><div className="sidebar-caption">{group.label}</div><SidebarMenu className="nav-menu">{nav.filter(n => (group.ids as readonly string[]).includes(n.id)&&allowed(n.id)).map(n => <SidebarMenuItem key={n.id}><NavigationButton item={n} active={view===n.id} onSelect={()=>setView(n.id)}/></SidebarMenuItem>)}</SidebarMenu></div>)}
+      <div className="crm-sidebar-note"><ShieldCheck size={18}/><div><strong>Sama Scan CRM</strong><span>تواصل · حجز · متابعة</span></div></div>
+    </SidebarContent><SidebarFooter className="sidebar-bottom"><div className="user-avatar">س</div><div><strong>{user.displayName}</strong><span>{roles[user.role]}</span></div><ShieldCheck size={18}/></SidebarFooter></Sidebar>
+    <SidebarInset className="app-main"><header className="topbar"><div className="breadcrumb"><SidebarTrigger aria-label="فتح قائمة التنقل" className="mobile-menu"/><button className="breadcrumb-home" onClick={() => setView(user.role==="marketing"?"overview":"today")}>مساحة سما سكان</button><ChevronLeft size={15}/><strong>{active.title}</strong></div><div className="topbar-tools"><a href="/" target="_blank" rel="noreferrer"><Globe2 size={16}/><span>زيارة الموقع</span><ExternalLink size={13}/></a><span className="private-chip"><ShieldCheck size={14}/> لوحة خاصة</span><span className="riyadh-clock" suppressHydrationWarning>{clock ? `الرياض · ${clock}` : "الرياض"}</span>
+      <div className="notification-wrap"><button className={`icon-button notification-trigger ${greetingAvailable ? "has-notification" : ""}`} type="button" onClick={() => setNotificationOpen(v => !v)} aria-label="الإشعارات" aria-expanded={notificationOpen} aria-controls="sama-notifications"><Bell size={21}/>{greetingAvailable && <i className="notification-dot" aria-hidden="true"/>}</button>{notificationOpen && <div className="notification-popover" id="sama-notifications" role="status"><div className="notification-head"><span><Bell size={16}/> الإشعارات</span><button type="button" onClick={() => setNotificationOpen(false)} aria-label="إغلاق الإشعارات"><X size={17}/></button></div>{greetingAvailable ? <div className="notification-greeting"><span className="notification-avatar" aria-hidden="true">🧑🏻‍⚕️</span><div><strong>نورت يا دكتور 🧑🏻‍⚕️</strong><p>أهلًا بك في مساحة سما سكان. يومك ومتابعات فريقك في مكان واحد.</p><small>مرحبًا بعودتك</small></div></div> : <p className="notification-empty">لا توجد إشعارات جديدة الآن</p>}</div>}</div>
       <form action="/api/dashboard/logout" method="post"><button className="text-link" type="submit">خروج</button></form><button className="icon-button" onClick={() => setHelp(true)} aria-label="تعريف المقاييس"><CircleHelp size={20}/></button></div></header>
-      <main className="workspace"><div className="page-heading"><div><span className="eyebrow">SAMA SCAN · DIGITAL GROWTH</span><h1>{view === "overview" ? "صورة أوضح لأداء المركز" : active.title}</h1><p>{view === "publisher" ? "تجربة توزيع منشور واحد على قنوات المركز." : "أرقام الأداء، الاتجاهات، وخطوات النمو في مساحة واحدة."}</p></div>{view !== "publisher" && <button className="button primary" onClick={() => setView("publisher")}><Send size={17}/> النشر الجماعي</button>}</div>
+      <main className="workspace"><div className="page-heading"><div><span className="eyebrow">SAMA SCAN · {isCRM?"RELATIONSHIP MANAGEMENT":"DIGITAL GROWTH"}</span><h1>{view==="today"?"يومك أوضح، وفريقك أقرب":view === "overview" ? "صورة أوضح لأداء المركز" : active.title}</h1><p>{isCRM?"تواصل أوضح، مواعيد منظّمة، ومتابعة لكل خطوة.":view === "publisher" ? "تجربة توزيع منشور واحد على قنوات المركز." : "أرقام الأداء، الاتجاهات، وخطوات النمو في مساحة واحدة."}</p></div>{!isCRM&&view !== "publisher" && <button className="button primary" onClick={() => setView("publisher")}><Send size={17}/> النشر الجماعي</button>}</div>
+      {isCRM&&<CRMWorkspace key={view} view={view as CRMView} user={user} onNavigate={setView}/>}
       {view === "overview" && <div className="snapshot-hero"><div><span className="hero-kicker">لوحة أداء سما سكان</span><h2>نمو الظهور والتواصل، بصورة أوضح.</h2><p>الملف التجاري · بحث الموقع · خطة التحسين</p></div><div className="hero-date"><CalendarDays size={18}/><span>آخر بيانات<br/><strong>{date(snapshot.issued)}</strong></span></div></div>}
       {(view === "overview" || view === "google") && <><PeriodNote/><div className="metrics-grid">{stats.map(s => <Metric key={s.key} title={s.title} value={gbp.current[s.key]} previous={gbp.previous[s.key]} icon={s.icon} accent={"accent" in s && s.accent}/>)}</div>
         {view === "overview" ? <><div className="chart-grid"><section className="panel"><div className="panel-title"><div><h2>التفاعل مع الملف التجاري</h2><p>السابق مقابل الفترة الحالية · 32 يومًا لكل فترة</p></div><span className="source-tag">تقرير 29 سبتمبر</span></div><div className="chart-legend"><span><i className="navy"/>السابق</span><span><i className="cyan"/>الحالي</span></div><GoogleComparisonChart/></section><aside className="insight-panel"><div className="insight-top"><span className="insight-icon"><Sparkles size={21}/></span><span>الخطوة التالية</span></div><h2>حوّل الاهتمام إلى تواصل فعلي</h2><p>سجل الملف {format(gbp.current.calls)} ضغطة اتصال و{format(gbp.current.directions)} طلب اتجاهات. اختبر سهولة الوصول، وسجل الردود والحجوزات قبل زيادة النشر.</p><div className="insight-divider"/><div className="insight-stat"><span>حصة الجوال من المشاهدات</span><strong>{format(gbp.mobileShare, 1)}%</strong></div><button className="button light" onClick={() => setView("improvements")}>عرض فرص التحسين <Target size={17}/></button></aside></div><section className="overview-hub" aria-labelledby="overview-hub-title"><div className="overview-hub-head"><div><span className="eyebrow">استكشف مساحة المركز</span><h2 id="overview-hub-title">كل مسار يبدأ من هنا</h2><p>مقتطف سريع من كل قسم، ثم افتح التفاصيل بضغطة واحدة.</p></div><span className="overview-hub-count">7 مسارات</span></div><div className="overview-grid">{overviewCards.map(card => <button className={`overview-card tone-${card.tone}`} type="button" key={card.view} onClick={() => setView(card.view)}><span className="overview-card-top"><span className="overview-card-icon"><card.icon size={21}/></span><span className="overview-card-arrow"><ChevronLeft size={18}/></span></span><span className="overview-card-label">{card.label}</span><strong>{card.value}</strong><span className="overview-card-detail">{card.detail}</span><span className="overview-card-cta">استعرض التفاصيل <ChevronLeft size={15}/></span></button>)}</div></section></> : <section className="panel data-table"><div className="panel-title"><div><h2>المقارنة التفصيلية</h2><p>{periodLabel(gbp.previous.from, gbp.previous.to)} مقابل {periodLabel(gbp.current.from, gbp.current.to)}</p></div></div><Table><TableHeader><TableRow><TableHead>المقياس</TableHead><TableHead>السابقة</TableHead><TableHead>الحالية</TableHead><TableHead>التغير</TableHead></TableRow></TableHeader><TableBody>{stats.map(s => <TableRow key={s.key}><TableCell>{s.title}</TableCell><TableCell>{format(gbp.previous[s.key])}</TableCell><TableCell>{format(gbp.current[s.key])}</TableCell><TableCell><span className="delta positive" dir="ltr">+{format(percentChange(gbp.current[s.key], gbp.previous[s.key]) ?? 0, 1)}%</span></TableCell></TableRow>)}</TableBody></Table><p className="small-note">ضغطات الاتصال ليست مكالمات مجابة، وطلبات الاتجاهات ليست زيارات مؤكدة. لم تدخل بيانات 27–29 سبتمبر غير المكتملة في هذه المقارنة.</p></section>}</>}
