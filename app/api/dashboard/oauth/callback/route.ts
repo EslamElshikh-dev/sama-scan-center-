@@ -1,10 +1,12 @@
 import { cookies } from "next/headers";
-import { APP_ORIGIN, CALLBACK, CLIENT_ID, STATE_COOKIE, ACCESS_COOKIE, cookieOptions, verifyToken } from "@/lib/dashboard/auth";
+import { APP_ORIGIN, CALLBACK, CLIENT_ID, STATE_COOKIE, ACCESS_COOKIE, cookieOptions, verifyToken, requireAdmin } from "@/lib/dashboard/auth";
+import { readAdminConfig } from "@/lib/dashboard/session";
 export async function GET(request: Request) {
   const jar = await cookies(), url = new URL(request.url);
   const raw = jar.get(STATE_COOKIE)?.value;
   jar.delete(STATE_COOKIE);
   try {
+    if (readAdminConfig()) await requireAdmin();
     if (!raw || url.origin !== APP_ORIGIN) throw new Error();
     const saved = JSON.parse(raw) as { state: string; verifier: string; expires: number };
     const code = url.searchParams.get("code");

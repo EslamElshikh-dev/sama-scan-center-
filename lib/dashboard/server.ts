@@ -10,6 +10,7 @@ export function originOK(request: Request) { return request.headers.get("origin"
 export function fail(error: unknown) {
   const code = error instanceof Error ? error.message : "UNKNOWN";
   if (code === "SIGN_IN_REQUIRED") return json({ status: "reauthentication_required", message: "سجّل الدخول بحساب إدارة المركز للمتابعة." }, 401);
+  if (code === "PROVIDER_CONNECTION_REQUIRED") return json({ status: "provider_connection_required", message: "اربط حساب Windsor.ai الخاص بالمركز لعرض البيانات المباشرة." }, 409);
   if (code === "STORAGE_UNAVAILABLE") return json({ status: "storage_unavailable", message: "لم يتم تفعيل تخزين اللوحة بعد. الحفظ ورفع الصور والنشر ينتظرون ربط قاعدة البيانات والتخزين." }, 503);
   if (error instanceof ZodError || error instanceof SyntaxError) return json({ status: "invalid_request", message: "تحقق من البيانات المدخلة." }, 400);
   // Do not log provider errors: they can contain private results or credentials.

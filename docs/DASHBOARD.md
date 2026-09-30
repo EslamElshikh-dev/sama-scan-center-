@@ -6,7 +6,14 @@ The public website lives under app/(site) with unchanged URLs. The dashboard has
 
 ## Authentication
 
-Windsor OAuth with PKCE and a client metadata document. Only the verified existing center administrator username hash in lib/dashboard/identity.ts is allowed. Credentials are never copied from ChatGPT. Access tokens stay in Secure, HttpOnly, SameSite cookies and are validated with Windsor before private requests. Sessions expire after at most 8 hours; log in again to renew. OAuth consent must be completed by the owner after deployment. It has not been validated with a real owner session yet.
+The dashboard supports a server-verified `admin` login. Configure these **sensitive Production environment variables** on the existing Vercel project, then redeploy:
+
+- `SAMA_ADMIN_PASSWORD_HASH`: `scrypt$32768$<16-byte hex salt>$<32-byte hex digest>` (N=32768, r=8, p=1).
+- `SAMA_SESSION_SECRET`: independent random secret, at least 43 characters.
+
+No password or deployment secret belongs in Git. Sessions use HMAC-SHA256, expire after 8 hours, and are stored in a Secure, HttpOnly, SameSite=Lax cookie. Password-hash or signing-secret rotation invalidates previous sessions. Login and mutation routes reject cross-origin requests. The in-process IP-hash throttle allows five attempts per 15 minutes; it is a per-instance defense, not a distributed rate limiter. A platform firewall limit can strengthen this when configured. Logs never contain entered credentials.
+
+Before private configuration exists, the current owner-only Windsor login remains available, and the new password form is disabled. After configuration, dashboard access requires the admin session. Windsor OAuth becomes a separate data connection inside the dashboard; the local login does not fabricate provider access. Provider authentication still uses PKCE, a client metadata document, Secure/HttpOnly cookies and the verified center-owner username hash. Only the account owner can complete Windsor consent.
 
 ## Storage activation
 

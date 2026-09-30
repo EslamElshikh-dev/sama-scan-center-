@@ -3,12 +3,14 @@ import { createHash } from "node:crypto";
 import { callMcp } from "./mcp";
 import { isAllowedUser } from "./identity";
 import { payload } from "@/lib/sama";
+import { readAdminConfig, verifySession } from "./session";
 
 export const APP_ORIGIN = "https://samascan.vercel.app";
 export const CLIENT_ID = `${APP_ORIGIN}/api/dashboard/oauth/client`;
 export const CALLBACK = `${APP_ORIGIN}/api/dashboard/oauth/callback`;
 export const ACCESS_COOKIE = "__Host-sama_access";
 export const STATE_COOKIE = "__Host-sama_oauth";
+export const ADMIN_COOKIE = "__Host-sama_admin";
 export const cookieOptions = { httpOnly: true, secure: true, sameSite: "lax" as const, path: "/" };
 const verified = new Map<string, { username: string; until: number }>();
 
@@ -25,10 +27,20 @@ export async function verifyToken(token: string) {
   return value.username!;
 }
 export async function accessToken() {
+  if (readAdminConfig()) await requireAdmin();
   const token = (await cookies()).get(ACCESS_COOKIE)?.value;
-  if (!token) throw new Error("SIGN_IN_REQUIRED");
+  if (!token) throw new Error("PROVIDER_CONNECTION_REQUIRED");
   await verifyToken(token);
   return token;
 }
-export async function owner() { return verifyToken(await accessToken()); }
-export async function signedIn() { try { await accessToken(); return true; } catch { return false; } }
+export async function requireAdmin() {
+  const config = readAdminConfig();
+  if (!config || !verifySession((await cookies()).get(ADMIN_COOKIE)?.value, config)) throw new Error("SIGN_IN_REQUIRED");
+  return "samascan-admin";
+}
+export async function owner() {
+  if (readAdminConfig()) return requireAdmin();
+  // Keep the existing owner OAuth login available until private configuration is installed.
+  return verifyToken(await accessToken());
+}
+export async function signedIn() { try { await owner(); return true; } catch { return false; } }
