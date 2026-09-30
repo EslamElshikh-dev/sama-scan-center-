@@ -1,36 +1,57 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { randomBytes, scryptSync } from "node:crypto";
 import { readFileSync } from "node:fs";
 import ts from "typescript";
-const source=readFileSync(new URL("../lib/dashboard/session.ts",import.meta.url),"utf8");
-const compiled=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
-const auth=await import(`data:text/javascript;base64,${Buffer.from(compiled).toString("base64")}`);
-const salt=randomBytes(16), testPassword=randomBytes(20).toString("hex");
-const digest=scryptSync(testPassword,salt,32,{N:32768,r:8,p:1,maxmem:64*1024*1024});
-const config={passwordHash:`scrypt$32768$${salt.toString("hex")}$${digest.toString("hex")}`,secret:randomBytes(32).toString("base64url")};
-test("password verifier accepts the correct password and rejects wrong or malformed inputs",async()=>{
- assert.equal(await auth.verifyPassword(testPassword,config.passwordHash),true);
- assert.equal(await auth.verifyPassword("wrong",config.passwordHash),false);
- assert.equal(await auth.verifyPassword(testPassword,"broken"),false);
- assert.equal(await auth.verifyPassword("x".repeat(257),config.passwordHash),false);
+import { createHandler } from "../backend/samascan-admin/index.mjs";
+const source = readFileSync(new URL("../lib/dashboard/session.ts", import.meta.url), "utf8");
+const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText;
+const auth = await import(`data:text/javascript;base64,${Buffer.from(compiled).toString("base64")}`);
+const originalFetch = globalThis.fetch;
+const token = "a".repeat(64);
+const env = { get: key => ({ SUPABASE_URL: "https://auth.example", SUPABASE_PUBLISHABLE_KEYS: '{"default":"public-test"}', SUPABASE_SECRET_KEYS: '{"default":"private-test"}' })[key] };
+const req = body => new Request("https://auth.example/login", { method: "POST", headers: { apikey: "public-test", "Content-Type": "application/json" }, body: JSON.stringify(body) });
+test("client rejects malformed, expired, wrong-user and untrusted-status sessions", async () => {
+ try {
+  let calls = 0;
+  globalThis.fetch = async () => { calls++; return Response.json({ ok: true, username: "admin", expiresAt: Date.now()+10000 }); };
+  assert.equal(await auth.verifySession("forged"), false); assert.equal(calls, 0);
+  assert.equal(await auth.verifySession(token), true);
+  for (const result of [{ ok:true, username:"other", expiresAt:Date.now()+10000 }, { ok:true, username:"admin", expiresAt:1 }, { ok:false }]) {
+   globalThis.fetch = async () => Response.json(result); assert.equal(await auth.verifySession(token), false);
+  }
+  globalThis.fetch = async () => Response.json({ ok:true, username:"admin", expiresAt:Date.now()+10000 }, {status:401});
+  await assert.rejects(auth.verifySession(token), /AUTH_SERVICE_UNAVAILABLE/);
+  globalThis.fetch = async () => { throw new Error("upstream secret must not escape"); };
+  await assert.rejects(auth.verifySession(token), /^Error: AUTH_SERVICE_UNAVAILABLE$/);
+ } finally { globalThis.fetch = originalFetch; }
 });
-test("session signature, expiry and credential rotation are enforced",()=>{
- const now=1790760000000,token=auth.createSession(config,now);
- assert.equal(auth.verifySession(token,config,now),true);
- assert.equal(auth.verifySession(token,config,now+auth.SESSION_SECONDS*1000),false);
- assert.equal(auth.verifySession(token,config,now-1000),false);
- assert.equal(auth.verifySession(token+"x",config,now),false);
- const [body,signature]=token.split(".");const changed=JSON.parse(Buffer.from(body,"base64url"));changed.exp+=3600;
- assert.equal(auth.verifySession(Buffer.from(JSON.stringify(changed)).toString("base64url")+"."+signature,config,now),false);
- assert.equal(auth.verifySession(token,{...config,secret:randomBytes(32).toString("base64url")},now),false);
- assert.equal(auth.verifySession(token,{...config,passwordHash:config.passwordHash.replace("scrypt","changed")},now),false);
- assert.equal(auth.verifySession(undefined,config,now),false);
+test("client handles credentials, throttling, and validates issued tokens", async () => {
+ try {
+  globalThis.fetch = async () => Response.json({ok:false,code:"credentials"},{status:401});
+  await assert.rejects(auth.loginAdmin("admin","test"), /^Error: credentials$/);
+  globalThis.fetch = async () => Response.json({ok:false,code:"rate_limit"},{status:429});
+  await assert.rejects(auth.loginAdmin("admin","test"), /^Error: rate_limit$/);
+  globalThis.fetch = async () => Response.json({ok:true,username:"admin",token,expiresAt:Date.now()+10000});
+  assert.equal(await auth.loginAdmin("admin","test"), token);
+  globalThis.fetch = async () => Response.json({ok:true,username:"admin",token:"invalid",expiresAt:Date.now()+10000});
+  await assert.rejects(auth.loginAdmin("admin","test"), /AUTH_SERVICE_UNAVAILABLE/);
+ } finally { globalThis.fetch = originalFetch; }
 });
-test("login throttling blocks repeated attempts and resets after the time window",()=>{
- const key=randomBytes(16).toString("hex"),now=1000000;
- for(let i=0;i<5;i++)assert.equal(auth.loginAttempt(key,now),true);
- assert.equal(auth.loginAttempt(key,now),false);
- assert.equal(auth.loginAttempt(key,now+15*60*1000),true);
- auth.clearAttempts(key);assert.equal(auth.loginAttempt(key,now+15*60*1000),true);
+test("edge gateway validates requests before privileged database access", async () => {
+ let calls=0;
+ const handler=createHandler(env,async (_url,opts)=>{calls++; assert.equal(opts.headers.apikey,"private-test"); assert.equal(opts.headers.Authorization,undefined); return Response.json({ok:false,code:"credentials"});});
+ assert.equal((await handler(new Request("https://auth.example"))).status,405);
+ assert.equal((await handler(new Request("https://auth.example",{method:"POST",body:"{}"}))).status,401);
+ assert.equal((await handler(req({action:"verify",token:"bad"}))).status,401);
+ assert.equal((await handler(req({action:"unexpected"}))).status,400);
+ assert.equal(calls,0);
+ const denied=await handler(req({action:"login",username:"admin",password:"wrong"}));
+ assert.equal(denied.status,401); assert.equal(calls,1);
+ assert.equal((await denied.text()).includes("private-test"),false);
+});
+test("edge gateway returns safe errors and preserves throttle status",async()=>{
+ const failing=createHandler(env,async()=>new Response("private database detail",{status:500}));
+ const failed=await failing(req({action:"verify",token})); assert.equal(failed.status,503); assert.equal((await failed.text()).includes("private database detail"),false);
+ const limited=createHandler(env,async()=>Response.json({ok:false,code:"rate_limit"}));
+ assert.equal((await limited(req({action:"login",username:"admin",password:"test"}))).status,429);
 });

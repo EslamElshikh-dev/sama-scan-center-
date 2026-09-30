@@ -6,14 +6,15 @@ The public website lives under app/(site) with unchanged URLs. The dashboard has
 
 ## Authentication
 
-The dashboard supports a server-verified `admin` login. Configure these **sensitive Production environment variables** on the existing Vercel project, then redeploy:
+The dashboard uses the `admin` account through the `samascan-admin` Supabase Edge Function. Authentication is held in the dedicated, non-exposed `samascan_auth` schema on project `vddoeiggfcwllfxpirep` (the existing al-osairat-directory infrastructure). It shares that project's availability and quotas. It does not query or modify directory tables or directory user accounts. `docs/supabase-auth.sql` defines only the dedicated objects; `backend/samascan-admin/index.mjs` is the function source.
 
-- `SAMA_ADMIN_PASSWORD_HASH`: `scrypt$32768$<16-byte hex salt>$<32-byte hex digest>` (N=32768, r=8, p=1).
-- `SAMA_SESSION_SECRET`: independent random secret, at least 43 characters.
+Passwords are bcrypt hashed (cost 12). Sessions are cryptographically random 256-bit tokens; only their SHA-256 digests are stored. They expire after 8 hours and are revoked on logout. The browser token is held in a Secure, HttpOnly, SameSite=Lax cookie. Every protected request checks its session with the authentication service and fails closed. Database-backed throttling allows 20 attempts per 15-minute window across all server instances. A successful login resets the counter. The counter is global for this single administrator; repeated hostile attempts can temporarily lock login.
 
-No password or deployment secret belongs in Git. Sessions use HMAC-SHA256, expire after 8 hours, and are stored in a Secure, HttpOnly, SameSite=Lax cookie. Password-hash or signing-secret rotation invalidates previous sessions. Login and mutation routes reject cross-origin requests. The in-process IP-hash throttle allows five attempts per 15 minutes; it is a per-instance defense, not a distributed rate limiter. A platform firewall limit can strengthen this when configured. Logs never contain entered credentials.
+Private tables have RLS enabled and no public policies or grants. Only the service role may execute the auth RPC. The Edge Function uses the platform's injected secret keys internally; no secret key is deployed to Vercel or exposed in Git. The project publishable key in the Next.js server module is intentionally public and grants no access to the authentication tables/RPC. `verify_jwt=false` on this one Edge Function is intentional: it validates the project key and then validates the administrator password or opaque session for every action. No other function or project authentication setting is changed.
 
-Before private configuration exists, the current owner-only Windsor login remains available, and the new password form is disabled. After configuration, dashboard access requires the admin session. Windsor OAuth becomes a separate data connection inside the dashboard; the local login does not fabricate provider access. Provider authentication still uses PKCE, a client metadata document, Secure/HttpOnly cookies and the verified center-owner username hash. Only the account owner can complete Windsor consent.
+Vercel no longer requires `SAMA_ADMIN_PASSWORD_HASH` or `SAMA_SESSION_SECRET`; the earlier .env import file is obsolete. To rotate the admin password, use an authenticated database-management connection to update the bcrypt verifier and delete this administrator's session rows in one transaction. Never commit a password or verifier to Git. Login and mutation routes reject cross-origin requests; credential-bearing data is never logged.
+
+Windsor OAuth remains a separate data connection inside the dashboard. Admin login does not fabricate provider access. Provider authentication uses PKCE, a client metadata document, Secure/HttpOnly cookies and the verified center-owner username hash.
 
 ## Storage activation
 

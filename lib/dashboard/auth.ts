@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { callMcp } from "./mcp";
 import { isAllowedUser } from "./identity";
 import { payload } from "@/lib/sama";
-import { readAdminConfig, verifySession } from "./session";
+import { verifySession } from "./session";
 
 export const APP_ORIGIN = "https://samascan.vercel.app";
 export const CLIENT_ID = `${APP_ORIGIN}/api/dashboard/oauth/client`;
@@ -27,20 +27,17 @@ export async function verifyToken(token: string) {
   return value.username!;
 }
 export async function accessToken() {
-  if (readAdminConfig()) await requireAdmin();
+  await requireAdmin();
   const token = (await cookies()).get(ACCESS_COOKIE)?.value;
   if (!token) throw new Error("PROVIDER_CONNECTION_REQUIRED");
   await verifyToken(token);
   return token;
 }
 export async function requireAdmin() {
-  const config = readAdminConfig();
-  if (!config || !verifySession((await cookies()).get(ADMIN_COOKIE)?.value, config)) throw new Error("SIGN_IN_REQUIRED");
+  if (!await verifySession((await cookies()).get(ADMIN_COOKIE)?.value)) throw new Error("SIGN_IN_REQUIRED");
   return "samascan-admin";
 }
 export async function owner() {
-  if (readAdminConfig()) return requireAdmin();
-  // Keep the existing owner OAuth login available until private configuration is installed.
-  return verifyToken(await accessToken());
+  return requireAdmin();
 }
 export async function signedIn() { try { await owner(); return true; } catch { return false; } }
