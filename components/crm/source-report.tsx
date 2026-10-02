@@ -8,13 +8,13 @@ export function OutcomeReport({revision}:{revision:number}) {
  const [days,setDays]=useState(30);
  const [report,setReport]=useState<SourceReport|null>(null);
  const [error,setError]=useState("");
- const [loading,setLoading]=useState(true);
+ const [loadedKey,setLoadedKey]=useState("");const requestKey=days+":"+revision;const loading=loadedKey!==requestKey;
  useEffect(()=>{
-  const controller=new AbortController();setLoading(true);setError("");
+  const controller=new AbortController();
   const end=new Date();const start=new Date(end);start.setUTCDate(start.getUTCDate()-days+1);
-  crmRequest<{data:SourceReport}>("source_report",{from:riyadhDay(start),to:riyadhDay(end)},controller.signal).then(r=>setReport(r.data)).catch(e=>{if(e.name!=="AbortError")setError(e.message);}).finally(()=>{if(!controller.signal.aborted)setLoading(false);});
+  crmRequest<{data:SourceReport}>("source_report",{from:riyadhDay(start),to:riyadhDay(end)},controller.signal).then(r=>{if(controller.signal.aborted)return;setReport(r.data);setError("");setLoadedKey(requestKey);}).catch(e=>{if(!controller.signal.aborted){setError(e.message);setLoadedKey(requestKey);}});
   return()=>controller.abort();
- },[days,revision]);
+ },[days,requestKey]);
  const totals=report?.sources.reduce((a,s)=>({inquiries:a.inquiries+s.inquiries,booked:a.booked+s.booked,attended:a.attended+s.attended}),{inquiries:0,booked:0,attended:0});
  const percent=(part:number,total:number)=>total?`${(part/total*100).toFixed(1)}%`:"—";
  return <section className="panel crm-outcomes"><div className="crm-panel-head"><div><span className="crm-section-kicker">من أول طلب إلى الحضور</span><h2>أي مصدر يحقق نتيجة؟</h2><p>طلبات بدأت خلال الفترة، ونتيجتها الحالية حتى الآن.</p></div><select aria-label="فترة قياس نتائج المصادر" value={days} onChange={e=>setDays(Number(e.target.value))}><option value={7}>آخر 7 أيام</option><option value={30}>آخر 30 يومًا</option><option value={90}>آخر 90 يومًا</option></select></div>

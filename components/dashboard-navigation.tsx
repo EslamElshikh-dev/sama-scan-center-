@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ArrowUpLeft, BarChart3, CalendarDays, ChartNoAxesCombined, ChevronLeft, ClipboardList, ContactRound, Globe2, LayoutDashboard, ListChecks, LockKeyhole, MapPin, Megaphone, MessageCircle, MoreHorizontal, Search, Send, Sparkles, UsersRound, X } from "lucide-react";
+import { ArrowUpLeft, BarChart3, CalendarDays, ChartNoAxesCombined, ChevronLeft, ClipboardList, ContactRound, Globe2, LayoutDashboard, ListChecks, LockKeyhole, MapPin, Megaphone, MessageCircle, MoreHorizontal, Search, Send, Sparkles, Stethoscope, UsersRound, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import type { Role } from "@/lib/crm/types";
@@ -13,6 +13,9 @@ export const dashboardNavigation = [
   { id: "followups", title: "المتابعات والمهام", short: "المتابعات", description: "مهام الاستقبال وتوزيع المسؤوليات", icon: ListChecks, tone: "gold" },
   { id: "crmreports", title: "تقارير CRM", short: "التقارير", description: "مصادر التواصل ومعدلات الحجز والحضور", icon: ChartNoAxesCombined, tone: "blue" },
   { id: "team", title: "الفريق والصلاحيات", short: "الفريق", description: "حسابات الموظفين وصلاحياتهم وسجل العمليات", icon: LockKeyhole, tone: "slate" },
+  { id: "physicians", title: "الأطباء المحوِّلون", short: "الأطباء", description: "دليل الأطباء وجهات عملهم والعلاقات المهنية", icon: Stethoscope, tone: "teal" },
+  { id: "physicianvisits", title: "زيارات الأطباء", short: "الزيارات", description: "زيارات التسويق ونتائجها ومواعيد متابعة الأطباء", icon: CalendarDays, tone: "violet" },
+  { id: "physicianreports", title: "تقارير الإحالات", short: "الإحالات", description: "إحالات الأطباء والحجوزات والحضور الإجمالي", icon: ChartNoAxesCombined, tone: "blue" },
   { id: "overview", title: "ملخص التسويق", short: "الأداء", description: "نظرة تجمع الأداء الرقمي وفرص النمو", icon: BarChart3, tone: "teal" },
   { id: "google", title: "الملف التجاري", short: "Google", description: "تفاعل Google والاتصالات والاتجاهات", icon: MapPin, tone: "green" },
   { id: "website", title: "أداء الموقع", short: "الموقع", description: "الظهور والنقرات في نتائج البحث", icon: Globe2, tone: "blue" },
@@ -24,9 +27,11 @@ export const dashboardNavigation = [
 ] as const;
 export type DashboardView = typeof dashboardNavigation[number]["id"];
 export const crmViews: readonly string[] = ["today", "contacts", "inquiries", "appointments", "followups", "crmreports", "team"];
-export const canView = (role:Role,id:string) => role === "admin" || (role === "marketing" ? !crmViews.includes(id) : crmViews.includes(id) && id !== "team");
+export const referralViews: readonly string[] = ["physicians", "physicianvisits", "physicianreports"];
+export const canView = (role:Role,id:string) => dashboardNavigation.some(n=>n.id===id) && (role === "admin" || (role === "marketing" ? !crmViews.includes(id) : crmViews.includes(id) && id !== "team"));
 const groups = [
   { label: "إدارة المركز", caption: "WORKSPACE", ids: ["today", "contacts", "inquiries", "appointments", "followups", "crmreports"] },
+  { label: "علاقات الأطباء", caption: "PHYSICIANS", ids: ["physicians", "physicianvisits", "physicianreports"] },
   { label: "الأداء والنمو", caption: "GROWTH", ids: ["overview", "google", "website", "ads", "competitors"] },
   { label: "المحتوى والتحسين", caption: "CONTENT", ids: ["improvements", "publisher", "channels"] },
   { label: "إدارة النظام", caption: "ADMIN", ids: ["team"] },
@@ -44,11 +49,11 @@ export function DashboardNavigation({view,role,onSelect}:NavigationProps) {
 }
 export function MobileDock({view,role,onSelect}:NavigationProps) {
   const {setOpenMobile,openMobile}=useSidebar();
-  const ids=role==="marketing"?["overview","google","website","publisher"]:["today","appointments","inquiries","followups"];
+  const ids=role==="marketing"?["overview","physicians","physicianvisits","physicianreports"]:["today","appointments","inquiries","followups"];
   return <nav className="studio-mobile-dock" aria-label="التنقل السريع للجوال">{ids.map(id=>{const n=dashboardNavigation.find(n=>n.id===id)!;return <button type="button" key={id} aria-current={view===id?"page":undefined} className={view===id?"is-active":""} onClick={()=>onSelect(n.id)}><span><n.icon size={20}/></span><small>{n.short}</small></button>;})}<button type="button" onClick={()=>setOpenMobile(true)} aria-label="عرض كل الأقسام" aria-expanded={openMobile}><span><MoreHorizontal size={21}/></span><small>المزيد</small></button></nav>;
 }
 export function SectionRoutes({view,role,onSelect}:NavigationProps) {
-  const ids=crmViews.includes(view)?["today","contacts","inquiries","appointments","followups","crmreports","team"]:["overview","google","website","ads","competitors","improvements","publisher","channels"];
+  const ids=referralViews.includes(view)?["physicians","physicianvisits","physicianreports"]:crmViews.includes(view)?["today","contacts","inquiries","appointments","followups","crmreports","team"]:["overview","google","website","ads","competitors","improvements","publisher","channels"];
   return <nav className="studio-section-routes" aria-label="المسارات المرتبطة بالقسم"><span className="studio-route-label">مساراتك</span><div>{dashboardNavigation.filter(n=>ids.includes(n.id)&&canView(role,n.id)).map(n=><button key={n.id} type="button" aria-current={n.id===view?"page":undefined} onClick={()=>onSelect(n.id)} className={n.id===view?"is-active":""}><n.icon size={15}/><span>{n.short}</span></button>)}</div></nav>;
 }
 export function RoutePalette({role,onClose,onSelect}:{role:Role;onClose:()=>void;onSelect:(view:DashboardView)=>void}) {

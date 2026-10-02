@@ -26,3 +26,12 @@ test('source outcomes use the same authenticated gateway',async()=>{
  assert.equal((await handler(req({action:'source_report',token,payload:{from:'2026-09-01',to:'2026-09-30'}}))).status,200);
  assert.equal((await handler(req({action:'source_report',token:'forged'}))).status,401);
 });
+
+test('physician actions reach only the referral RPC and enforce the same session gate',async()=>{
+ for(const action of ['physician_options','physician_list','physician_detail','physician_save','visit_list','visit_save','physician_report']){
+  let calls=0;
+  const handler=createHandler(env,async(url,options)=>{calls++;assert.equal(url,'https://crm.example/rest/v1/rpc/samascan_referral_api');assert.deepEqual(JSON.parse(options.body),{session_token:token,action,payload:{}});return Response.json({ok:false,code:'forbidden',internal:'sensitive'});});
+  const response=await handler(req({action,token}));assert.equal(response.status,403);assert.deepEqual(await response.json(),{ok:false,code:'forbidden'});
+  assert.equal((await handler(req({action,token:'forged'}))).status,401);assert.equal(calls,1);
+ }
+});
