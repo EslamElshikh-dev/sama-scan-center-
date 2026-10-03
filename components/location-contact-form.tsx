@@ -25,8 +25,6 @@ export function LocationContactForm({ initialService = "" }: { initialService?: 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [reference, setReference] = useState("");
-  const [date, setDate] = useState("");
-  const [period, setPeriod] = useState("");
   const today = useSyncExternalStore(subscribeDay, dayInRiyadh, () => "");
   const maxDay = new Date(`${today || "2026-01-01"}T12:00:00Z`);
   maxDay.setUTCDate(maxDay.getUTCDate() + 60);
@@ -35,10 +33,12 @@ export function LocationContactForm({ initialService = "" }: { initialService?: 
     event.preventDefault();
     if (submitting.current) return;
     setError("");
-    if (new Date(`${date}T12:00:00+03:00`).getUTCDay() === 5) {
+    const data = new FormData(event.currentTarget);
+    const requestedDate = String(data.get("date") ?? "");
+    const requestedPeriod = String(data.get("period") ?? "");
+    if (new Date(`${requestedDate}T12:00:00+03:00`).getUTCDay() === 5) {
       setError("المركز مغلق يوم الجمعة. اختر يومًا من السبت إلى الخميس."); return;
     }
-    const data = new FormData(event.currentTarget);
     const attribution = getSessionAttribution();
     const phone = String(data.get("phone") ?? "").trim().replace(/[٠-٩۰-۹]/g, c => String("٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹".indexOf(c) % 10)).replace(/[\s()-]/g, "");
     if (!/^(05\d{8}|(?:\+966|00966|966)5\d{8})$/.test(phone)) {
@@ -51,7 +51,7 @@ export function LocationContactForm({ initialService = "" }: { initialService?: 
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           request_id: requestId.current, name: data.get("name"), phone, exam: data.get("service"),
-          requested_date: date, requested_period: period, consent: data.get("consent") === "on",
+          requested_date: requestedDate, requested_period: requestedPeriod, consent: data.get("consent") === "on",
           company: data.get("company"), attribution: {
             channel: attribution.channel, source: attribution.source.slice(0, 128), medium: attribution.medium.slice(0, 128),
             campaign: attribution.campaign.slice(0, 128), content: attribution.content.slice(0, 128),
@@ -94,12 +94,12 @@ export function LocationContactForm({ initialService = "" }: { initialService?: 
       <div className="location-form-fields">
         <label><span>الاسم</span><input type="text" name="name" autoComplete="name" placeholder="اسم مقدم الطلب" minLength={2} maxLength={100} required /></label>
         <label><span>رقم الجوال للتواصل</span><input type="tel" name="phone" autoComplete="tel" inputMode="tel" maxLength={25} placeholder="05xxxxxxxx" dir="ltr" required /></label>
-        <label><span>الفحص المطلوب</span><select name="service" defaultValue={bookingServices.find(s => s.slug === initialService)?.exam || ""} required>
+        <label><span>الفحص المطلوب</span><select name="service" aria-label="الفحص المطلوب" defaultValue={bookingServices.find(s => s.slug === initialService)?.exam || ""} required>
           <option value="" disabled>اختر الفحص</option>{bookingServices.map(s => <option key={s.slug} value={s.exam}>{s.exam}</option>)}
         </select></label>
         <div className="booking-preferences">
-          <label><span>اليوم المفضل</span><input type="date" name="date" min={today || undefined} max={today ? maxDay.toISOString().slice(0, 10) : undefined} value={date} onChange={e => { setDate(e.target.value); setPeriod(""); }} required /></label>
-          <label><span>الفترة المفضلة</span><select name="period" value={period} onChange={e => setPeriod(e.target.value)} required><option value="" disabled>اختر الفترة</option>{Object.entries(periods).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
+          <label><span>اليوم المفضل</span><input type="date" name="date" min={today || undefined} max={today ? maxDay.toISOString().slice(0, 10) : undefined} required /></label>
+          <label><span>الفترة المفضلة</span><select name="period" aria-label="الفترة المفضلة" defaultValue="" required><option value="" disabled>اختر الفترة</option>{Object.entries(periods).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
         </div>
         <label className="booking-honeypot" aria-hidden="true"><span>الشركة</span><input name="company" tabIndex={-1} autoComplete="off" /></label>
       </div>
