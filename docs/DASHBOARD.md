@@ -1,5 +1,25 @@
 # Sama Scan dashboard on Vercel
 
+## Website booking and examination outcomes · October 3, 2026
+
+`/contact` now collects a booking request before opening any messaging application. Service-page links preselect the examination. `/api/booking` validates a same-origin JSON request and forwards only to the dedicated `samascan-booking` gateway. The gateway implements project-key authentication and invokes only the service-only intake RPC. It cannot read CRM data or confirm appointments. The public response contains a random reference, never contact or inquiry identifiers.
+
+The private intake records the normalized Saudi mobile number, request, preferences and bounded session attribution, and assigns a high-priority reception task due within business hours. It preserves an existing contact's verified name and original acquisition source, records the submitted name on the new request, and uses the request's own source for outcome attribution. Reusing a request key returns the same receipt; identical requests in separate tabs within 30 minutes reuse the open request. Rate limits allow four submissions per phone per hour and 120 globally. Retries of a stored key do not consume the allowance. Intake does not reserve a machine or promise a confirmed slot.
+
+Reception workflow:
+
+1. Open **طلبات الحجز** or the assigned **متابعة**. Review the reference, preferred day/period and source.
+2. Contact the requester; confirm examination, preparation and availability. Use **حجز موعد** from the request so its source remains linked.
+3. Save the actual time and machine. Mark **مؤكد** after confirmation; this completes the intake task automatically.
+4. Record **حضر** on arrival and **أجرى الفحص** only after the examination. Record **لم يحضر** or **ملغي** as appropriate. A future appointment cannot have an attendance outcome.
+5. In **تقارير العملاء**, compare **حسب الفحص** and **مصدر الوصول × الفحص**. Clear warnings for overdue appointments without an outcome and bookings without a linked request before interpreting conversion rates.
+
+The new report measures a cohort of requests created during the selected period, with their current recorded outcomes. Each request counts once per booking/attendance/completion outcome even after rebooking. No-show and cancellation counts are appointment counts. The due denominator excludes future/cancelled bookings; the total request-to-examination rate still includes recent and open requests. It is not revenue, ad ROAS or Google's own booking metric. Calls and standalone WhatsApp chats require reception to create the inquiry and select its source; they are not imported automatically. No WhatsApp message is sent automatically.
+
+Session UTM attribution distinguishes GBP, organic Google, paid Google and social traffic for form requests. It is client-supplied attribution, not provider-verified identity. No patient name, phone, examination or receipt enters the `booking_request_saved` analytics event. The public privacy notice explains request storage and how to contact reception for correction/deletion. Private data remains under the existing service-only schema and default-deny RLS.
+
+Migration: `supabase/migrations/20261003085858_website_booking_outcomes.sql`. Run `npm run test:crm`, `npm run lint`, `npm run typecheck`, and `npm run build`. Database tests use a disposable local database and roll back fixtures. For a live smoke test, use an explicitly marked technical request, verify its reception linkage, then remove only its exact test records.
+
 Production path: https://samascan.vercel.app/dashboard
 
 The public medical website remains under `app/(site)`. The private Arabic dashboard has its own layout and style, and uses the center's established administrator login.

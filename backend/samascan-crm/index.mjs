@@ -26,7 +26,7 @@ export function createHandler(env, fetcher = fetch) {
       if (!secret || !origin) return reply({ ok: false, code: "unavailable" }, 503);
       const headers = { "Content-Type": "application/json", apikey: secret };
       if (!secretKeys.default) headers.Authorization = `Bearer ${secret}`;
-      const rpc = referralActions.includes(input.action) ? "samascan_referral_api" : "samascan_crm_api";
+      const rpc = referralActions.includes(input.action) ? "samascan_referral_api" : input.action === "source_report" ? "samascan_outcome_report" : "samascan_crm_api";
       const upstream = await fetcher(`${origin}/rest/v1/rpc/${rpc}`, {
         method: "POST", headers, body: JSON.stringify(args), signal: AbortSignal.timeout(12000),
       });

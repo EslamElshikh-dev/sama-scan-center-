@@ -4,6 +4,7 @@ import { Check, LoaderCircle, Search, UserRound } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { crmRequest } from "@/lib/crm/client";
 import { PhysicianPicker } from "@/components/referrals/physician-picker";
+import { BookingDetails } from "./booking-details";
 import { appointmentStatuses, exams, localInput, resources, roles, sources, stages, type CRMRecord, type Entity, type TeamMember } from "@/lib/crm/types";
 
 const examResource=(exam?:string)=>exam?.includes("رنين")?"MRI":exam?.includes("سونار")||exam?.includes("دوبلر")?"US":"OTHER";
@@ -43,6 +44,7 @@ export function RecordEditor({entity,record,staff,onClose,onSaved}:{entity:Entit
   }catch(e){setError(e instanceof Error?e.message:"تعذّر الحفظ.");}finally{setBusy(false);}
  }
  return <Dialog open onOpenChange={open=>{if(!open&&!busy)onClose();}}><DialogContent dir="rtl" className="crm-dialog"><DialogHeader><span className="eyebrow">SAMA SCAN · CRM</span><DialogTitle>{record.version?"تعديل":"إضافة"} {labels[entity]}</DialogTitle><DialogDescription>{entity==="appointments"?"كل المواعيد بتوقيت الرياض. يتحقق النظام من توافر الجهاز عند الحفظ.":"سجّل بيانات التواصل والمتابعة اللازمة لفريق المركز."}</DialogDescription></DialogHeader><form className="crm-form" onSubmit={submit}>
+ <BookingDetails record={record} />
  {entity==="contacts"?<><label className="crm-field"><span>الاسم *</span><input required minLength={2} maxLength={100} value={form.name||""} onChange={e=>field("name",e.target.value)} autoComplete="off"/></label><label className="crm-field"><span>رقم الهاتف *</span><input required type="tel" dir="ltr" inputMode="tel" maxLength={20} placeholder="05xxxxxxxx" value={form.phone||""} onChange={e=>field("phone",e.target.value)} autoComplete="off"/></label></>:<ContactPicker value={form.contact_id} label={form.contact_name} disabled={entity==="appointments"&&record.version>0||Boolean(record.inquiry_id)} optional={entity==="tasks"} onChange={r=>setForm(f=>({...f,contact_id:r?.id,contact_name:r?.name,...(entity==="tasks"?{inquiry_id:undefined,inquiry_exam:undefined}:{})}))}/>}
  {(entity==="contacts"||entity==="inquiries")&&<Select label="مصدر التواصل" value={form.source} options={sources} onChange={v=>setForm(f=>({...f,source:v,...(entity==="inquiries"&&v!=="referral"?{referring_physician_id:undefined,physician_name:undefined}:{})}))}/>}
  {entity==="inquiries"&&form.source==="referral"&&<PhysicianPicker value={form.referring_physician_id} label={form.physician_name} optional onChange={d=>setForm(f=>({...f,referring_physician_id:d?.id,physician_name:d?.name}))}/>}

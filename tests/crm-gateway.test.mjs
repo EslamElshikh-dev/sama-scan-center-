@@ -22,7 +22,7 @@ test('CRM does not expose database errors or accept authorization failures as su
 });
 
 test('source outcomes use the same authenticated gateway',async()=>{
- const handler=createHandler(env,async(_,options)=>{assert.equal(JSON.parse(options.body).action,'source_report');return Response.json({ok:true,data:{sources:[]}});});
+ const handler=createHandler(env,async(url,options)=>{assert.equal(url,'https://crm.example/rest/v1/rpc/samascan_outcome_report');assert.equal(JSON.parse(options.body).action,'source_report');return Response.json({ok:true,data:{sources:[]}});});
  assert.equal((await handler(req({action:'source_report',token,payload:{from:'2026-09-01',to:'2026-09-30'}}))).status,200);
  assert.equal((await handler(req({action:'source_report',token:'forged'}))).status,401);
 });

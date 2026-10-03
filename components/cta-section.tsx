@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { site } from "@/lib/site";
 
@@ -19,6 +20,7 @@ export function CtaSection({
           <p>{text}</p>
         </div>
         <div className="button-row">
+          <Link className="button button-light" href="/contact#booking-form" data-cta="section_booking">طلب حجز فحص <Icon name="arrow" width="18" height="18" /></Link>
           <a
             className="button button-light"
             href={site.whatsapp}

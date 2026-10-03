@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "test:crm": "node --test tests/crm-postgres.test.mjs tests/crm-gateway.test.mjs tests/dashboard-session.test.mjs"
+    "test:crm": "node --test tests/crm-postgres.test.mjs tests/crm-gateway.test.mjs tests/dashboard-session.test.mjs tests/booking-gateway.test.mjs"
   },
   "dependencies": {
     "@libsql/client": "0.17.0",

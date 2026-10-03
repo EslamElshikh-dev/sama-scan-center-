@@ -133,6 +133,9 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
             <p className="service-en" lang="en">{service.english}</p>
             <h2>{service.shortTitle}</h2>
             <p>{service.summary}</p>
+            <Link className="button" href={`/contact?service=${service.slug}#booking-form`} data-cta={`service_${service.slug}_booking`}>
+              طلب حجز هذا الفحص <Icon name="arrow" width="18" height="18" />
+            </Link>
             <a
               className="button"
               href={site.whatsapp}

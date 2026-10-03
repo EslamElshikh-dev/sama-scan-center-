@@ -1289,6 +1289,22 @@ p {
   min-height: 590px;
 }
 
+.booking-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.booking-preferences { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+.booking-consent { display: flex; align-items: flex-start; gap: 10px; color: var(--muted); font-size: .8rem; line-height: 1.8; margin-bottom: 20px; }
+.booking-consent input { flex: 0 0 auto; margin-top: 6px; width: 18px; height: 18px; accent-color: #128c7e; }
+.booking-consent a, .booking-error a { text-decoration: underline; text-underline-offset: 3px; }
+.booking-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.booking-error { padding: 14px; background: #fff3ed; border: 1px solid #e4b8a8; color: #923c2e; border-radius: 12px; line-height: 1.8; }
+.booking-success { gap: 16px; }
+.booking-success h3, .booking-success p { margin: 0; }
+.booking-success strong { display: inline-block; padding: 6px 12px; margin-inline-start: 8px; border-radius: 8px; color: #116357; background: #edf8f4; }
+.booking-success .button-row { margin-top: 6px; flex-wrap: wrap; }
+.booking-steps { padding-inline-start: 24px; line-height: 1.8; }
+.booking-steps li { margin-bottom: 20px; padding-inline-start: 8px; }
+.booking-steps p { margin: 4px 0 0; }
+#booking-form { scroll-margin-top: 110px; }
+@media(max-width:600px) { .booking-preferences { grid-template-columns: 1fr; } .booking-success .button { width: 100%; } }
 .location-contact-form {
   display: flex;
   min-width: 0;

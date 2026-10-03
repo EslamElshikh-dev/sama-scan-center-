@@ -1,0 +1,55 @@
+begin;
+set local role service_role;
+do $$
+declare
+ token text:=encode(extensions.gen_random_bytes(32),'hex');
+ today date:=(now() at time zone 'Asia/Riyadh')::date;
+ preferred date:=today+1; request_key uuid:=gen_random_uuid(); iid uuid; cid uuid; aid uuid:=gen_random_uuid();
+ p jsonb; r jsonb; receipt text; appointment jsonb; row_data jsonb;
+begin
+ if extract(dow from preferred)=5 then preferred:=preferred+1; end if;
+ insert into samascan_auth.sessions(token_hash,username,expires_at) values(extensions.digest(token,'sha256'),'admin',now()+interval '10 minutes');
+ insert into samascan_crm.contacts(name,phone,source) values('الاسم الموثق','+966500000078','phone') returning id into cid;
+ p:=jsonb_build_object('request_id',request_key,'name','مقدم طلب الموقع','phone','٠٥٠٠٠٠٠٠٧٨','exam','سونار','requested_date',preferred,'requested_period','evening','consent',true,
+  'attribution',jsonb_build_object('channel','google_business_profile','source','google','campaign','gbp','content','appointment','landingPage','/contact?private=value'));
+ r:=public.samascan_booking_intake(p); assert r->>'ok'='true','intake succeeds';receipt:=r->>'reference';
+ assert receipt~'^SS-[A-F0-9]{12}$','receipt format';
+ select id into iid from samascan_crm.inquiries where booking_reference=receipt;
+ assert (select count(*) from samascan_crm.contacts)=1,'phone normalization reuses contact';
+ assert (select name='الاسم الموثق' and source='phone' from samascan_crm.contacts where id=cid),'unverified public data cannot overwrite contact identity';
+ assert (select stage='new' and source='google' and owner is not null and requested_date=preferred and attribution->>'landingPage'='/contact' from samascan_crm.inquiries where id=iid),'pending request preserves preferences and attribution';
+ assert (select count(*) from samascan_crm.appointments)=0,'intake does not confirm or reserve an appointment';
+ assert (select count(*) from samascan_crm.tasks where inquiry_id=iid and kind='website_intake' and status='open' and owner is not null)=1,'reception task assigned';
+ assert (select extract(dow from due_at at time zone 'Asia/Riyadh')<>5 and (due_at at time zone 'Asia/Riyadh')::time>=time '09:00' and (due_at at time zone 'Asia/Riyadh')::time<time '21:00' from samascan_crm.tasks where inquiry_id=iid),'followup due in business hours';
+ for n in 1..6 loop r:=public.samascan_booking_intake(p); assert r->>'reference'=receipt,'retry has same receipt'; end loop;
+ r:=public.samascan_booking_intake(p||jsonb_build_object('request_id',gen_random_uuid())); assert r->>'reference'=receipt,'duplicate tab does not create second request';
+ assert (select count(*) from samascan_crm.inquiries)=1 and (select count(*) from samascan_crm.tasks)=1,'one request and one followup';
+ r:=public.samascan_booking_intake(p||'{"name":"مختلف"}');assert r->>'code'='invalid','idempotency key cannot be reused for a different patient request';
+ r:=public.samascan_booking_intake(p||'{"consent":false}');assert r->>'code'='invalid','consent required';
+ r:=public.samascan_booking_intake(p||jsonb_build_object('requested_date',today-1));assert r->>'code'='invalid','past day rejected';
+ r:=public.samascan_booking_intake(p||jsonb_build_object('requested_date',preferred+70));assert r->>'code'='invalid','far future rejected';
+ r:=public.samascan_booking_intake(p||'{"phone":"123"}');assert r->>'code'='invalid','invalid mobile rejected';
+ appointment:=jsonb_build_object('entity','appointments','id',aid,'version',0,'contact_id',cid,'inquiry_id',iid,'exam','سونار','resource','US','starts_at',now()-interval '3 hours','ends_at',now()-interval '150 minutes','status','no_show');
+ r:=public.samascan_crm_api(token,'save',appointment); assert r->>'ok'='true','past no-show accepted';
+ aid:=gen_random_uuid();appointment:=appointment||jsonb_build_object('id',aid,'starts_at',now()+interval '1 day','ends_at',now()+interval '1 day 30 minutes','status','confirmed');
+ r:=public.samascan_crm_api(token,'save',appointment); assert r->>'ok'='true','reception confirms real appointment';
+ assert (select stage='booked' from samascan_crm.inquiries where id=iid),'booking stage synchronized';
+ assert (select status='done' and completed_at is not null and version=2 from samascan_crm.tasks where inquiry_id=iid),'confirmation closes only intake task';
+ r:=public.samascan_crm_api(token,'save',appointment||'{"version":1,"status":"completed"}');assert r->>'code'='invalid','future attendance blocked';
+ appointment:=appointment||jsonb_build_object('version',1,'starts_at',now()-interval '1 hour','ends_at',now()-interval '30 minutes','status','attended');
+ r:=public.samascan_crm_api(token,'save',appointment);assert r->>'ok'='true','arrival accepted';
+ r:=public.samascan_outcome_report(token,'source_report',jsonb_build_object('from',today,'to',today));row_data:=r->'data'->'services'->0;
+ assert (row_data->>'attended')::int=1 and (row_data->>'completed')::int=0,'attendance is separate from examination';
+ r:=public.samascan_crm_api(token,'save',appointment||'{"version":2,"status":"completed"}');assert r->>'ok'='true','exam completion accepted';
+ r:=public.samascan_outcome_report(token,'source_report',jsonb_build_object('from',today,'to',today));row_data:=r->'data'->'services'->0;
+ assert (row_data->>'inquiries')::int=1 and (row_data->>'booked')::int=1 and (row_data->>'attended')::int=1 and (row_data->>'completed')::int=1 and (row_data->>'due')::int=1 and (row_data->>'no_show')::int=1,'cohort counts request once after no-show and rebooking';
+ assert r->'data'->'channelServices'->0->>'channel'='google_business_profile','service linked to GBP acquisition';
+ assert (select stage='completed' from samascan_crm.inquiries where id=iid),'completion stage synchronized';
+ r:=public.samascan_outcome_report('bad','source_report','{}');assert r->>'code'='credentials','report private';
+ assert not has_function_privilege('anon','public.samascan_booking_intake(jsonb)','EXECUTE'),'anon cannot invoke privileged intake';
+ assert not has_function_privilege('authenticated','public.samascan_outcome_report(text,text,jsonb)','EXECUTE'),'authenticated cannot bypass CRM gate';
+ assert not has_schema_privilege('anon','samascan_crm','USAGE'),'private schema inaccessible';
+ for n in 1..2 loop r:=public.samascan_booking_intake(p||jsonb_build_object('request_id',gen_random_uuid(),'name','طلب آخر '||n));assert r->>'ok'='true','phone hourly allowance';end loop;
+ r:=public.samascan_booking_intake(p||jsonb_build_object('request_id',gen_random_uuid(),'name','طلب محدود'));assert r->>'code'='rate_limit','phone throttle enforced';
+end $$;
+rollback;

@@ -3,31 +3,49 @@ import { Icon } from "@/components/icons";
 import { LocationContactForm } from "@/components/location-contact-form";
 import { PageHero } from "@/components/page-hero";
 import { createPageMetadata } from "@/lib/metadata";
-import { openingHours, services, site } from "@/lib/site";
+import { openingHours, site } from "@/lib/site";
 
 export const metadata = createPageMetadata({
   title: "تواصل وحجز موعد أشعة في الرياض",
   description:
-    "اتصل أو تواصل عبر واتساب مع مركز سما سكان للأشعة في حي المربع بالرياض لتأكيد نوع الفحص والتعليمات والموعد.",
+    "أرسل طلب حجز فحصك إلى استقبال مركز سما سكان للأشعة في حي المربع بالرياض. اختر الفحص واليوم والفترة، ثم انتظر تأكيد الموعد.",
   path: "/contact",
 });
 
-export default function ContactPage() {
+export default async function ContactPage({ searchParams }: { searchParams: Promise<{ service?: string }> }) {
+  const { service } = await searchParams;
   return (
     <main id="main-content">
       <PageHero
-        eyebrow="اتصال وواتساب"
-        title="تواصل مع مركز سما سكان"
-        description="للحجز أو الاستفسار، اذكر اسم الفحص والمنطقة كما وردا في الطلب الطبي، وسيساعدك التواصل المباشر على تأكيد التعليمات قبل الزيارة."
+        eyebrow="حجز فحص · الرياض، حي المربع"
+        title="اطلب موعدك في سما سكان"
+        description="اختر الفحص واليوم والفترة المناسبين لك. يصل طلبك إلى الاستقبال، ثم نتواصل معك لتأكيد الموعد وتعليمات التحضير."
         breadcrumbs={[{ label: "تواصل وحجز", href: "/contact" }]}
       />
+
+      <section className="section booking-guide" aria-label="نموذج طلب الحجز">
+        <div className="container article-layout">
+          <LocationContactForm initialService={service} />
+          <aside className="appointment-card simple-card">
+            <span className="eyebrow">ماذا يحدث بعد الإرسال؟</span>
+            <h2>خطوات موعدك</h2>
+            <ol className="booking-steps">
+              <li><strong>نستلم طلبك</strong><p>يظهر لك رقم مرجعي لمتابعته.</p></li>
+              <li><strong>يؤكد الاستقبال الموعد</strong><p>نراجع توفر الفحص والوقت وتعليمات التحضير قبل الزيارة.</p></li>
+              <li><strong>تصل إلى المركز</strong><p>أحضر طلب الفحص والوثائق التي يحددها لك الاستقبال.</p></li>
+            </ol>
+            <p>{openingHours.weekdaysLabel}، {openingHours.display}. الجمعة مغلق.</p>
+            <Link className="button button-secondary" href="/location">موقع المركز والاتجاهات</Link>
+          </aside>
+        </div>
+      </section>
 
       <section className="section contact-section">
         <div className="container contact-grid">
           <article className="contact-card whatsapp-card">
             <span className="contact-icon"><Icon name="whatsapp" width="34" height="34" /></span>
             <span className="eyebrow eyebrow-light">محادثة مباشرة</span>
-            <h2>الحجز عبر واتساب</h2>
+            <h2>استفسر عبر واتساب</h2>
             <p>
               أرسل اسم الفحص والمنطقة المطلوبة فقط لتأكيد التوفر والتعليمات.
               تجنب إرسال بيانات صحية حساسة غير ضرورية.
@@ -65,31 +83,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="section booking-guide" aria-label="نموذج طلب الحجز">
-        <div className="container article-layout">
-          <LocationContactForm />
-          <aside className="appointment-card simple-card">
-            <span className="eyebrow">لتواصل أسرع</span>
-            <h2>جهّز هذه المعلومات</h2>
-            <ul className="feature-list compact-list">
-              <li><span><Icon name="check" width="19" height="19" /></span>اسم الفحص كما هو مكتوب في الإحالة.</li>
-              <li><span><Icon name="check" width="19" height="19" /></span>المنطقة والجهة المطلوبة عند وجودها.</li>
-              <li><span><Icon name="check" width="19" height="19" /></span>التاريخ والوقت المفضلان للموعد.</li>
-              <li><span><Icon name="check" width="19" height="19" /></span>أي تعليمات خاصة ذكرها الطبيب.</li>
-            </ul>
-            <span className="eyebrow">صفحات الفحوصات</span>
-            <ul className="mini-service-list">
-              {services.map((service) => (
-                <li key={service.slug}>
-                  <Link href={`/services/${service.slug}`}>
-                    {service.shortTitle}<Icon name="arrow" width="16" height="16" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </aside>
-        </div>
-      </section>
+
     </main>
   );
 }
