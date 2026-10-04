@@ -27,6 +27,14 @@ test('source outcomes use the same authenticated gateway',async()=>{
  assert.equal((await handler(req({action:'source_report',token:'forged'}))).status,401);
 });
 
+test('conversion queue and appointment linking use the protected conversion RPC',async()=>{
+ for(const action of ['conversion_queue','link_appointment']){
+  const handler=createHandler(env,async(url,options)=>{assert.equal(url,'https://crm.example/rest/v1/rpc/samascan_conversion_api');assert.equal(JSON.parse(options.body).action,action);return Response.json({ok:false,code:'forbidden'});});
+  assert.equal((await handler(req({action,token,payload:{}}))).status,403);
+  assert.equal((await handler(req({action,token:'forged',payload:{}}))).status,401);
+ }
+});
+
 test('physician actions reach only the referral RPC and enforce the same session gate',async()=>{
  for(const action of ['physician_options','physician_list','physician_detail','physician_save','visit_list','visit_save','physician_report']){
   let calls=0;

@@ -37,7 +37,7 @@
 .referral-report-controls{display:flex;flex-wrap:wrap;gap:14px;margin:22px 0}
 .referral-report-controls label{display:grid;gap:7px;flex:1;min-width:140px;font-size:11px;color:#68848f}
 .referral-report-controls input,.referral-report-controls select{border:1px solid #dce8ea;background:#fff;border-radius:10px;height:42px;color:#315969;padding:0 10px;font:inherit}
-.referral-report-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}
+.referral-report-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:20px 0}
 .referral-report-metrics article{display:grid;gap:7px;padding:20px;border:1px solid #dfece9;background:#f5faf8;border-radius:15px}
 .referral-report-metrics article>svg{color:#328775;margin-bottom:4px}
 .referral-report-metrics article>span{font-size:12px;color:#567e73}

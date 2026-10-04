@@ -1,0 +1,20 @@
+.crm-followup-queue { margin-bottom: 22px; }
+.crm-queue-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+.crm-queue-filters button { display: inline-flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid #dce6ef; border-radius: 12px; background: #f6f9fc; color: #34536b; font: inherit; font-size: .875rem; cursor: pointer; }
+.crm-queue-filters button strong { min-width: 24px; padding: 1px 5px; border-radius: 7px; background: #e7eff6; text-align: center; }
+.crm-queue-filters button.active { color: #fff; background: #164b71; border-color: #164b71; }
+.crm-queue-filters button.active strong { background: #ffffff22; }
+.crm-queue-filters button:focus-visible, .crm-queue-row button:focus-visible { outline: 3px solid #468eb4; outline-offset: 3px; }
+.crm-queue-list { display: grid; gap: 10px; }
+.crm-queue-row { display: grid; grid-template-columns: minmax(200px, 1.25fr) minmax(140px, .8fr) minmax(250px, 1.3fr); align-items: center; gap: 16px; padding: 16px; border: 1px solid #e2eaf1; border-radius: 16px; background: #fff; }
+.crm-queue-person .crm-person small { display: block; margin-top: 3px; color: #506981; font-size: .875rem; }
+.crm-queue-flags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.crm-queue-flags span { padding: 3px 7px; border-radius: 6px; background: #eef4f9; color: #34536b; font-size: .8125rem; }
+.crm-queue-flags span[data-flag="overdue"], .crm-queue-flags span[data-flag="unresolved"] { background: #fff1dd; color: #7a420c; }
+.crm-queue-context { display: grid; gap: 5px; color: #34536b; font-size: .875rem; }
+.crm-queue-context small { display: flex; align-items: center; gap: 4px; font-size: .8125rem; color: #506981; }
+.crm-queue-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; align-items: center; }
+.crm-queue-actions > button { min-height: 36px; }
+.crm-queue-empty { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 30px 16px; color: #506981; font-size: .9375rem; background: #f6f9fc; border-radius: 14px; }
+@media (max-width: 1100px) { .crm-queue-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .crm-queue-actions { grid-column: 1 / -1; justify-content: flex-start; } }
+@media (max-width: 640px) { .crm-queue-row { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 14px; } .crm-queue-actions { grid-column: auto; } .crm-queue-filters { gap: 6px; } .crm-queue-filters button { flex: 1 1 140px; justify-content: space-between; font-size: .875rem; } .crm-queue-row .crm-person { max-width: 100%; overflow-wrap: anywhere; } }

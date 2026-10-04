@@ -16,7 +16,7 @@ export function createHandler(env, fetcher = fetch) {
       const raw = await request.text();
       if (raw.length > 16384) return reply({ ok: false, code: "invalid_request" }, 400);
       const input = JSON.parse(raw);
-      if (!input || !["summary", "list", "contact_detail","source_report", "save", "save_user", ...referralActions].includes(input.action)) return reply({ ok: false, code: "invalid_request" }, 400);
+      if (!input || !["summary", "list", "contact_detail","source_report", "conversion_queue", "link_appointment", "save", "save_user", ...referralActions].includes(input.action)) return reply({ ok: false, code: "invalid_request" }, 400);
       if (typeof input.token !== "string" || !/^[a-f0-9]{64}$/.test(input.token)) return reply({ ok: false, code: "credentials" }, 401);
       if (input.payload !== undefined && (!input.payload || typeof input.payload !== "object" || Array.isArray(input.payload))) return reply({ ok: false, code: "invalid" }, 400);
       const args = { action: input.action, session_token: input.token, payload: input.payload || {} };
@@ -26,7 +26,7 @@ export function createHandler(env, fetcher = fetch) {
       if (!secret || !origin) return reply({ ok: false, code: "unavailable" }, 503);
       const headers = { "Content-Type": "application/json", apikey: secret };
       if (!secretKeys.default) headers.Authorization = `Bearer ${secret}`;
-      const rpc = referralActions.includes(input.action) ? "samascan_referral_api" : input.action === "source_report" ? "samascan_outcome_report" : "samascan_crm_api";
+      const rpc = referralActions.includes(input.action) ? "samascan_referral_api" : input.action === "source_report" ? "samascan_outcome_report" : ["conversion_queue", "link_appointment"].includes(input.action) ? "samascan_conversion_api" : "samascan_crm_api";
       const upstream = await fetcher(`${origin}/rest/v1/rpc/${rpc}`, {
         method: "POST", headers, body: JSON.stringify(args), signal: AbortSignal.timeout(12000),
       });

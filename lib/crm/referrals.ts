@@ -17,10 +17,10 @@ export type PhysicianVisit={
  created_at?:string;updated_at?:string;
 };
 export type PhysicianDetail={physician:Physician;visits:PhysicianVisit[];stats:{referrals:number;booked:number;attended:number;last_referral_at:string|null}};
-export type PhysicianReportRow=PhysicianOption & {district:string;referrals:number;booked:number;attended:number;visits:number;last_referral_at:string|null;relationship_status:keyof typeof relationshipStatuses};
+export type PhysicianReportRow=PhysicianOption & {district:string;referrals:number;booked:number;attended:number;completed:number;visits:number;last_referral_at:string|null;relationship_status:keyof typeof relationshipStatuses};
 export type PhysicianReport={
  from:string;to:string;dormant_days:number;rows:PhysicianReportRow[];total:number;page:number;updatedAt:string;unlinkedReferrals:number;
- totals:{physicians:number;referrals:number;booked:number;attended:number;visits:number;dormant:number;never:number};
+ totals:{physicians:number;referrals:number;booked:number;attended:number;completed:number;visits:number;dormant:number;never:number};
 };
 export type ReferralStaff=Pick<TeamMember,"username"|"display_name"|"role">;
 export const canEditPhysician=(user:User,doctor:Physician)=>user.role==="admin"||!doctor.owner||doctor.owner===user.username;

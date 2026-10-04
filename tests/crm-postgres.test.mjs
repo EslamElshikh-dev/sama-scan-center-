@@ -20,6 +20,8 @@ test('private CRM: request links, completed followups, customer timeline and sou
   await db.exec(fs.readFileSync('tests/physician-referrals.integration.sql','utf8'));
   await db.exec(fs.readFileSync('supabase/migrations/20261003085858_website_booking_outcomes.sql','utf8'));
   await db.exec(fs.readFileSync('tests/booking-journey.integration.sql','utf8'));
+  await db.exec(fs.readFileSync('supabase/migrations/20261004232828_conversion_followup_queue.sql','utf8'));
+  await db.exec(fs.readFileSync('tests/conversion-followup.integration.sql','utf8'));
   assert.equal((await db.query('select count(*)::int as count from samascan_crm.contacts')).rows[0].count,0,'fixtures roll back');
  }finally{await db.close();}
 });
