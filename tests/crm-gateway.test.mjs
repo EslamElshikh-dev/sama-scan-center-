@@ -35,6 +35,19 @@ test('conversion queue and appointment linking use the protected conversion RPC'
  }
 });
 
+test('followup recording and context use the private RPC and safe action errors',async()=>{
+ for(const action of ['record_followup','followup_context']){
+  const handler=createHandler(env,async(url,options)=>{assert.equal(url,'https://crm.example/rest/v1/rpc/samascan_followup_api');assert.equal(JSON.parse(options.body).action,action);return Response.json({ok:false,code:'forbidden'});});
+  assert.equal((await handler(req({action,token,payload:{}}))).status,403);
+  assert.equal((await handler(req({action,token:'invalid',payload:{}}))).status,401);
+ }
+ for(const [code,status] of [['next_required',400],['followup_time',400],['followup_exists',409]]){
+  const handler=createHandler(env,async()=>Response.json({ok:false,code,private_debug:'never disclose'}));
+  const response=await handler(req({action:'record_followup',token,payload:{}}));
+  assert.equal(response.status,status);assert.deepEqual(await response.json(),{ok:false,code});
+ }
+});
+
 test('physician actions reach only the referral RPC and enforce the same session gate',async()=>{
  for(const action of ['physician_options','physician_list','physician_detail','physician_save','visit_list','visit_save','physician_report']){
   let calls=0;

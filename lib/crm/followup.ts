@@ -1,4 +1,13 @@
 import type { CRMRecord } from "./types";
+import type { FollowupOutcome } from "./types";
+
+export const followupOutcomes: Record<FollowupOutcome, string> = {
+  reached: "تم التواصل",
+  no_answer: "لم يرد على التواصل",
+  needs_time: "طلب وقتًا أو متابعة لاحقة",
+  declined: "لا يرغب في استكمال الطلب",
+};
+export type FollowupContext = { inquiry: CRMRecord; task: CRMRecord | null };
 
 export const followupBuckets = {
   all: "كل الحالات",

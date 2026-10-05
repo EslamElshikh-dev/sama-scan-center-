@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarDays, Check, ChevronLeft, ChevronRight, ClipboardList, Link2, ListChecks, LoaderCircle, MessageCircle, Phone, RefreshCw, UserRound } from "lucide-react";
+import { CalendarDays, Check, ChevronLeft, ChevronRight, ClipboardList, Link2, ListChecks, LoaderCircle, MessageCircle, Phone, PhoneCall, RefreshCw, UserRound } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { crmRequest } from "@/lib/crm/client";
-import { followupBuckets, type FollowupBucket, type FollowupQueue as QueueData } from "@/lib/crm/followup";
+import { followupBuckets, type FollowupBucket, type FollowupContext, type FollowupQueue as QueueData } from "@/lib/crm/followup";
 import { appointmentStatuses, displayDate, sources, stages, type CRMRecord, type TeamMember } from "@/lib/crm/types";
+import { FollowupRecorder } from "./followup-recorder";
 
 function AppointmentLinker({ appointment, onClose, onLinked }: { appointment: CRMRecord; onClose: () => void; onLinked: () => void }) {
   const [rows, setRows] = useState<CRMRecord[]>([]);
@@ -51,7 +52,7 @@ export function FollowupQueue({ revision, staff, onEditInquiry, onEditAppointmen
   onFollow: (record: CRMRecord) => void;
   onBook: (record: CRMRecord) => void;
   onOpenContact: (id: string) => void;
-  onChanged: () => void;
+  onChanged: (message: string) => void;
 }) {
   const [bucket, setBucket] = useState<FollowupBucket>("all");
   const [page, setPage] = useState(1);
@@ -60,6 +61,7 @@ export function FollowupQueue({ revision, staff, onEditInquiry, onEditAppointmen
   const [loadedKey, setLoadedKey] = useState("");
   const [error, setError] = useState("");
   const [linking, setLinking] = useState<CRMRecord | null>(null);
+  const [recording, setRecording] = useState<FollowupContext | null>(null);
   const requestKey = JSON.stringify([bucket, page, revision, retry]);
   const loading = loadedKey !== requestKey;
   useEffect(() => {
@@ -87,13 +89,14 @@ export function FollowupQueue({ revision, staff, onEditInquiry, onEditAppointmen
           </div>
           <div className="crm-queue-context">{item.entity === "inquiries" ? <><span>{sources[row.source || ""]} · {stages[row.stage || ""]}</span><small>أُضيف {displayDate(row.created_at)}</small><small><UserRound size={13} />{owner || "غير معيّن"}</small>{item.nextTask && <small>المتابعة: {displayDate(item.nextTask.due_at)}</small>}</> : <><span>{displayDate(row.starts_at)}</span><small>{appointmentStatuses[row.status || ""] || row.status}</small></>}</div>
           <div className="crm-queue-actions">{row.phone && <div className="crm-phone-actions"><a href={`tel:${row.phone}`} aria-label="اتصال هاتفي"><Phone size={16} /></a><a href={`https://wa.me/${row.phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" aria-label="فتح واتساب"><MessageCircle size={16} /></a></div>}
-            {item.entity === "inquiries" ? <><button className="crm-edit" onClick={() => onEditInquiry(row)}><ClipboardList size={15} />تحديث الطلب</button><button className="crm-edit" onClick={() => item.nextTask ? onEditTask(item.nextTask) : onFollow(row)}><ListChecks size={15} />{item.nextTask ? "تحديث المتابعة" : "جدولة متابعة"}</button>{["new", "contacting", "waiting", "cancelled"].includes(row.stage || "") && <button className="crm-book" onClick={() => onBook(row)}><CalendarDays size={15} />حجز موعد</button>}</> : <><button className="crm-edit" onClick={() => onEditAppointment(row)}><Check size={15} />تحديث الموعد</button>{item.flags.includes("unlinked") && <button className="crm-book" onClick={() => setLinking(row)}><Link2 size={15} />ربط بطلب</button>}</>}
+            {item.entity === "inquiries" ? <><button className="crm-book" onClick={() => setRecording({ inquiry: row, task: item.nextTask })}><PhoneCall size={15} />تسجيل نتيجة</button><button className="crm-edit" onClick={() => onEditInquiry(row)}><ClipboardList size={15} />تحديث الطلب</button><button className="crm-edit" onClick={() => item.nextTask ? onEditTask(item.nextTask) : onFollow(row)}><ListChecks size={15} />{item.nextTask ? "تعديل المتابعة" : "جدولة متابعة"}</button>{["new", "contacting", "waiting", "cancelled"].includes(row.stage || "") && <button className="crm-book" onClick={() => onBook(row)}><CalendarDays size={15} />حجز موعد</button>}</> : <><button className="crm-edit" onClick={() => onEditAppointment(row)}><Check size={15} />تحديث الموعد</button>{item.flags.includes("unlinked") && <button className="crm-book" onClick={() => setLinking(row)}><Link2 size={15} />ربط بطلب</button>}</>}
           </div>
         </article>;
       })}</div> : <p className="crm-queue-empty"><ListChecks size={22} />{bucket === "all" ? "لا توجد حالات تحتاج إجراء حاليًا." : "لا توجد حالات في هذا التصنيف."}</p>}
       {data.total > data.pageSize && <div className="crm-pagination"><span>{data.total} سجلًا في التصنيف</span><div><button aria-label="حالات المتابعة السابقة" disabled={page <= 1} onClick={() => setPage(value => value - 1)}><ChevronRight size={18} /></button><span>{page} / {Math.ceil(data.total / data.pageSize)}</span><button aria-label="حالات المتابعة التالية" disabled={page * data.pageSize >= data.total} onClick={() => setPage(value => value + 1)}><ChevronLeft size={18} /></button></div></div>}
       <p className="crm-report-note">كل سجل يظهر مرة في القائمة، وقد ينتمي لأكثر من تصنيف. مراجعة الإلغاء وعدم الحضور تشمل آخر 30 يومًا.</p>
     </>}
-    {linking && <AppointmentLinker appointment={linking} onClose={() => setLinking(null)} onLinked={() => { setLinking(null); onChanged(); }} />}
+    {linking && <AppointmentLinker appointment={linking} onClose={() => setLinking(null)} onLinked={() => { setLinking(null); onChanged("تم ربط الموعد بطلبه الموثّق"); }} />}
+    {recording && <FollowupRecorder context={recording} staff={staff} onClose={() => setRecording(null)} onSaved={() => { setRecording(null); onChanged("تم تسجيل نتيجة التواصل والخطوة التالية"); }} />}
   </section>;
 }

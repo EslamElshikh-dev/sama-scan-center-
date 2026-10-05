@@ -16,7 +16,7 @@ export type PhysicianVisit={
  next_followup_at:string|null;followup_status:"not_needed"|"open"|"done";completed_at?:string|null;
  created_at?:string;updated_at?:string;
 };
-export type PhysicianDetail={physician:Physician;visits:PhysicianVisit[];stats:{referrals:number;booked:number;attended:number;last_referral_at:string|null}};
+export type PhysicianDetail={physician:Physician;visits:PhysicianVisit[];stats:{referrals:number;booked:number;attended:number;completed:number;last_referral_at:string|null}};
 export type PhysicianReportRow=PhysicianOption & {district:string;referrals:number;booked:number;attended:number;completed:number;visits:number;last_referral_at:string|null;relationship_status:keyof typeof relationshipStatuses};
 export type PhysicianReport={
  from:string;to:string;dormant_days:number;rows:PhysicianReportRow[];total:number;page:number;updatedAt:string;unlinkedReferrals:number;
