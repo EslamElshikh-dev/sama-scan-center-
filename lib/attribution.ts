@@ -124,13 +124,13 @@ function createAttribution(): SessionAttribution {
 
   return {
     channel: classifyTraffic({
-      source,
+      source: hasGoogleClickId && !explicitSource ? "google" : source,
       medium,
       campaign,
       referrerHost: externalReferrerHost,
       hasGoogleClickId,
     }),
-    source,
+    source: hasGoogleClickId && !explicitSource ? "google" : source,
     medium,
     campaign,
     content,
@@ -170,7 +170,7 @@ export function getSessionAttribution(): SessionAttribution {
   const params = new URLSearchParams(window.location.search);
   const stored = readStoredAttribution();
 
-  if (stored && !hasCampaignParameters(params)) return stored;
+  if (stored && (!hasCampaignParameters(params) || !params.has("utm_source"))) return stored;
 
   const current = createAttribution();
   storeAttribution(current);
@@ -182,6 +182,8 @@ export function clearAttributionParametersFromAddressBar() {
   let changed = false;
 
   for (const parameter of ATTRIBUTION_QUERY_PARAMETERS) {
+    // Keep Ads click identifiers until the Google tag can read them.
+    if (["gclid", "gbraid", "wbraid", "gad_source", "gad_campaignid"].includes(parameter)) continue;
     if (!url.searchParams.has(parameter)) continue;
     url.searchParams.delete(parameter);
     changed = true;
@@ -224,7 +226,7 @@ export function sendAnalyticsEvent(
 ) {
   window.dataLayer ??= [];
   if (window.gtag) {
-    window.gtag("event", eventName, parameters);
+    window.gtag("event", eventName, { ...parameters, send_to: "analytics" });
     return;
   }
   window.dataLayer.push({ event: eventName, ...parameters });

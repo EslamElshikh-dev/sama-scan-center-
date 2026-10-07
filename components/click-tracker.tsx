@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { sendContactConversion } from "@/lib/google-ads";
 import {
   clearAttributionParametersFromAddressBar,
   getAnalyticsAttribution,
@@ -56,6 +57,7 @@ export function ClickTracker() {
         ...getAnalyticsAttribution(attribution),
       };
       sendAnalyticsEvent("cta_click", eventData);
+      sendContactConversion(destination);
     };
 
     document.addEventListener("click", handleClick, { passive: true });

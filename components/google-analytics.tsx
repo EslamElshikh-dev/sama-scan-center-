@@ -2,14 +2,15 @@ import Script from "next/script";
 
 const measurementId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 const isValidMeasurementId = /^G-[A-Z0-9]+$/.test(measurementId ?? "");
+const adsId = "AW-18360481022";
 
 export function GoogleAnalytics() {
-  if (!measurementId || !isValidMeasurementId) return null;
+  const analyticsId = isValidMeasurementId ? measurementId : undefined;
 
   return (
     <>
       <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
+        src={`https://www.googletagmanager.com/gtag/js?id=${analyticsId ?? adsId}`}
         strategy="afterInteractive"
       />
       <Script id="google-analytics" strategy="afterInteractive">
@@ -17,7 +18,8 @@ export function GoogleAnalytics() {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${measurementId}', { send_page_view: true });
+          ${analyticsId ? `gtag('config', '${analyticsId}', { send_page_view: true, groups: 'analytics', allow_google_signals: false, allow_ad_personalization_signals: false });` : ""}
+          gtag('config', '${adsId}', { send_page_view: false, groups: 'ads', allow_ad_personalization_signals: false });
         `}
       </Script>
     </>
