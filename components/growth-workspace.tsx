@@ -23,7 +23,7 @@ export default function GrowthWorkspace() {
   const [rankResult, setRankResult] = useState("found");
   useEffect(() => {
     const c = new AbortController();
-    crmRequest<Inventory>("growth_list", {}, c.signal).then(r => { if (!c.signal.aborted) { setInventory(r); setError(""); setLoaded(revision); } }).catch(e => { if (!c.signal.aborted) { setError(e.message); setLoaded(revision); } });
+    crmRequest<Inventory>("growth_list", {}, c.signal).then(r => { if (!c.signal.aborted) { setInventory(r); setForm(f => f.kind === "service" && f.version === 0 ? r.content.find(x => x.kind === f.kind && x.id === f.id) || f : f); setError(""); setLoaded(revision); } }).catch(e => { if (!c.signal.aborted) { setError(e.message); setLoaded(revision); } });
     return () => c.abort();
   }, [revision]);
   function choose(kind: MedicalContent["kind"], id: string) { setForm(inventory?.content.find(x => x.kind === kind && x.id === id) || blank(kind, id)); setAttested(false); setError(""); setNotice(""); }
