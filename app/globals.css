@@ -4980,3 +4980,5 @@ body {
     animation: none;
   }
 }
+
+.verified-lines{white-space:pre-line}.verified-device{margin-top:28px}.verified-device img{width:100%;height:auto;border-radius:20px}.verified-device figcaption{margin-top:10px;color:var(--muted);font-size:14px}.verified-service{background:#f3f9f8}

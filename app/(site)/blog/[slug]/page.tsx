@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { blogPosts, getBlogImage, getBlogPost, getRelatedBlogPosts } from "@/lib/blog";
 import { createPageMetadata } from "@/lib/metadata";
+import { getVerifiedContent } from "@/lib/verified-content";
 import { services, site } from "@/lib/site";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -30,6 +31,9 @@ export default async function BlogPostPage({ params }: Props) {
   const post = getBlogPost(slug);
   if (!post) notFound();
 
+  const verified = await getVerifiedContent();
+  const review = verified.find(x => x.kind === "review" && x.id === `review-${post.slug}` && x.data.contentVersion === post.modified && x.data.reviewedAt >= post.modified);
+  const reviewer = review && verified.find(x => x.kind === "clinician" && x.id === review.data.reviewerId);
   const relatedServices = services.filter((service) => post.relatedServices.includes(service.slug));
   const relatedArticles = getRelatedBlogPosts(post);
   const articleImage = getBlogImage(post);
@@ -43,6 +47,7 @@ export default async function BlogPostPage({ params }: Props) {
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
+      ...(review && reviewer ? [{ "@type": "MedicalWebPage", "@id": articleUrl, url: articleUrl, lastReviewed: review.data.reviewedAt, reviewedBy: { "@type": "Person", name: reviewer.data.name, jobTitle: reviewer.data.specialty, url: `${site.siteUrl}/about#clinician-${reviewer.id}` } }] : []),
       {
         "@type": "BlogPosting",
         "@id": `${articleUrl}#article`,
@@ -116,6 +121,7 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </section>
 
+      {review && reviewer && <section className="article-trust-bar" aria-label="المراجعة الطبية الفعلية"><div className="container"><span>مراجعة طبية: <Link href={`/about#clinician-${reviewer.id}`}>{reviewer.data.name}</Link> · {reviewer.data.specialty}</span><span>تاريخ المراجعة: <time dateTime={review.data.reviewedAt}>{review.data.reviewedAt}</time></span></div></section>}
       <section className="article-trust-bar" aria-label="معايير المحتوى الطبي">
         <div className="container">
           <span>محتوى تثقيفي واضح</span>

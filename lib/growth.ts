@@ -1,0 +1,9 @@
+export const contactMethods: Record<string, string> = { phone: "اتصال هاتفي", whatsapp: "واتساب", website_form: "نموذج الموقع", walk_in: "زيارة للمركز", other: "أخرى", unknown: "غير موثّق" };
+export const acquisitionChannels: Record<string, string> = { google_business_profile: "ملف Google والخرائط", google_organic: "بحث Google", google_ads: "إعلانات Google", social: "التواصل الاجتماعي", referral: "إحالة من موقع", campaign: "حملة أخرى", direct: "زيارة مباشرة للموقع", unknown: "غير معروف" };
+export const neighborhoods = ["المربع", "الملز", "العليا", "السليمانية"] as const;
+export type MedicalContent = { id: string; kind: "service" | "clinician" | "review"; data: Record<string, string>; status: "draft" | "approved"; evidence: string; confirmed_by: string; confirmed_at: string; version: number };
+export type PublicContent = Pick<MedicalContent, "id" | "kind" | "data"> & { confirmedAt: string };
+export type MapObservation = { id: string; neighborhood: string; point_label: string; latitude: number; longitude: number; query: string; device: string; language: string; measured_at: string; rank: number | null; depth: number; evidence_url: string; method: string };
+export type GBPPeriod = { date_from: string; date_to: string; calls: number; website: number; directions: number; source: string; imported_at: string; version: number };
+export type WeeklyRow = { channel: string; source: string; contact_method: string; requests: number; reached: number; booked: number; confirmed: number; attended: number; completed: number };
+export type WeeklyPeriod = { date_from: string; date_to: string; google: GBPPeriod | null; rows: WeeklyRow[] | null; unlinked: number };

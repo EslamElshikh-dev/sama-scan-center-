@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ArrowUpLeft, BarChart3, CalendarDays, ChartNoAxesCombined, ChevronLeft, ClipboardList, ContactRound, Globe2, LayoutDashboard, ListChecks, LockKeyhole, MapPin, Megaphone, MessageCircle, MoreHorizontal, Search, Send, Sparkles, Stethoscope, UsersRound, X } from "lucide-react";
+import { ArrowUpLeft, BarChart3, CalendarDays, ChartNoAxesCombined, ChevronLeft, ClipboardList, ContactRound, Globe2, LayoutDashboard, ListChecks, LockKeyhole, MapPin, Megaphone, MessageCircle, MoreHorizontal, Search, Send, Sparkles, ShieldCheck as ShieldIcon, Stethoscope, UsersRound, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import type { Role } from "@/lib/crm/types";
@@ -21,6 +21,7 @@ export const dashboardNavigation = [
   { id: "website", title: "أداء الموقع", short: "الموقع", description: "الظهور والنقرات في نتائج البحث", icon: Globe2, tone: "blue" },
   { id: "ads", title: "قياس الإعلانات", short: "الإعلانات", description: "تخطيط الحملات وأهداف الميزانية والتواصل", icon: Megaphone, tone: "gold" },
   { id: "competitors", title: "مشهد المنافسة", short: "المنافسون", description: "الخدمات وطريقة عرضها لدى جهات المقارنة", icon: UsersRound, tone: "violet" },
+  { id: "growth", title: "اعتماد الموقع والخرائط", short: "الاعتماد", description: "الفحوص والفريق والمراجعة الطبية وقياسات الأحياء", icon: ShieldIcon, tone: "teal" },
   { id: "improvements", title: "فرص التحسين", short: "التحسين", description: "أولويات عملية لتطوير حضور المركز", icon: Sparkles, tone: "gold" },
   { id: "publisher", title: "النشر الجماعي", short: "المحتوى", description: "إعداد المنشورات ومعاينة توزيع المحتوى", icon: Send, tone: "coral" },
   { id: "channels", title: "قنوات المركز", short: "القنوات", description: "مساحة القنوات الاجتماعية ومصادر الأداء", icon: MessageCircle, tone: "teal" },
@@ -28,12 +29,12 @@ export const dashboardNavigation = [
 export type DashboardView = typeof dashboardNavigation[number]["id"];
 export const crmViews: readonly string[] = ["today", "contacts", "inquiries", "appointments", "followups", "crmreports", "team"];
 export const referralViews: readonly string[] = ["physicians", "physicianvisits", "physicianreports"];
-export const canView = (role:Role,id:string) => dashboardNavigation.some(n=>n.id===id) && (role === "admin" || (role === "marketing" ? !crmViews.includes(id) : crmViews.includes(id) && id !== "team"));
+export const canView = (role:Role,id:string) => dashboardNavigation.some(n=>n.id===id) && (id!=="growth" || role==="admin") && (role === "admin" || (role === "marketing" ? !crmViews.includes(id) : crmViews.includes(id) && id !== "team"));
 const groups = [
   { label: "إدارة المركز", caption: "WORKSPACE", ids: ["today", "contacts", "inquiries", "appointments", "followups", "crmreports"] },
   { label: "علاقات الأطباء", caption: "PHYSICIANS", ids: ["physicians", "physicianvisits", "physicianreports"] },
   { label: "الأداء والنمو", caption: "GROWTH", ids: ["overview", "google", "website", "ads", "competitors"] },
-  { label: "المحتوى والتحسين", caption: "CONTENT", ids: ["improvements", "publisher", "channels"] },
+  { label: "المحتوى والتحسين", caption: "CONTENT", ids: ["growth", "improvements", "publisher", "channels"] },
   { label: "إدارة النظام", caption: "ADMIN", ids: ["team"] },
 ];
 const normalize = (s:string) => s.toLowerCase().replace(/[أإآ]/g,"ا").replace(/[\u064B-\u065F]/g,"").trim();
@@ -53,7 +54,7 @@ export function MobileDock({view,role,onSelect}:NavigationProps) {
   return <nav className="studio-mobile-dock" aria-label="التنقل السريع للجوال">{ids.map(id=>{const n=dashboardNavigation.find(n=>n.id===id)!;return <button type="button" key={id} aria-current={view===id?"page":undefined} className={view===id?"is-active":""} onClick={()=>onSelect(n.id)}><span><n.icon size={20}/></span><small>{n.short}</small></button>;})}<button type="button" onClick={()=>setOpenMobile(true)} aria-label="عرض كل الأقسام" aria-expanded={openMobile}><span><MoreHorizontal size={21}/></span><small>المزيد</small></button></nav>;
 }
 export function SectionRoutes({view,role,onSelect}:NavigationProps) {
-  const ids=referralViews.includes(view)?["physicians","physicianvisits","physicianreports"]:crmViews.includes(view)?["today","contacts","inquiries","appointments","followups","crmreports","team"]:["overview","google","website","ads","competitors","improvements","publisher","channels"];
+  const ids=referralViews.includes(view)?["physicians","physicianvisits","physicianreports"]:crmViews.includes(view)?["today","contacts","inquiries","appointments","followups","crmreports","team"]:["overview","google","website","ads","competitors","growth","improvements","publisher","channels"];
   return <nav className="studio-section-routes" aria-label="المسارات المرتبطة بالقسم"><span className="studio-route-label">مساراتك</span><div>{dashboardNavigation.filter(n=>ids.includes(n.id)&&canView(role,n.id)).map(n=><button key={n.id} type="button" aria-current={n.id===view?"page":undefined} onClick={()=>onSelect(n.id)} className={n.id===view?"is-active":""}><n.icon size={15}/><span>{n.short}</span></button>)}</div></nav>;
 }
 export function RoutePalette({role,onClose,onSelect}:{role:Role;onClose:()=>void;onSelect:(view:DashboardView)=>void}) {

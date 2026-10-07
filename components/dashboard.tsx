@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { snapshot, percentChange } from "@/lib/dashboard/snapshot";
 import { GoogleComparisonChart, SearchChart, CompetitorMixChart } from "@/components/dashboard-charts";
 
+import GrowthWorkspace from "@/components/growth-workspace";
 import CRMWorkspace from "@/components/crm/workspace";
 import ReferralsWorkspace from "@/components/referrals/workspace";
 import type { ReferralView } from "@/lib/crm/referrals";
@@ -116,6 +117,7 @@ export default function Dashboard({user}:{user:User}) {
       <form action="/api/dashboard/logout" method="post"><button className="studio-logout" type="submit" aria-label="تسجيل الخروج" title="تسجيل الخروج"><LogOut size={17}/><span>خروج</span></button></form><button className="icon-button" onClick={() => setHelp(true)} aria-label="تعريف المقاييس"><CircleHelp size={20}/></button></div></header>
       <main id="dashboard-workspace" className="workspace"><div className="page-heading"><div className="studio-heading-content"><span className={`studio-heading-icon nav-tone-${active.tone}`}><active.icon size={26}/></span><div><span className="eyebrow">SAMA SCAN · {(isCRM||isReferrals)?"RELATIONSHIP MANAGEMENT":"DIGITAL GROWTH"}</span><h1>{view==="today"?"يومك أوضح، وفريقك أقرب":view === "overview" ? "صورة أوضح لأداء المركز" : active.title}</h1><p>{isReferrals?"علاقات مهنية أوضح، وزيارات منظّمة، ونتائج إحالات قابلة للقياس.":isCRM?"تواصل أوضح، مواعيد منظّمة، ومتابعة لكل خطوة.":view === "publisher" ? "تجربة توزيع منشور واحد على قنوات المركز." : "أرقام الأداء، الاتجاهات، وخطوات النمو في مساحة واحدة."}</p></div></div>{!isCRM&&!isReferrals&&view !== "publisher" && <button className="button primary" onClick={() => setView("publisher")}><Send size={17}/> النشر الجماعي</button>}{(isCRM||isReferrals)&&<div className="studio-date-card"><span className="studio-date-icon"><CalendarDays size={20}/></span><div><small>توقيت الرياض</small><strong suppressHydrationWarning>{todayLabel||"يوم جديد، فرص جديدة"}</strong></div></div>}</div>
       <SectionRoutes view={view} role={user.role} onSelect={setView}/>
+      {view === "growth" && <GrowthWorkspace/>}
       {isCRM&&<CRMWorkspace key={`${view}:${crmInitialFilter}`} view={view as CRMView} user={user} initialFilter={crmInitialFilter} onNavigate={setView}/>}
       {isReferrals&&<ReferralsWorkspace key={view} view={view as ReferralView} user={user}/>}
       {view === "overview" && <div className="snapshot-hero"><div><span className="hero-kicker">لوحة أداء سما سكان</span><h2>نمو الظهور والتواصل، بصورة أوضح.</h2><p>الملف التجاري · بحث الموقع · خطة التحسين</p></div><div className="hero-date"><CalendarDays size={18}/><span>آخر بيانات<br/><strong>{date(snapshot.issued)}</strong></span></div></div>}

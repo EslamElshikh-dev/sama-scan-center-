@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { VerifiedMedicalTeam } from "@/components/verified-medical-content";
 import { CtaSection } from "@/components/cta-section";
 import { Icon } from "@/components/icons";
 import { PageHero } from "@/components/page-hero";
@@ -114,6 +115,7 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <VerifiedMedicalTeam/>
       <section className="section editorial-standards" aria-labelledby="editorial-heading">
         <div className="container article-layout">
           <div className="section-head">

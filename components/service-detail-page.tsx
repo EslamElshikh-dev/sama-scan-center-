@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { VerifiedServiceDetails } from "@/components/verified-medical-content";
 import { CtaSection } from "@/components/cta-section";
 import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
@@ -30,6 +31,7 @@ export type ServicePageContent = {
 
 export function ServiceDetailPage({ content }: { content: ServicePageContent }) {
   const { service } = content;
+  const serviceWhatsapp = `https://wa.me/${site.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(`مرحبًا، أريد الاستفسار عن ${service.shortTitle}. أرجو تأكيد توفر الفحص حسب الإحالة، والتحضير، وطريقة ووقت استلام الصور والتقرير قبل الحجز.`)}`;
   const related = services.filter((item) => item.slug !== service.slug).slice(0, 3);
   const relatedArticles = blogPosts
     .filter((post) => post.relatedServices.includes(service.slug))
@@ -138,7 +140,7 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
             </Link>
             <a
               className="button"
-              href={site.whatsapp}
+              href={serviceWhatsapp}
               target="_blank"
               rel="noopener noreferrer"
               data-cta={`service_${service.slug}_whatsapp`}
@@ -156,6 +158,7 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
         </div>
       </section>
 
+      <VerifiedServiceDetails slug={service.slug}/>
       <section className="section service-booking-info" aria-labelledby="booking-info-heading">
         <div className="container">
           <div className="section-head centered">
@@ -166,8 +169,8 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
           <div className="booking-info-grid">
             <article>
               <span>01</span>
-              <h3>تأكيد توفر الفحص</h3>
-              <p>أرسل اسم {service.shortTitle} والمنطقة المطلوب تصويرها كما وردا في الإحالة لتأكيد التوفر والموعد.</p>
+              <h3>طلب الحجز وتأكيد التوفر</h3>
+              <p>أرسل اسم {service.shortTitle} والمنطقة المطلوب تصويرها كما وردا في الإحالة لتأكيد التوفر والموعد. نموذج الحجز يحفظ الطلب ويصدر رقم متابعة؛ الموعد ينتظر تأكيد الاستقبال.</p>
             </article>
             <article>
               <span>02</span>
@@ -186,7 +189,7 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
             </article>
           </div>
           <div className="booking-info-actions">
-            <a className="button" href={site.whatsapp} target="_blank" rel="noopener noreferrer" data-cta={`service_${service.slug}_booking_info_whatsapp`}>
+            <a className="button" href={serviceWhatsapp} target="_blank" rel="noopener noreferrer" data-cta={`service_${service.slug}_booking_info_whatsapp`}>
               <Icon name="whatsapp" width="19" height="19" /> أرسل طلب الفحص
             </a>
             <a className="button button-secondary" href={site.phoneDial} data-cta={`service_${service.slug}_booking_info_call`}>

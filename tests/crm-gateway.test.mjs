@@ -56,3 +56,12 @@ test('physician actions reach only the referral RPC and enforce the same session
   assert.equal((await handler(req({action,token:'forged'}))).status,401);assert.equal(calls,1);
  }
 });
+
+test('growth approvals and weekly reporting retain authoritative session and safe errors', async()=>{
+ for(const action of ['growth_list','growth_content_save','growth_maps_save','growth_gbp_save','growth_weekly']) {
+  let calls=0;
+  const handler=createHandler(env,async(url,options)=>{calls++;assert.equal(url,'https://crm.example/rest/v1/rpc/samascan_growth_api');assert.equal(JSON.parse(options.body).session_token,token);return Response.json({ok:false,code:'forbidden',evidence:'private'});});
+  const response=await handler(req({action,token}));assert.equal(response.status,403);assert.deepEqual(await response.json(),{ok:false,code:'forbidden'});
+  assert.equal((await handler(req({action,token:'forged'}))).status,401);assert.equal(calls,1);
+ }
+});
