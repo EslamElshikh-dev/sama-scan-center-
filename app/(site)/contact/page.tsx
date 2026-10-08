@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { LocationContactForm } from "@/components/location-contact-form";
 import { PageHero } from "@/components/page-hero";
+import { ContactFirstActions } from "@/components/contact-first-actions";
 import { createPageMetadata } from "@/lib/metadata";
 import { openingHours, site } from "@/lib/site";
 
@@ -19,9 +20,11 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
       <PageHero
         eyebrow="حجز فحص · الرياض، حي المربع"
         title="اطلب موعدك في سما سكان"
-        description="اختر الفحص واليوم والفترة المناسبين لك. يصل طلبك إلى الاستقبال، ثم نتواصل معك لتأكيد الموعد وتعليمات التحضير."
+        description="اتصل أو اسأل عبر واتساب عن سعر الفحص وأقرب موعد متاح. ويمكنك إرسال طلب حجز ليؤكده الاستقبال."
         breadcrumbs={[{ label: "تواصل وحجز", href: "/contact" }]}
-      />
+      >
+        <ContactFirstActions />
+      </PageHero>
 
       <section className="section booking-guide" aria-label="نموذج طلب الحجز">
         <div className="container article-layout">

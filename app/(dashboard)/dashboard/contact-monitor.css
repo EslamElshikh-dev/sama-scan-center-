@@ -1,0 +1,25 @@
+.contact-monitor { display:grid;gap:20px; }
+.contact-campaign { display:flex;justify-content:space-between;align-items:center;gap:24px; }
+.contact-campaign h2 { margin:7px 0; }
+.contact-campaign p { color:#526779; }
+.contact-channel-status { display:grid;gap:8px;font-size:13px;color:#245965; }
+.contact-channel-status span { padding:9px 12px;background:#edf8f6;border-radius:10px; }
+.contact-channel-status span:last-child { background:#fff7e8;color:#78511e; }
+.contact-monitor-toolbar { display:flex;flex-wrap:wrap;align-items:end;gap:10px; }
+.contact-monitor-toolbar label { display:grid;gap:5px;font-size:13px;color:#526779; }
+.contact-monitor-toolbar input { border:1px solid #ccdbe2;border-radius:9px;min-height:42px;padding:7px 10px;color:#1a3c4d;background:white; }
+.contact-monitor-status,.contact-monitor-footnote { color:#526779;font-size:13px;line-height:1.9;margin:0; }
+.contact-metrics-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px; }
+.contact-metrics-grid .metric p { color:#526779;font-size:12px;line-height:1.8;margin:9px 0 0; }
+.contact-table-wrap { overflow-x:auto; }
+.contact-results-table { width:100%;border-collapse:collapse;text-align:right;min-width:720px;font-size:13px; }
+.contact-results-table th,.contact-results-table td { padding:13px 10px;border-bottom:1px solid #e6edf0;vertical-align:middle; }
+.contact-results-table thead th { background:#f6fafb;color:#506579;font-weight:600;white-space:nowrap; }
+.contact-results-table small { display:block;color:#526779;max-width:240px;overflow-wrap:anywhere;margin-top:5px; }
+.contact-results-table code { font-size:12px;white-space:nowrap; }
+.contact-link-button,.contact-saved button { color:#087b8c;cursor:pointer;font-size:13px;text-decoration:underline;text-underline-offset:4px; }
+.contact-saved { display:flex;align-items:center;flex-wrap:wrap;gap:10px;border:1px solid #bee4d7;background:#f0faf5;padding:15px;border-radius:12px;color:#236348; }
+.contact-audit-snapshot summary { cursor:pointer;font-weight:600;color:#1c4254; }
+.contact-audit-snapshot p { color:#526779;font-size:14px;line-height:1.9;margin-top:15px; }
+@media(max-width:900px) { .contact-campaign { align-items:stretch;flex-direction:column;gap:14px; }.contact-metrics-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:480px) { .contact-metrics-grid { gap:10px; }.contact-metrics-grid .metric { padding:14px; }.contact-metrics-grid .metric-top { font-size:12px;gap:7px; }.contact-monitor-toolbar .button { flex:1;justify-content:center; }.contact-monitor-toolbar label { flex:1; } }

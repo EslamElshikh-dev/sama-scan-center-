@@ -80,8 +80,8 @@ export function LocationContactForm({ initialService = "" }: { initialService?: 
     <p>طلبك بانتظار تأكيد الموعد. سيتواصل معك الاستقبال لمراجعة توفر الفحص والوقت وتعليمات التحضير.</p>
     <p>الاستقبال من السبت إلى الخميس، 9 صباحًا إلى 9 مساءً.</p>
     <div className="button-row">
-      <a className="button" href={`https://wa.me/${site.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(`مرحبًا، أتابع طلب الحجز رقم ${reference}`)}`} target="_blank" rel="noopener noreferrer">متابعة عبر واتساب</a>
-      <a className="button button-secondary" href={site.phoneDial}>اتصل بالاستقبال</a>
+      <a className="button" href={`https://wa.me/${site.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(`مرحبًا، أتابع طلب الحجز رقم ${reference}`)}`} target="_blank" rel="noopener noreferrer" data-cta="booking_receipt_whatsapp">متابعة عبر واتساب</a>
+      <a className="button button-secondary" href={site.phoneDial} data-cta="booking_receipt_call">اتصل بالاستقبال</a>
     </div>
   </div>;
 
@@ -106,7 +106,7 @@ export function LocationContactForm({ initialService = "" }: { initialService?: 
       <p className="location-form-note" id="location-form-note">اليوم والفترة تفضيلات للحجز؛ يؤكد الاستقبال الموعد بعد مراجعة التوفر. الجمعة مغلق. لا تُرسل تقارير أو بيانات طبية حساسة هنا.</p>
       <label className="booking-consent"><input type="checkbox" name="consent" required /><span>أوافق على حفظ بيانات هذا الطلب والتواصل معي لترتيب الموعد وفق <Link href="/privacy">سياسة الخصوصية</Link>.</span></label>
     </fieldset>
-    {error && <p className="booking-error" role="alert">{error} <a href={site.phoneDial}>اتصل بالمركز</a></p>}
+    {error && <p className="booking-error" role="alert">{error} <a href={site.phoneDial} data-cta="booking_error_call">اتصل بالمركز</a></p>}
     <div className="location-form-actions"><button className="button" type="submit" disabled={busy}>{busy ? "جارٍ إرسال الطلب…" : "إرسال طلب الحجز"}</button></div>
   </form>;
 }

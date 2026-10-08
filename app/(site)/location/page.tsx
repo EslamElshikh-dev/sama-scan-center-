@@ -31,7 +31,7 @@ export default function LocationPage() {
             </article>
             <article>
               <Icon name="call" width="26" height="26" />
-              <div><span>الاتصال وواتساب</span><a href={site.phoneDial} dir="ltr">{site.phoneDisplay}</a></div>
+              <div><span>الاتصال وواتساب</span><a href={site.phoneDial} data-cta="location_phone" dir="ltr">{site.phoneDisplay}</a></div>
             </article>
             <article>
               <Icon name="clock" width="26" height="26" />

@@ -48,7 +48,7 @@ export function Header() {
                   {item.label}
                 </Link>
               ))}
-              <a href={site.phoneDial}>اتصل الآن</a>
+              <a href={site.phoneDial} data-cta="header_nav_call">اتصل الآن</a>
             </nav>
           </details>
         </div>

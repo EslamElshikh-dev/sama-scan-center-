@@ -19,7 +19,7 @@ export const dashboardNavigation = [
   { id: "overview", title: "ملخص التسويق", short: "الأداء", description: "نظرة تجمع الأداء الرقمي وفرص النمو", icon: BarChart3, tone: "teal" },
   { id: "google", title: "الملف التجاري", short: "Google", description: "تفاعل Google والاتصالات والاتجاهات", icon: MapPin, tone: "green" },
   { id: "website", title: "أداء الموقع", short: "الموقع", description: "الظهور والنقرات في نتائج البحث", icon: Globe2, tone: "blue" },
-  { id: "ads", title: "قياس الإعلانات", short: "الإعلانات", description: "تخطيط الحملات وأهداف الميزانية والتواصل", icon: Megaphone, tone: "gold" },
+  { id: "ads", title: "قياس الإعلانات", short: "الإعلانات", description: "ضغطات التواصل والتواصل الفعلي والحجوزات", icon: Megaphone, tone: "gold" },
   { id: "competitors", title: "مشهد المنافسة", short: "المنافسون", description: "الخدمات وطريقة عرضها لدى جهات المقارنة", icon: UsersRound, tone: "violet" },
   { id: "growth", title: "اعتماد الموقع والخرائط", short: "الاعتماد", description: "الفحوص والفريق والمراجعة الطبية وقياسات الأحياء", icon: ShieldIcon, tone: "teal" },
   { id: "improvements", title: "فرص التحسين", short: "التحسين", description: "أولويات عملية لتطوير حضور المركز", icon: Sparkles, tone: "gold" },
@@ -29,7 +29,7 @@ export const dashboardNavigation = [
 export type DashboardView = typeof dashboardNavigation[number]["id"];
 export const crmViews: readonly string[] = ["today", "contacts", "inquiries", "appointments", "followups", "crmreports", "team"];
 export const referralViews: readonly string[] = ["physicians", "physicianvisits", "physicianreports"];
-export const canView = (role:Role,id:string) => dashboardNavigation.some(n=>n.id===id) && (id!=="growth" || role==="admin") && (role === "admin" || (role === "marketing" ? !crmViews.includes(id) : crmViews.includes(id) && id !== "team"));
+export const canView = (role:Role,id:string) => dashboardNavigation.some(n=>n.id===id) && (id!=="growth" || role==="admin") && (role === "admin" || (role === "marketing" ? !crmViews.includes(id) : (crmViews.includes(id) && id !== "team" || id === "ads")));
 const groups = [
   { label: "إدارة المركز", caption: "WORKSPACE", ids: ["today", "contacts", "inquiries", "appointments", "followups", "crmreports"] },
   { label: "علاقات الأطباء", caption: "PHYSICIANS", ids: ["physicians", "physicianvisits", "physicianreports"] },

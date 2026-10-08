@@ -60,8 +60,8 @@ function safeHost(value: string) {
   }
 }
 
-function hasCampaignParameters(params: URLSearchParams) {
-  return ATTRIBUTION_QUERY_PARAMETERS.some((name) => params.has(name));
+function hasGoogleClickIdentifiers(params: URLSearchParams) {
+  return ["gclid", "gbraid", "wbraid", "gad_source", "gad_campaignid"].some(name => params.has(name));
 }
 
 function classifyTraffic({
@@ -114,13 +114,7 @@ function createAttribution(): SessionAttribution {
     (GOOGLE_HOST_PATTERN.test(externalReferrerHost) ? "organic" : "");
   const campaign = normalize(params.get("utm_campaign"));
   const content = normalize(params.get("utm_content"));
-  const hasGoogleClickId = [
-    "gclid",
-    "gbraid",
-    "wbraid",
-    "gad_source",
-    "gad_campaignid",
-  ].some((name) => params.has(name));
+  const hasGoogleClickId = hasGoogleClickIdentifiers(params);
 
   return {
     channel: classifyTraffic({
@@ -170,7 +164,7 @@ export function getSessionAttribution(): SessionAttribution {
   const params = new URLSearchParams(window.location.search);
   const stored = readStoredAttribution();
 
-  if (stored && (!hasCampaignParameters(params) || !params.has("utm_source"))) return stored;
+  if (stored && !params.has("utm_source") && (!hasGoogleClickIdentifiers(params) || stored.channel === "google_ads")) return stored;
 
   const current = createAttribution();
   storeAttribution(current);

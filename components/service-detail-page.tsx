@@ -5,6 +5,7 @@ import { CtaSection } from "@/components/cta-section";
 import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { PageHero } from "@/components/page-hero";
+import { ContactFirstActions } from "@/components/contact-first-actions";
 import { blogPosts } from "@/lib/blog";
 import { services, site, type Service } from "@/lib/site";
 
@@ -31,7 +32,7 @@ export type ServicePageContent = {
 
 export function ServiceDetailPage({ content }: { content: ServicePageContent }) {
   const { service } = content;
-  const serviceWhatsapp = `https://wa.me/${site.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(`مرحبًا، أريد الاستفسار عن ${service.shortTitle}. أرجو تأكيد توفر الفحص حسب الإحالة، والتحضير، وطريقة ووقت استلام الصور والتقرير قبل الحجز.`)}`;
+  const serviceWhatsapp = `https://wa.me/${site.phoneE164.replace(/\D/g, "")}?text=${encodeURIComponent(`مرحبًا سما سكان، كم سعر فحص ${service.shortTitle} وما أقرب موعد متاح؟`)}`;
   const related = services.filter((item) => item.slug !== service.slug).slice(0, 3);
   const relatedArticles = blogPosts
     .filter((post) => post.relatedServices.includes(service.slug))
@@ -99,7 +100,9 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
           { label: "خدمات الأشعة", href: "/services" },
           { label: service.shortTitle, href: `/services/${service.slug}` },
         ]}
-      />
+      >
+        <ContactFirstActions service={service.shortTitle} slug={service.slug} />
+      </PageHero>
 
       <section className="section service-overview">
         <div className="container article-layout">

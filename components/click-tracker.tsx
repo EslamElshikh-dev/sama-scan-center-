@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { sendContactConversion } from "@/lib/google-ads";
+import { recordContactClick } from "@/lib/contact-events";
 import {
   clearAttributionParametersFromAddressBar,
   getAnalyticsAttribution,
@@ -14,6 +15,7 @@ export function ClickTracker() {
   useEffect(() => {
     getSessionAttribution();
     clearAttributionParametersFromAddressBar();
+    let lastClick = { cta: "", at: 0 };
 
     const handleClick = (event: MouseEvent) => {
       if (!(event.target instanceof Element)) return;
@@ -37,15 +39,21 @@ export function ClickTracker() {
                 ? "external"
                 : "button";
 
+      const cta = target.dataset.cta ?? "contact";
+      if (lastClick.cta === cta && Date.now() - lastClick.at < 1200) return;
+      lastClick = { cta, at: Date.now() };
+      const reference = destination === "phone" || destination === "whatsapp"
+        ? recordContactClick(destination, cta, attribution) : "";
       if (anchor && destination === "whatsapp") {
         const whatsappUrl = new URL(anchor.href);
         const currentMessage = whatsappUrl.searchParams.get("text") ?? "";
         const messageWithoutOldSource = currentMessage
           .replace(/\n?مصدر الطلب:[^\n]*/g, "")
+          .replace(/\n?مرجع التواصل:[^\n]*/g, "")
           .trim();
         whatsappUrl.searchParams.set(
           "text",
-          `${messageWithoutOldSource}\nمصدر الطلب: ${getAttributionLabel(attribution)}`.trim(),
+          `${messageWithoutOldSource}\nمصدر الطلب: ${getAttributionLabel(attribution)}\nمرجع التواصل: ${reference}`.trim(),
         );
         anchor.href = whatsappUrl.toString();
       }
