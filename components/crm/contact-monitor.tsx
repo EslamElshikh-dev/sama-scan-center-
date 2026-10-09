@@ -5,6 +5,7 @@ import { CalendarCheck, MessageCircle, Phone, RefreshCw, Plus, LoaderCircle, Che
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { crmRequest } from "@/lib/crm/client";
 import { displayDate, riyadhDay, trafficLabels, type User } from "@/lib/crm/types";
+import ContactDailyReport, { type ContactDailyData } from "./contact-daily-report";
 
 type Counts = { phone_clicks: number; whatsapp_clicks: number; phone_sessions: number; whatsapp_sessions: number;
   confirmed_calls: number; confirmed_whatsapp: number; booking_requests: number; booked: number; attended: number };
@@ -54,10 +55,12 @@ function ReceivedContactForm({ reference, kind, onClose, onSaved }: {
 }
 
 export default function ContactMonitor({ user, onNavigate }: { user: User; onNavigate: (view: "inquiries") => void }) {
-  const [from, setFrom] = useState("2026-10-07");
+  const [from, setFrom] = useState(riyadhDay);
   const [to, setTo] = useState(riyadhDay);
   const [refresh, setRefresh] = useState(0);
   const [data, setData] = useState<ContactData | null>(null);
+  const [daily, setDaily] = useState<ContactDailyData | null>(null);
+  const [dailyError, setDailyError] = useState("");
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const [editor, setEditor] = useState<{ reference: string; kind: "phone" | "whatsapp" } | null>(null);
@@ -68,8 +71,16 @@ export default function ContactMonitor({ user, onNavigate }: { user: User; onNav
       if (document.hidden || running || controller.signal.aborted) return;
       running = true;
       try {
-        const result = await crmRequest<{ data: ContactData }>("contact_metrics", { from, to }, controller.signal);
-        if (!controller.signal.aborted) { setData(result.data); setError(""); }
+        const [metrics, report] = await Promise.allSettled([
+          crmRequest<{ data: ContactData }>("contact_metrics", { from, to }, controller.signal),
+          crmRequest<{ data: ContactDailyData }>("contact_daily_report", { from, to }, controller.signal),
+        ]);
+        if (!controller.signal.aborted) {
+          if (metrics.status === "fulfilled") { setData(metrics.value.data); setError(""); }
+          else setError(metrics.reason instanceof Error ? metrics.reason.message : "تعذّر تحديث القياس");
+          if (report.status === "fulfilled") { setDaily(report.value.data); setDailyError(""); }
+          else setDailyError(report.reason instanceof Error ? report.reason.message : "تعذّر تحديث المطابقة");
+        }
       } catch (error) {
         if (!controller.signal.aborted) setError(error instanceof Error ? error.message : "تعذّر تحديث البيانات");
       } finally {
@@ -82,6 +93,8 @@ export default function ContactMonitor({ user, onNavigate }: { user: User; onNav
     return () => { controller.abort(); clearTimeout(timer); document.removeEventListener("visibilitychange", visible); };
   }, [from, to, refresh]);
   const current = data?.from === from && data.to === to ? data : null;
+  const currentDaily = daily?.from === from && daily.to === to ? daily : null;
+  const selectDay = (offset: number) => { const day = riyadhDay(new Date(Date.now() - offset * 86400000)); setFrom(day); setTo(day); };
   return <div className="contact-monitor">
     <section className="panel contact-campaign">
       <div><span className="eyebrow">حملة بحث سما سكان · الرياض بالكامل</span><h2>من الضغطة إلى التواصل والحجز</h2><p>متوسط الميزانية اليومية <strong>٥٠ ريالًا</strong> · الاتصال والواتساب: <b dir="ltr">0559617558</b></p></div>
@@ -90,12 +103,16 @@ export default function ContactMonitor({ user, onNavigate }: { user: User; onNav
     <div className="contact-monitor-toolbar">
       <label>من <input aria-label="بداية فترة القياس" type="date" value={from} max={to} onChange={event => setFrom(event.target.value)}/></label>
       <label>إلى <input aria-label="نهاية فترة القياس" type="date" value={to} min={from} max={riyadhDay()} onChange={event => setTo(event.target.value)}/></label>
-      <button className="button outline" onClick={() => { setFrom(riyadhDay()); setTo(riyadhDay()); }}>اليوم</button>
+      <button className="button outline" onClick={() => selectDay(0)}>اليوم</button>
+      <button className="button outline" onClick={() => selectDay(1)}>أمس</button>
+      <button className="button outline" onClick={() => selectDay(2)}>أول أمس</button>
+      <button className="button outline" onClick={() => { setFrom(riyadhDay(new Date(Date.now() - 2 * 86400000))); setTo(riyadhDay(new Date(Date.now() - 86400000))); }}>قارن آخر يومين مكتملين</button>
       <button className="button outline" aria-label="تحديث القياس" onClick={() => setRefresh(value => value + 1)}><RefreshCw size={16}/> تحديث</button>
       {canRecord && <button className="button primary" onClick={() => { setSaved(false); setEditor({ reference: "", kind: "phone" }); }}><Plus size={17}/> سجّل تواصلًا واردًا</button>}
     </div>
     <p className="contact-monitor-status" role="status">{error ? `تعذّر التحديث: ${error}. الأرقام الظاهرة هي آخر بيانات محفوظة.` : current ? `آخر تحديث ${displayDate(current.updatedAt)} · تحديث تلقائي كل ١٥ ثانية أثناء فتح الصفحة` : "جارٍ تحميل القياس الفعلي…"}</p>
     {saved && <div className="contact-saved" role="status"><Check size={18}/> حُفظ التواصل وأنشئت مهمة متابعة في CRM. <button onClick={() => onNavigate("inquiries")}>افتح الطلبات لإتمام الحجز</button></div>}
+    <ContactDailyReport data={currentDaily} error={dailyError} user={user} onSaved={() => setRefresh(value => value + 1)} />
     {current ? <>
       <div className="contact-metrics-grid">{cards.map(card => <article className="metric" key={card.key}><div className="metric-top"><span>{card.label}</span><card.icon size={19}/></div><strong className="metric-value" dir="ltr">{current.metrics[card.key]}</strong><p>{card.note}</p></article>)}</div>
       <section className="panel"><div className="panel-title"><div><h2>مصدر الوصول ونتيجته</h2><p>الضغطات من الموقع فقط. التواصل والحجز من السجلات الفعلية للطلبات الواردة خلال الفترة، بتوقيت الرياض.</p></div></div>

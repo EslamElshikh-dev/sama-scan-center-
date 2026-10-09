@@ -21,5 +21,17 @@
 .contact-saved { display:flex;align-items:center;flex-wrap:wrap;gap:10px;border:1px solid #bee4d7;background:#f0faf5;padding:15px;border-radius:12px;color:#236348; }
 .contact-audit-snapshot summary { cursor:pointer;font-weight:600;color:#1c4254; }
 .contact-audit-snapshot p { color:#526779;font-size:14px;line-height:1.9;margin-top:15px; }
+.contact-daily-report .panel-title { align-items:center; }
+.contact-daily-report .panel-title>svg { color:#087b8c;flex-shrink:0; }
+.contact-daily-report .panel-title p { max-width:760px;line-height:1.8; }
+.contact-daily-comparison { display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:16px 0;padding:14px 16px;border-radius:12px;background:#f3f9fb;color:#214b5d; }
+.contact-daily-comparison span { color:#526779;font-size:13px; }
+.contact-daily-comparison b { margin-inline-start:auto;padding:5px 11px;border-radius:8px;direction:ltr; }
+.contact-daily-comparison .is-decrease { background:#fff1eb;color:#a43c21; }
+.contact-daily-comparison .is-increase { background:#e7f6ef;color:#236348; }
+.contact-daily-table td strong { font-size:20px;color:#183f51; }
+.contact-reconciled { color:#236348; }
+.contact-unreconciled { color:#875411;font-weight:600; }
+.contact-daily-note { color:#526779;font-size:12px;line-height:1.9;margin:14px 0 0; }
 @media(max-width:900px) { .contact-campaign { align-items:stretch;flex-direction:column;gap:14px; }.contact-metrics-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:480px) { .contact-metrics-grid { gap:10px; }.contact-metrics-grid .metric { padding:14px; }.contact-metrics-grid .metric-top { font-size:12px;gap:7px; }.contact-monitor-toolbar .button { flex:1;justify-content:center; }.contact-monitor-toolbar label { flex:1; } }

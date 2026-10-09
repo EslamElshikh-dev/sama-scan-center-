@@ -28,6 +28,8 @@ test('private CRM: request links, completed followups, customer timeline and sou
   await db.exec(fs.readFileSync('tests/growth.integration.sql','utf8'));
   await db.exec(fs.readFileSync('supabase/migrations/20261008004723_live_contact_measurement.sql','utf8'));
   await db.exec(fs.readFileSync('tests/contact-measurement.integration.sql','utf8'));
+  await db.exec(fs.readFileSync('supabase/migrations/20261009013455_contact_daily_reconciliation.sql','utf8'));
+  await db.exec(fs.readFileSync('tests/contact-daily.integration.sql','utf8'));
   assert.equal((await db.query('select count(*)::int as count from samascan_crm.contacts')).rows[0].count,0,'fixtures roll back');
  }finally{await db.close();}
 });

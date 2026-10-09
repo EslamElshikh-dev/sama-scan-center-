@@ -65,3 +65,14 @@ test('growth approvals and weekly reporting retain authoritative session and saf
   assert.equal((await handler(req({action,token:'forged'}))).status,401);assert.equal(calls,1);
  }
 });
+
+test('daily received totals keep the CRM session gate and use the reconciliation RPC',async()=>{
+ for(const action of ['contact_daily_report','contact_daily_save']) {
+  let calls=0;
+  const handler=createHandler(env,async(url,options)=>{calls++;assert.equal(url,'https://crm.example/rest/v1/rpc/samascan_contact_daily_api');assert.equal(JSON.parse(options.body).session_token,token);return Response.json({ok:false,code:'forbidden'});});
+  assert.equal((await handler(req({action,token:'forged'}))).status,401);
+  assert.equal(calls,0);
+  assert.equal((await handler(req({action,token,payload:{}}))).status,403);
+  assert.equal(calls,1);
+ }
+});
