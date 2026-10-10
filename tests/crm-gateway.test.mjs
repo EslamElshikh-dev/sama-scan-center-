@@ -4,6 +4,14 @@ import {createHandler} from '../backend/samascan-crm/index.mjs';
 const token='a'.repeat(64);
 const env={get:key=>({SUPABASE_URL:'https://crm.example',SUPABASE_PUBLISHABLE_KEYS:'{"default":"public-test"}',SUPABASE_SECRET_KEYS:'{"default":"private-test"}'})[key]};
 const req=body=>new Request('https://crm.example',{method:'POST',headers:{apikey:'public-test','Content-Type':'application/json'},body:JSON.stringify(body)});
+test('campaign booking cost uses the private RPC and retains authoritative roles',async()=>{
+ for(const action of ['booking_cost_report','booking_cost_save']){
+  let calls=0;
+  const handler=createHandler(env,async(url,options)=>{calls++;assert.equal(url,'https://crm.example/rest/v1/rpc/samascan_booking_cost_api');assert.equal(JSON.parse(options.body).session_token,token);return Response.json({ok:false,code:'forbidden',private:'never disclose'});});
+  assert.equal((await handler(req({action,token:'forged'}))).status,401);assert.equal(calls,0);
+  const response=await handler(req({action,token,payload:{}}));assert.equal(response.status,403);assert.deepEqual(await response.json(),{ok:false,code:'forbidden'});
+ }
+});
 test('CRM rejects unauthenticated, oversized and unsupported requests before RPC',async()=>{
  let count=0;const handler=createHandler(env,async()=>{count++;return Response.json({ok:true});});
  assert.equal((await handler(req({action:'summary',token:'bad'}))).status,401);

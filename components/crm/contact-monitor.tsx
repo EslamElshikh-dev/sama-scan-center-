@@ -6,6 +6,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { crmRequest } from "@/lib/crm/client";
 import { displayDate, riyadhDay, trafficLabels, type User } from "@/lib/crm/types";
 import ContactDailyReport, { type ContactDailyData } from "./contact-daily-report";
+import { BookingCostReportPanel } from "./booking-cost-report";
+import { samaCampaignKey } from "@/lib/crm/booking-cost";
 
 type Counts = { phone_clicks: number; whatsapp_clicks: number; phone_sessions: number; whatsapp_sessions: number;
   confirmed_calls: number; confirmed_whatsapp: number; booking_requests: number; booked: number; attended: number };
@@ -26,13 +28,13 @@ function ReceivedContactForm({ reference, kind, onClose, onSaved }: {
   reference: string; kind: "phone" | "whatsapp"; onClose: () => void; onSaved: () => void;
 }) {
   const [requestId] = useState(() => crypto.randomUUID());
-  const [form, setForm] = useState({ name: "", phone: "", exam: "", kind, channel: "unknown", reference });
+  const [form, setForm] = useState({ name: "", phone: "", exam: "", kind, channel: "unknown", campaign: "", reference });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const update = (key: keyof typeof form, value: string) => setForm(current => ({ ...current, [key]: value }));
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setError("");
-    try { await crmRequest("contact_record", { request_id: requestId, ...form }); onSaved(); }
+    try { await crmRequest("contact_record", { request_id: requestId, ...form, campaign: form.channel === "google_ads" && !form.reference ? form.campaign : "" }); onSaved(); }
     catch (error) { setError(error instanceof Error ? error.message : "تعذّر الحفظ"); }
     finally { setBusy(false); }
   }
@@ -47,6 +49,7 @@ function ReceivedContactForm({ reference, kind, onClose, onSaved }: {
       <label className="crm-field"><span>الفحص المطلوب *</span><select required value={form.exam} onChange={event => update("exam", event.target.value)}><option value="">اختر الفحص</option>{["رنين مغناطيسي", "سونار", "دوبلر", "سونار 3D / 4D"].map(exam => <option key={exam}>{exam}</option>)}</select></label>
       <label className="crm-field"><span>مرجع التواصل · اختياري</span><input dir="ltr" maxLength={15} pattern="SC-[a-fA-F0-9]{12}" placeholder="SC-XXXXXXXXXXXX" value={form.reference} onChange={event => update("reference", event.target.value.toUpperCase())}/></label>
       <label className="crm-field"><span>كيف عرف المركز؟</span><select disabled={Boolean(form.reference)} value={form.channel} onChange={event => update("channel", event.target.value)}>{["unknown", "google_ads", "google_business_profile", "google_organic", "social", "referral", "direct"].map(channel => <option key={channel} value={channel}>{labels[channel]}</option>)}</select></label>
+      {form.channel === "google_ads" && !form.reference && <label className="crm-field crm-full"><span>الحملة التي وصل منها التواصل</span><select value={form.campaign} onChange={event => update("campaign", event.target.value)}><option value="">غير محددة · لا تُنسب لحملة بالتخمين</option><option value={samaCampaignKey}>حملة سما سكان الحالية · 24332875672</option></select><small>حددها فقط بعد التأكد من مصدر الإعلان. مرجع الموقع يربط الحملة تلقائيًا عند توفره.</small></label>}
       <p className="crm-muted crm-full">انسخ المرجع من رسالة واتساب لربطه بالصفحة ومصدر الوصول تلقائيًا. دون مرجع، اختر المصدر حسب إفادة العميل واتركه غير معروف إن لم يؤكده.</p>
       {error && <p className="crm-error crm-full" role="alert">{error}</p>}
       <div className="crm-dialog-actions crm-full"><button className="button primary" type="submit" disabled={busy}>{busy ? <LoaderCircle size={17} className="crm-spin"/> : <Check size={17}/>} {busy ? "جارٍ الحفظ…" : "حفظ التواصل وإنشاء المتابعة"}</button><button className="button outline" type="button" disabled={busy} onClick={onClose}>إلغاء</button></div>
@@ -126,6 +129,7 @@ export default function ContactMonitor({ user, onNavigate }: { user: User; onNav
         </tbody></table></div>
       </section>
     </> : !error && <div className="crm-loading"><LoaderCircle className="crm-spin"/> جارٍ تحميل البيانات…</div>}
+    <BookingCostReportPanel user={user} revision={refresh} />
     <details className="panel contact-audit-snapshot"><summary>نتائج Google Ads الموثقة ليوم ٧ أكتوبر ٢٠٢٦</summary><p>١٢ نقرة · ١٢١ ظهورًا · صرف ٦٣٫٦٥ ريال. منها ضغطتان على زر الاتصال بالإعلان، و٣ تحويلات فتح واتساب من الموقع، وصفر تحويلات اتصال بالموقع. هذه لقطة موثقة وليست عدّادًا مباشرًا؛ لم تؤكد وصول مكالمات أو رسائل.</p></details>
     <p className="contact-monitor-footnote">الربط الجديد يسجل ضغطات الموقع من وقت تشغيله. ضغطات الاتصال داخل الإعلان تحتاج بيانات Google Ads؛ لا تُضاف تلقائيًا إلى عدّاد الموقع. تسجيل الرسائل والمكالمات الواردة تلقائيًا يتطلب WhatsApp Business Platform ونظام اتصالات يدعم الربط. إلى حين ذلك، يسجل الاستقبال التواصل الذي وصل فعلًا من الزر أعلاه.</p>
     {editor && <ReceivedContactForm key={`${editor.reference}:${editor.kind}`} {...editor} onClose={() => setEditor(null)} onSaved={() => { setEditor(null); setSaved(true); setRefresh(value => value + 1); }}/>} 
