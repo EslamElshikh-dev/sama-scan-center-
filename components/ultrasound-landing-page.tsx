@@ -78,8 +78,8 @@ export function UltrasoundLandingPage({ content }: { content: ServicePageContent
           <div className={styles.heroGrid}>
             <div className={styles.heroCopy}>
               <span className={styles.locationTag}><Icon name="map" width="17" height="17" /> سما سكان · حي المربع، الرياض</span>
-              <p className={styles.eyebrow}><span lang="en" dir="ltr">Ultrasound</span> · السونار</p>
-              <h1 id="ultrasound-title">سونار وموجات فوق صوتية <span>بالرياض</span></h1>
+              <p className={styles.eyebrow}><span lang="en" dir="ltr">Ultrasound</span> · الموجات فوق الصوتية</p>
+              <h1 id="ultrasound-title">فحص سونار <span>بالرياض</span></h1>
               <p className={styles.lead}>{content.intro}</p>
               <div className={styles.heroActions}>
                 <a className={`${styles.button} ${styles.callButton}`} href={site.phoneDial} data-cta="hero_ultrasound-riyadh_call">
