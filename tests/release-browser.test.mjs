@@ -27,8 +27,10 @@ test('mobile/desktop services, contact actions, real browser login and booking s
           assert.equal(await page.locator('html').getAttribute('dir'), 'rtl');
           const layout = await page.evaluate(() => ({ width: innerWidth, scroll: document.documentElement.scrollWidth }));
           assert.ok(layout.scroll <= layout.width + 1, `${path} overflows at ${width}px: ${layout.scroll}`);
-          for (const [selector, href] of [['.floating-call', 'tel:+966559617558'], ['.floating-whatsapp', 'https://wa.me/966559617558']]) {
-            const action = page.locator(selector);
+          // MRI/ultrasound mobile layouts intentionally use a fixed bottom bar.
+          for (const [selector, href] of [['.floating-call, [data-cta$="_mobile_call"]', 'tel:+966559617558'], ['.floating-whatsapp, [data-cta$="_mobile_whatsapp"]', 'https://wa.me/966559617558']]) {
+            const action = page.locator(selector).filter({ visible: true });
+            assert.equal(await action.count(), 1, `${path}: one persistent contact action per channel`);
             assert.equal(await action.isVisible(), true, `${path}: ${selector}`);
             assert.ok((await action.getAttribute('href')).startsWith(href));
             const rect = await action.boundingBox();
