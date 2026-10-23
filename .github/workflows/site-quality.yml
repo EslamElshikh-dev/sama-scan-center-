@@ -1,0 +1,38 @@
+name: Site quality and isolated CRM release checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run test:crm
+      - run: npm run lint
+      - name: Build without operational backend access
+        run: npm run build
+        env:
+          NODE_OPTIONS: --import=./tests/helpers/offline-fetch.mjs
+      - run: npm run typecheck
+      - name: Real Next HTTP routes with disposable Postgres and isolated accounts
+        run: npm run test:release
+      - name: Install pinned Playwright Chromium
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Mobile and desktop browser journey without live backend access
+        run: npm run test:browser

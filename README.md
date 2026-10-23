@@ -46,6 +46,9 @@ npm run build
 npm start
 ```
 
+لاختبار الإصدار بحسابات وقاعدة بيانات مؤقتة معزولة، راجع
+[فحوص الإصدار الأمني](docs/security-release-verification.md).
+
 انسخ `.env.example` إلى `.env.local` عند ربط نطاق مخصص، وحدّث
 `NEXT_PUBLIC_SITE_URL` إلى الرابط الأساسي النهائي. ولتفعيل قياس التحويلات، أضف
 معرّف GA4 بصيغة `G-XXXXXXXXXX` في `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID`.
