@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/json-ld";
 import { PageHero } from "@/components/page-hero";
 import { createPageMetadata } from "@/lib/metadata";
 import { services, site } from "@/lib/site";
+import styles from "./services.module.css";
 
 export const metadata = createPageMetadata({
   title: "خدمات الأشعة والتصوير الطبي في الرياض",
@@ -32,7 +33,7 @@ export default function ServicesPage() {
       <PageHero
         eyebrow="Radiology & Medical Imaging"
         title="خدمات الأشعة والتصوير الطبي في الرياض"
-        description="صفحات مستقلة وواضحة لكل خدمة متوفرة في مركز سما سكان، مع معلومات عامة عن الفحص والتحضير وطريقة الحجز في حي المربع بالرياض."
+        description="تعرّف على فحوصات سما سكان في حي المربع بالرياض، واختر الخدمة المكتوبة في طلب طبيبك للاطلاع على معلوماتها أو إرسال طلب موعد يؤكده الاستقبال."
         breadcrumbs={[{ label: "خدمات الأشعة", href: "/services" }]}
       />
 
@@ -48,13 +49,15 @@ export default function ServicesPage() {
                 <p className="service-en" lang="en">{service.english}</p>
                 <h2>{service.title}</h2>
                 <p>{service.summary}</p>
-                <div className="keyword-pills" aria-label="مصطلحات البحث المرتبطة">
-                  {service.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}
-                </div>
               </div>
-              <Link className="button button-secondary" href={`/services/${service.slug}`}>
-                تفاصيل الخدمة <Icon name="arrow" width="18" height="18" />
-              </Link>
+              <div className={styles.actions}>
+                <Link className="button" href={`/contact?service=${service.slug}#booking-form`} aria-label={`طلب حجز ${service.shortTitle}`} data-cta={`directory_${service.slug}_booking`}>
+                  طلب حجز الفحص <Icon name="arrow" width="18" height="18" />
+                </Link>
+                <Link className="button button-secondary" href={`/services/${service.slug}`} aria-label={`معلومات ${service.shortTitle}`}>
+                  معلومات الفحص
+                </Link>
+              </div>
             </article>
           ))}
         </div>
@@ -68,9 +71,9 @@ export default function ServicesPage() {
             <p>
               قد يستخدم المرضى أكثر من اسم للفحص نفسه؛ فكلمة السونار هي الاسم
               الشائع للموجات فوق الصوتية، بينما يرتبط الدوبلر والدوبلكس بتقييم
-              تدفق الدم والأوعية باستخدام تقنيات الموجات فوق الصوتية. لذلك
-              جمعنا المرادفات الشائعة مع الاسم الطبي داخل كل صفحة دون تكرار
-              صفحات متنافسة.
+              تدفق الدم والأوعية باستخدام تقنيات الموجات فوق الصوتية. إذا
+              لم تكن متأكدًا من الخدمة المطلوبة، اتصل بالاستقبال واذكر
+              اسم الفحص كما ورد في طلب الطبيب قبل اختيار الموعد.
             </p>
             <p>
               عند التواصل مع مركز سما سكان، اذكر اسم الفحص كما هو مكتوب في

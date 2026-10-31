@@ -1,0 +1,7 @@
+.reviewNote {
+  flex-basis: 100%;
+  max-width: 360px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.8;
+}

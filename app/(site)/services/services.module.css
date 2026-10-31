@@ -1,0 +1,21 @@
+.actions {
+  display: grid;
+  gap: 9px;
+  min-width: 175px;
+}
+
+.actions a {
+  justify-content: center;
+}
+
+@media (max-width: 760px) {
+  .actions {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .actions a {
+    width: 100%;
+  }
+}
