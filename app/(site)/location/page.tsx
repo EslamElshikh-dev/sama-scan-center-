@@ -4,6 +4,7 @@ import { MapEmbed } from "@/components/map-embed";
 import { PageHero } from "@/components/page-hero";
 import { createPageMetadata } from "@/lib/metadata";
 import { neighborhoods, openingHours, site } from "@/lib/site";
+import styles from "./location.module.css";
 
 export const metadata = createPageMetadata({
   title: "موقع مركز سما سكان في حي المربع بالرياض",
@@ -42,6 +43,29 @@ export default function LocationPage() {
               </div>
             </article>
           </div>
+          <section className={styles.preview} aria-labelledby="arrival-preview-title">
+            <div className="section-head">
+              <span className="eyebrow">قبل الوصول إلى سما سكان</span>
+              <h2 id="arrival-preview-title">تعرّف على واجهة المركز والاستقبال</h2>
+              <p>صور فعلية من مركز سما سكان في حي المربع تساعدك على التعرّف على المكان قبل الزيارة.</p>
+            </div>
+            <div className={styles.photos}>
+              <figure>
+                <Image src="/center-exterior.webp" alt="واجهة مركز سما سكان ولافتته ومدخله في حي المربع بالرياض" width={1400} height={1048} sizes="(max-width: 760px) calc(100vw - 40px), 58vw" />
+                <figcaption>واجهة المركز ومدخله على شارع فيصل بن تركي بن عبدالعزيز.</figcaption>
+              </figure>
+              <figure>
+                <Image src="/reception-sama-scan-riyadh.webp" alt="منطقة الاستقبال داخل مركز سما سكان للأشعة في الرياض" width={1048} height={1400} sizes="(max-width: 760px) calc(100vw - 40px), 35vw" />
+                <figcaption>منطقة الاستقبال داخل المركز.</figcaption>
+              </figure>
+            </div>
+            <div className={styles.actions}>
+              <a className="button" href={site.directions} target="_blank" rel="noopener noreferrer" data-cta="location_arrival_directions">
+                <Icon name="map" width="19" height="19" /> افتح الاتجاهات إلى المركز
+              </a>
+              <p>أكد موعدك ونوع الفحص مع الاستقبال قبل التوجّه إلى المركز.</p>
+            </div>
+          </section>
           <MapEmbed />
           <div className="nearby-panel">
             <div>
@@ -66,3 +90,4 @@ export default function LocationPage() {
     </main>
   );
 }
+import Image from "next/image";

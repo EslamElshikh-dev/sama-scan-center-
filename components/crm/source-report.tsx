@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { CalendarCheck2, CircleCheck, Download, LoaderCircle, Target, UsersRound } from "lucide-react";
 import { crmRequest } from "@/lib/crm/client";
 import { outcomeCSV } from "@/lib/crm/outcome-export";
+import { gbpContentExportLabel, gbpContentName } from "@/lib/crm/gbp-content";
 import { displayDate, riyadhDay, sources, trafficLabels, type SourceReport } from "@/lib/crm/types";
 
 export function OutcomeReport({ revision }: { revision: number }) {
   const [days, setDays] = useState(30);
-  const [dimension, setDimension] = useState<"sources" | "services" | "channelServices">("services");
+  const [dimension, setDimension] = useState<"sources" | "services" | "channelServices" | "googleBusinessContent">("services");
   const [report, setReport] = useState<SourceReport | null>(null);
   const [error, setError] = useState("");
   const [loadedKey, setLoadedKey] = useState("");
@@ -27,7 +28,7 @@ export function OutcomeReport({ revision }: { revision: number }) {
   const rows = report?.[dimension] || [];
   function exportResults() {
     if (!report) return;
-    const blob = new Blob([outcomeCSV(report, rows, row => dimension === "sources" ? sources[row.source] || row.source : row.exam + (dimension === "channelServices" ? " · " + (row.channel === "recorded" ? sources[row.source] || row.source : trafficLabels[row.channel] || row.channel) : ""))], { type: "text/csv;charset=utf-8" });
+    const blob = new Blob([outcomeCSV(report, rows, row => dimension === "googleBusinessContent" ? gbpContentExportLabel(row) : dimension === "sources" ? sources[row.source] || row.source : row.exam + (dimension === "channelServices" ? " · " + (row.channel === "recorded" ? sources[row.source] || row.source : trafficLabels[row.channel] || row.channel) : ""))], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob); const link = document.createElement("a");
     link.href = url; link.download = `samascan-outcomes-${dimension}-${report.from}-${report.to}.csv`;
     document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -55,12 +56,13 @@ export function OutcomeReport({ revision }: { revision: number }) {
       <div className="crm-cohort-note"><div><strong>تحويل الطلبات التي مرّ على تسجيلها {report.olderDays} أيام أو أكثر</strong><span>{totals.older ? `${totals.olderCompleted} فحصًا من ${totals.older} طلبًا · ${percent(totals.olderCompleted, totals.older)}` : "لا توجد طلبات بهذا العمر في الفترة المختارة."}</span></div><p>تساعد على قراءة النتيجة مع استبعاد الطلبات الأحدث من النسبة. بعض الطلبات الأقدم قد يكون موعدها مستقبليًا.</p></div>
       <p className="crm-report-note">كل طلب يظهر في حالة واحدة أعلاه. تكرار الحجز لا يكرر الطلب، والحالة الحالية قد تتغير عند تسجيل نتيجة الموعد.</p>
       <div className="crm-outcome-controls"><div className="crm-tabs" role="group" aria-label="طريقة مقارنة النتائج">{([
-        ["services", "حسب الفحص"], ["sources", "حسب المصدر"], ["channelServices", "مصدر الوصول × الفحص"],
+        ["services", "حسب الفحص"], ["sources", "حسب المصدر"], ["channelServices", "مصدر الوصول × الفحص"], ["googleBusinessContent", "منشورات ملف Google"],
       ] as const).map(([key, label]) => <button key={key} className={dimension === key ? "active" : ""} aria-pressed={dimension === key} onClick={() => setDimension(key)}>{label}</button>)}</div><button className="crm-edit" disabled={!rows.length} onClick={exportResults}><Download size={16} />تصدير المقارنة</button></div>
-      {rows.length ? <div className="crm-table-wrap"><table className="crm-table"><thead><tr><th>{dimension === "sources" ? "المصدر" : "الفحص"}</th><th>طلبات</th><th>لها حجز</th><th>حضر</th><th>أجرى الفحص</th><th>طلب ← فحص</th><th>تحويل طلبات 7+ أيام</th><th>حل موعدها</th><th>حضور / حل موعدها</th><th>لم يحضر · مواعيد</th><th>ملغاة · مواعيد</th></tr></thead><tbody>{rows.map(s => <tr key={s.label}>
-        <td><strong>{dimension === "sources" ? sources[s.source] || s.source : s.exam}</strong>{dimension === "channelServices" && <small className="crm-cell-sub">{s.channel === "recorded" ? sources[s.source] || s.source : trafficLabels[s.channel] || s.channel}</small>}</td>
-        <td>{s.inquiries}</td><td>{s.booked}{s.future > 0 && <small className="crm-cell-sub">{s.future} مستقبلية</small>}</td><td>{s.attended}</td><td><strong>{s.completed}</strong></td><td>{percent(s.completed, s.inquiries)}</td><td>{percent(s.olderCompleted, s.older)}<small className="crm-cell-sub">{s.olderCompleted} / {s.older} طلبًا</small></td><td>{s.due}</td><td>{percent(s.attended, s.due)}</td><td>{s.no_show}</td><td>{s.cancelled}</td>
-      </tr>)}</tbody></table></div> : <p className="crm-muted">لا توجد طلبات بدأت في الفترة المختارة.</p>}
+      {dimension === "googleBusinessContent" && <p className="crm-report-note">طلبات حفظت مصدر ملف Google ووسم الرابط عند إرسالها. «رابط بلا وسم منشور» لا يمكن إسناده إلى منشور معين. التصنيف يصف رابط الوصول المسجل؛ لا يثبت مشاهدة منشور أو يشمل كل الاتصالات والزيارات.</p>}
+      {dimension === "googleBusinessContent" && !report.googleBusinessContent ? <p className="crm-muted">تفصيل نتائج المنشورات ينتظر تفعيل تحديث التقرير.</p> : rows.length ? <div className="crm-table-wrap"><table className="crm-table"><thead><tr><th>{dimension === "googleBusinessContent" ? "المنشور أو الرابط" : dimension === "sources" ? "المصدر" : "الفحص"}</th><th>طلبات</th><th>لها حجز</th><th>تأكد موعدها</th><th>حضر</th><th>أجرى الفحص</th><th>طلب ← فحص</th><th>تحويل طلبات 7+ أيام</th><th>حل موعدها</th><th>حضور / حل موعدها</th><th>لم يحضر · مواعيد</th><th>ملغاة · مواعيد</th></tr></thead><tbody>{rows.map(s => <tr key={s.label}>
+        <td><strong>{dimension === "googleBusinessContent" ? gbpContentName(s.content) : dimension === "sources" ? sources[s.source] || s.source : s.exam}</strong>{dimension === "googleBusinessContent" && <small className="crm-cell-sub" dir="ltr">{s.campaign || "بدون حملة"}{s.content ? ` / ${s.content}` : ""}</small>}{dimension === "channelServices" && <small className="crm-cell-sub">{s.channel === "recorded" ? sources[s.source] || s.source : trafficLabels[s.channel] || s.channel}</small>}</td>
+        <td>{s.inquiries}</td><td>{s.booked}{s.future > 0 && <small className="crm-cell-sub">{s.future} مستقبلية</small>}</td><td>{s.confirmed ?? "—"}</td><td>{s.attended}</td><td><strong>{s.completed}</strong></td><td>{percent(s.completed, s.inquiries)}</td><td>{percent(s.olderCompleted, s.older)}<small className="crm-cell-sub">{s.olderCompleted} / {s.older} طلبًا</small></td><td>{s.due}</td><td>{percent(s.attended, s.due)}</td><td>{s.no_show}</td><td>{s.cancelled}</td>
+      </tr>)}</tbody></table></div> : <p className="crm-muted">لا توجد طلبات مطابقة لهذا التصنيف بدأت في الفترة المختارة.</p>}
       <p className="crm-report-note">الحجز والحضور وإجراء الفحص يُحسب كل منها مرة لكل طلب، حتى عند إعادة الحجز. الحضور يشمل من أجرى الفحص. «حل موعدها» تحسب الطلبات ذات الموعد الذي حل توقيته، وتستبعد الملغاة؛ أما عدم الحضور والإلغاء فيُحسبان كمواعيد. الطلبات الحديثة والمواعيد المستقبلية قد تخفض نسبة طلب ← فحص مؤقتًا.</p>
       <p className="crm-report-note">الصفوف مرتبة بعدد الفحوص المنجزة. قبل توسيع جذب الطلبات: استكمل النتائج المعلّقة، ثم قارن عدد الطلبات والفحوصات ونسبة تحويل الطلبات الأقدم. مصدر وصول الموقع يعتمد على رابط الحملة والجلسة، وطلبات الاتصال وواتساب تعتمد على تسجيل الاستقبال.</p>
       {report.unresolvedDue > 0 && <p className="crm-attribution-gap"><strong>{report.unresolvedDue} موعدًا حل توقيته وبقي مجدولًا أو مؤكدًا.</strong> حدّثه إلى حضر / أجرى الفحص / لم يحضر لاستكمال القياس.</p>}

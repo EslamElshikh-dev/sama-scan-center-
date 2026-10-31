@@ -5,6 +5,7 @@ import { Icon } from "@/components/icons";
 import { PageHero } from "@/components/page-hero";
 import { createPageMetadata } from "@/lib/metadata";
 import { site } from "@/lib/site";
+import styles from "./about.module.css";
 
 export const metadata = createPageMetadata({
   title: "عن مركز سما سكان للأشعة بالرياض",
@@ -108,9 +109,10 @@ export default function AboutPage() {
             <a className="button" href={site.mapsProfile} target="_blank" rel="noopener noreferrer" data-cta="about_official_google_profile">
               <Icon name="map" width="19" height="19" /> الملف الرسمي على Google
             </a>
-            <a className="button button-secondary" href={site.mapsProfile} target="_blank" rel="noopener noreferrer" data-cta="about_share_google_experience">
+            <a className="button button-secondary" href={site.reviewUrl} target="_blank" rel="noopener noreferrer" data-cta="about_share_google_experience">
               شارك تجربتك بصدق
             </a>
+            <small className={styles.reviewNote}>إذا سبق أن زرت المركز، يمكنك مشاركة رأيك الصادق على Google. المشاركة اختيارية.</small>
           </div>
         </div>
       </section>
