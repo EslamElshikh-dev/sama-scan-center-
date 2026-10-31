@@ -19,12 +19,9 @@
 .photos img {
   display: block;
   width: 100%;
-  height: 340px;
-  object-fit: cover;
-}
-
-.photos figure:nth-child(2) img {
-  object-position: center 60%;
+  height: clamp(280px, 36vw, 520px);
+  object-fit: contain;
+  background: var(--brand-cloud);
 }
 
 .photos figcaption {

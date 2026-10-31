@@ -3,6 +3,11 @@ const contentNames: Record<string, string> = {
   profile_website: "رابط الموقع في الملف",
   offer_ultrasound_250_oct2026: "عرض السونار · أكتوبر 2026",
   offer_mri_600_oct2026: "عرض الرنين · أكتوبر 2026",
+  visit_location_20261031: "التعرّف على موقع المركز · 31 أكتوبر",
+  booking_steps_20261031: "طلب الحجز بخطوة واضحة · 31 أكتوبر",
+  mri_request_20261031: "طلب فحص الرنين · 31 أكتوبر",
+  ultrasound_visit_20261031: "موعد الموجات فوق الصوتية · 31 أكتوبر",
+  doppler_visit_20261031: "موعد الدوبلر والدوبلكس · 31 أكتوبر",
 };
 
 export function gbpContentName(content?: string) {
