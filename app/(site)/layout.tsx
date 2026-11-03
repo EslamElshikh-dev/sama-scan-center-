@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   description: site.description,
   applicationName: site.nameAr,
   authors: [{ name: site.nameAr, url: site.siteUrl }],
-  creator: site.nameAr,
+  creator: "المهندس إسلام الشيخ",
   publisher: site.nameAr,
   category: "healthcare",
   icons: {

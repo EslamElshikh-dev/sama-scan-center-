@@ -1,3 +1,4 @@
+import { EslamDeveloperSignature } from "./eslam-developer-credit";
 import Link from "next/link";
 import { Brand } from "@/components/brand";
 import { Icon } from "@/components/icons";
@@ -59,23 +60,7 @@ export function Footer() {
       </div>
       <div className="container footer-bottom">
         <p>جميع الحقوق محفوظة لدى مركز سما سكان {new Date().getFullYear()} ©</p>
-        <div className="es-dev-credit">
-          <p className="es-dev-credit-line">
-            <a href="https://eslam-elshikh.com/" target="_blank" rel="noopener noreferrer">
-              المهندس إسلام الشيخ
-            </a>
-            <span aria-hidden="true">|</span>
-            <span lang="en" dir="ltr">
-              Developed By:{" "}
-              <a href="https://eslam-elshikh.com/" target="_blank" rel="noopener noreferrer">
-                Eng. Eslam Elshikh
-              </a>
-            </span>
-          </p>
-          <small lang="en" dir="ltr">
-            Cybersecurity Engineer | Web Developer | Google Product Expert
-          </small>
-        </div>
+        <EslamDeveloperSignature />
       </div>
     </footer>
   );
