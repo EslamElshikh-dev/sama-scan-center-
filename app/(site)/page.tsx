@@ -5,6 +5,7 @@ import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import { LocationContactForm } from "@/components/location-contact-form";
 import { MapEmbed } from "@/components/map-embed";
+import { blogPosts } from "@/lib/blog";
 import { createPageMetadata } from "@/lib/metadata";
 import { neighborhoods, site } from "@/lib/site";
 
@@ -31,6 +32,11 @@ const faqs = [
       "يمكنك الاتصال على الرقم +966 55 961 7558 أو التواصل عبر واتساب بالرقم نفسه. اذكر اسم الفحص المكتوب في الطلب الطبي لتأكيد الموعد وتعليمات التحضير.",
   },
   {
+    question: "كم سعر الرنين المغناطيسي أو السونار في سما سكان؟",
+    answer:
+      "يختلف السعر حسب اسم الفحص والمنطقة المطلوب تصويرها والبروتوكول والحاجة إلى مادة تباين. اتصل أو تواصل عبر واتساب باسم الفحص المكتوب في طلب الطبيب، واسأل عن السعر النهائي وما يشمله قبل تأكيد الموعد.",
+  },
+  {
     question: "هل تحتاج فحوصات الأشعة إلى تحضير مسبق؟",
     answer:
       "تختلف التعليمات حسب نوع الفحص والمنطقة المطلوب تصويرها واحتمال استخدام مادة تباين. تواصل مع المركز قبل الموعد واتبع تعليمات الطبيب أو فريق الأشعة.",
@@ -41,6 +47,14 @@ const faqs = [
       "نعم. الموقع لا يطلب رفع تقارير أو بيانات صحية. استخدم الاتصال أو واتساب للاستفسار عن نوع الفحص والموعد، وتجنب إرسال بيانات طبية حساسة غير ضرورية.",
   },
 ];
+
+const patientGuides = blogPosts.filter((post) =>
+  [
+    "best-radiology-center-riyadh",
+    "mri-riyadh-complete-guide",
+    "ultrasound-riyadh-guide",
+  ].includes(post.slug),
+);
 
 const premiumServices = [
   {
@@ -111,9 +125,10 @@ export default function HomePage() {
               </span>
             </h1>
             <p className="hero-lead">
-              مركز أشعة وتصوير طبي في حي المربع بالرياض، يجمع بين جودة الصورة،
-              وضوح خطوات الفحص، والاهتمام براحتك وخصوصيتك. نساعدك من تأكيد الموعد
-              وتعليمات التحضير حتى اكتمال تجربة الفحص بصورة منظمة ومطمئنة.
+              يقدم مركز سما سكان في حي المربع بالرياض الرنين المغناطيسي MRI،
+              والسونار والموجات فوق الصوتية، والدوبلر والدوبلكس، وسونار 3D و4D.
+              تواصل باسم الفحص المكتوب في طلب طبيبك لتأكيد السعر والموعد
+              وتعليمات التحضير قبل الزيارة.
             </p>
             <div className="button-row hero-actions">
               <a
@@ -217,7 +232,11 @@ export default function HomePage() {
                 <span className="radiology-pulse" aria-hidden="true">
                   <i /><i /><i /><i /><i /><i /><i />
                 </span>
-                <Link className="card-link" href={`/services/${service.slug}`}>
+                <Link
+                  className="card-link"
+                  href={`/services/${service.slug}`}
+                  aria-label={`معلومات الفحص والحجز: ${service.title}`}
+                >
                   استكشف تفاصيل الفحص <Icon name="arrow" width="18" height="18" />
                 </Link>
               </article>
@@ -390,6 +409,36 @@ export default function HomePage() {
               دليل الرنين المغناطيسي <Icon name="arrow" width="17" height="17" />
             </Link>
           </aside>
+        </div>
+      </section>
+
+      <section className="section service-knowledge-section" aria-labelledby="patient-guides-heading">
+        <div className="container">
+          <div className="section-head centered">
+            <span className="eyebrow">قبل حجز الأشعة</span>
+            <h2 id="patient-guides-heading">أدلة تساعدك على اختيار المركز والاستعداد للفحص</h2>
+            <p>
+              تعرّف على الأسئلة التي تطرحها قبل الحجز وخطوات التحضير العامة،
+              ثم أكد التعليمات المناسبة لحالتك مع الطبيب وفريق الأشعة.
+            </p>
+          </div>
+          <div className="service-article-grid">
+            {patientGuides.map((post) => (
+              <article key={post.slug}>
+                <span>{post.category}</span>
+                <h3><Link href={`/blog/${post.slug}`}>{post.title}</Link></h3>
+                <p>{post.excerpt}</p>
+                <Link className="text-link" href={`/blog/${post.slug}`} aria-label={`اقرأ: ${post.title}`}>
+                  اقرأ الدليل <Icon name="arrow" width="17" height="17" />
+                </Link>
+              </article>
+            ))}
+          </div>
+          <div className="section-action">
+            <Link className="button button-secondary" href="/blog">
+              جميع أدلة الأشعة والتحضير <Icon name="arrow" width="18" height="18" />
+            </Link>
+          </div>
         </div>
       </section>
 

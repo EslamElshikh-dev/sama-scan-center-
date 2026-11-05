@@ -6,8 +6,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = ["", "/services", "/blog", "/about", "/location", "/contact", "/privacy", "/social"];
   const staticEntries: MetadataRoute.Sitemap = staticPages.map((path) => ({
     url: `${site.siteUrl}${path}`,
+    // Change this date only when the page content changes, not on each build.
     lastModified: new Date(
-      ["", "/about", "/location", "/contact", "/social"].includes(path)
+      path === ""
+        ? "2026-11-06T00:00:00+03:00"
+        : ["/about", "/location", "/contact", "/social"].includes(path)
         ? "2026-09-15T00:00:00+03:00"
         : path === "/blog" || path === "/services"
           ? "2026-09-05T00:00:00+03:00"
