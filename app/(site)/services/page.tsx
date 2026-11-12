@@ -47,7 +47,7 @@ export default function ServicesPage() {
               </span>
               <div>
                 <p className="service-en" lang="en">{service.english}</p>
-                <h2>{service.title}</h2>
+                <h2><Link href={`/services/${service.slug}`}>{service.title}</Link></h2>
                 <p>{service.summary}</p>
               </div>
               <div className={styles.actions}>

@@ -7,6 +7,7 @@ type PageMetadataOptions = {
   path: string;
   keywords?: string[];
   absoluteTitle?: boolean;
+  languageAlternates?: Record<string, string>;
 };
 
 function absoluteUrl(path: string) {
@@ -20,6 +21,7 @@ export function createPageMetadata({
   path,
   keywords,
   absoluteTitle = false,
+  languageAlternates,
 }: PageMetadataOptions): Metadata {
   const url = absoluteUrl(path);
   const socialTitle = absoluteTitle ? title : `${title} | ${site.nameAr}`;
@@ -29,7 +31,7 @@ export function createPageMetadata({
     title: absoluteTitle ? { absolute: title } : title,
     description,
     keywords,
-    alternates: { canonical: url },
+    alternates: { canonical: url, ...(languageAlternates ? { languages: languageAlternates } : {}) },
     openGraph: {
       type: "website",
       locale: "ar_SA",

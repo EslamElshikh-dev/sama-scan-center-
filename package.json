@@ -11,6 +11,7 @@
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
+    "test:content": "node --test tests/medical-review.test.mjs",
     "test:release": "node --test tests/release-flow.test.mjs",
     "test:browser": "node --test tests/release-browser.test.mjs",
     "test:crm": "node --test tests/attribution.test.mjs tests/contact-events-gateway.test.mjs tests/crm-postgres.test.mjs tests/crm-gateway.test.mjs tests/dashboard-session.test.mjs tests/booking-gateway.test.mjs tests/followup-time.test.mjs tests/outcome-export.test.mjs"

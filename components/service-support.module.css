@@ -1,0 +1,14 @@
+.editorial{padding:28px 0;background:#f0f7fc;border-block:1px solid #dceaf5;color:#36566f}
+.editorialInner{display:flex;align-items:center;justify-content:space-between;gap:28px}
+.editorialInner p{margin:4px 0;font-size:.88rem;line-height:1.9}
+.editorialInner a{color:#075da8;text-decoration:underline;text-underline-offset:4px}
+.editorialDescription{max-width:600px}
+.resources{padding:70px 0;background:#fff}
+.resourceGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.resourceGrid article{display:flex;flex-direction:column;align-items:flex-start;padding:26px;border:1px solid #dce9f1;border-radius:20px;background:#f7fbff}
+.resourceGrid article>span{font-size:.74rem;color:#1766a4}
+.resourceGrid h3{font-size:1.12rem;line-height:1.9;margin:10px 0}
+.resourceGrid p{font-size:.88rem;color:#516b80;line-height:1.9;margin:0 0 16px}
+.readLink{margin-top:auto;color:#075da8;font-weight:700}
+.libraryLink{display:inline-block;margin-top:24px;color:#075da8;font-weight:700}
+@media(max-width:900px){.resourceGrid{grid-template-columns:1fr}.editorialInner{align-items:flex-start;flex-direction:column;gap:14px}.resources{padding:44px 0}}
