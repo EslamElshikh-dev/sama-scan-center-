@@ -5,6 +5,8 @@ import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
 import type { ServicePageContent } from "@/components/service-detail-page";
 import { VerifiedServiceDetails } from "@/components/verified-medical-content";
+import { ServiceEditorialNote } from "@/components/service-editorial-note";
+import { ServiceResources } from "@/components/service-resources";
 import { openingHours, services, site } from "@/lib/site";
 import styles from "./mri-landing-page.module.css";
 
@@ -173,6 +175,8 @@ export function UltrasoundLandingPage({ content }: { content: ServicePageContent
       <div className={`container ${styles.moreInfo}`}><span>خدمات أخرى في سما سكان</span><div>{services.filter(item => item.slug !== service.slug).map(item => <Link key={item.slug} href={`/services/${item.slug}`}>{item.shortTitle}<Icon name="arrow" width="15" height="15" /></Link>)}</div><details><summary>المراجع الطبية للمعلومات العامة</summary><ul>{content.sources.map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.label}</a></li>)}</ul></details></div>
 
       <nav className={styles.mobileBar} aria-label="تواصل لحجز السونار"><a className={`${styles.button} ${styles.callButton}`} href={site.phoneDial} data-cta="service_ultrasound-riyadh_mobile_call"><Icon name="call" width="21" height="21" /><span>اتصال <small dir="ltr">0559617558</small></span></a><a className={`${styles.button} ${styles.whatsappButton}`} href={whatsapp} target="_blank" rel="noopener noreferrer" data-cta="service_ultrasound-riyadh_mobile_whatsapp"><Icon name="whatsapp" width="22" height="22" /><span>واتساب <small>السعر والموعد</small></span></a></nav>
+      <ServiceEditorialNote service={service} />
+      <ServiceResources slug={service.slug} />
     </main>
   );
 }

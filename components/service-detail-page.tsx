@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { VerifiedServiceDetails } from "@/components/verified-medical-content";
+import { ServiceEditorialNote } from "@/components/service-editorial-note";
 import { CtaSection } from "@/components/cta-section";
 import { Icon } from "@/components/icons";
 import { JsonLd } from "@/components/json-ld";
@@ -103,6 +104,7 @@ export function ServiceDetailPage({ content }: { content: ServicePageContent }) 
       >
         <ContactFirstActions service={service.shortTitle} slug={service.slug} />
       </PageHero>
+      <ServiceEditorialNote service={service} />
 
       <section className="section service-overview">
         <div className="container article-layout">

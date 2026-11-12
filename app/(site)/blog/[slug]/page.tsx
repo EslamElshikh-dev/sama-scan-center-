@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/json-ld";
 import { blogPosts, getBlogImage, getBlogPost, getRelatedBlogPosts } from "@/lib/blog";
 import { createPageMetadata } from "@/lib/metadata";
 import { getVerifiedContent } from "@/lib/verified-content";
+import { findVerifiedReview } from "@/lib/medical-review";
 import { services, site } from "@/lib/site";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -32,8 +33,9 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) notFound();
 
   const verified = await getVerifiedContent();
-  const review = verified.find(x => x.kind === "review" && x.id === `review-${post.slug}` && x.data.contentVersion === post.modified && x.data.reviewedAt >= post.modified);
-  const reviewer = review && verified.find(x => x.kind === "clinician" && x.id === review.data.reviewerId);
+  const medicalReview = findVerifiedReview(verified, `review-${post.slug}`, post.modified);
+  const review = medicalReview?.review;
+  const reviewer = medicalReview?.clinician;
   const relatedServices = services.filter((service) => post.relatedServices.includes(service.slug));
   const relatedArticles = getRelatedBlogPosts(post);
   const articleImage = getBlogImage(post);

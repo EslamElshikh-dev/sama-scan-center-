@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { blogPosts } from "@/lib/blog";
 import { services, site } from "@/lib/site";
+import { englishServices } from "@/lib/english-services";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = ["", "/services", "/blog", "/about", "/location", "/contact", "/privacy", "/social"];
@@ -10,9 +11,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(
       path === ""
         ? "2026-11-06T00:00:00+03:00"
-        : ["/about", "/location", "/contact", "/social"].includes(path)
+        : ["/services", "/about"].includes(path)
+        ? "2026-11-12T00:00:00+03:00"
+        : ["/location", "/contact", "/social"].includes(path)
         ? "2026-09-15T00:00:00+03:00"
-        : path === "/blog" || path === "/services"
+        : path === "/blog"
           ? "2026-09-05T00:00:00+03:00"
           : "2026-08-26T00:00:00+03:00",
     ),
@@ -22,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const serviceEntries: MetadataRoute.Sitemap = services.map((service) => ({
     url: `${site.siteUrl}/services/${service.slug}`,
-    lastModified: new Date("2026-09-15T00:00:00+03:00"),
+    lastModified: new Date(`${service.modified}T00:00:00+03:00`),
     changeFrequency: "monthly",
     priority: 0.85,
   }));
@@ -34,5 +37,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticEntries, ...serviceEntries, ...articleEntries];
+  const englishEntries: MetadataRoute.Sitemap = englishServices.map(service => ({
+    url: `${site.siteUrl}/en/services/${service.slug}`,
+    lastModified: new Date("2026-11-12T00:00:00+03:00"),
+    changeFrequency: "monthly", priority: 0.8,
+  }));
+
+  return [...staticEntries, ...serviceEntries, ...articleEntries, ...englishEntries];
 }

@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { getVerifiedContent } from "@/lib/verified-content";
+import { JsonLd } from "@/components/json-ld";
+import { site } from "@/lib/site";
 
 export async function VerifiedServiceDetails({ slug }: { slug: string }) {
   const entry = (await getVerifiedContent()).find(item => item.kind === "service" && item.id === slug);
@@ -13,7 +15,9 @@ export async function VerifiedServiceDetails({ slug }: { slug: string }) {
 }
 
 export async function VerifiedMedicalTeam() {
-  const team = (await getVerifiedContent()).filter(item => item.kind === "clinician");
+  const team = (await getVerifiedContent()).filter(item => item.kind === "clinician" && ["name", "specialty", "qualification"].every(key => item.data[key]?.trim()));
   if (!team.length) return null;
-  return <section className="section" aria-labelledby="medical-team-title"><div className="container"><div className="section-head"><span className="eyebrow">الفريق الطبي</span><h2 id="medical-team-title">تعرف على مختصي المركز</h2></div><div className="values-grid">{team.map(item => <article id={`clinician-${item.id}`} key={item.id}><h3>{item.data.name}</h3><p>{item.data.specialty}</p><p>{item.data.qualification}</p></article>)}</div></div></section>;
+  return <section className="section" aria-labelledby="medical-team-title"><div className="container"><div className="section-head"><span className="eyebrow">الفريق الطبي</span><h2 id="medical-team-title">تعرف على مختصي المركز</h2></div><div className="values-grid">{team.map(item => <article id={`clinician-${item.id}`} key={item.id}><h3>{item.data.name}</h3><p>{item.data.specialty}</p><p>{item.data.qualification}</p></article>)}</div>
+    <JsonLd data={{ "@context": "https://schema.org", "@graph": team.map(item => ({ "@type": "Person", "@id": `${site.siteUrl}/about#clinician-${item.id}`, name: item.data.name, jobTitle: item.data.specialty, hasCredential: { "@type": "EducationalOccupationalCredential", name: item.data.qualification }, worksFor: { "@id": `${site.siteUrl}/#medical-center` } })) }} />
+  </div></section>;
 }

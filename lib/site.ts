@@ -47,7 +47,7 @@ export const site = {
   whatsapp:
     "https://wa.me/966559617558?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20%D9%85%D8%B1%D9%83%D8%B2%20%D8%B3%D9%85%D8%A7%20%D8%B3%D9%83%D8%A7%D9%86%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D9%81%D8%AD%D8%B5",
   mapsProfile: "https://maps.app.goo.gl/P4aQryrJiom5xCL89?g_st=ac",
-  reviewUrl: "https://g.page/r/CZWNs_xnPHcDEAE/review",
+  reviewUrl: "https://g.page/r/CZWNs_xnPHcDEBM/review",
   googleBusinessCid: "249734721661275541",
   directions:
     "https://www.google.com/maps/dir/?api=1&destination=24.663307,46.7053643",
@@ -80,11 +80,13 @@ export type Service = {
   image: string;
   imageAlt: string;
   imageCaption: string;
+  modified: string;
 };
 
 export const services: Service[] = [
   {
     slug: "mri-riyadh",
+    modified: "2026-11-12",
     title: "الرنين المغناطيسي في الرياض",
     shortTitle: "الرنين المغناطيسي",
     english: "MRI",
@@ -104,6 +106,7 @@ export const services: Service[] = [
   },
   {
     slug: "ultrasound-riyadh",
+    modified: "2026-11-12",
     title: "السونار والموجات فوق الصوتية في الرياض",
     shortTitle: "السونار والموجات فوق الصوتية",
     english: "Ultrasound",
@@ -123,6 +126,7 @@ export const services: Service[] = [
   },
   {
     slug: "doppler-duplex-riyadh",
+    modified: "2026-11-12",
     title: "أشعة الدوبلر والدوبلكس في الرياض",
     shortTitle: "الدوبلر والدوبلكس",
     english: "Doppler & Duplex",
@@ -142,6 +146,7 @@ export const services: Service[] = [
   },
   {
     slug: "3d-4d-ultrasound-riyadh",
+    modified: "2026-11-12",
     title: "سونار ثلاثي ورباعي الأبعاد في الرياض",
     shortTitle: "سونار 3D و4D",
     english: "3D & 4D Ultrasound",

@@ -118,6 +118,14 @@ export default function AboutPage() {
       </section>
 
       <VerifiedMedicalTeam/>
+      <section className="section" aria-labelledby="report-handover-heading"><div className="container article-layout">
+        <div className="section-head"><span className="eyebrow">قبل الفحص وبعده</span><h2 id="report-handover-heading">اسأل عن صورك وتقريرك من البداية</h2><p>طريقة ووقت تسليم الصور والتقرير يرتبطان بنوع الفحص. أكد التفاصيل مع الاستقبال عند ترتيب الموعد.</p></div>
+        <div className="editorial-list">
+          <article><span>01</span><div><h3>المختص والفحص المطلوب</h3><p>استفسر عن المختص الذي سيجري فحصك أو يفسّر صوره، واذكر اسم الفحص كما ورد في إحالة الطبيب.</p></div></article>
+          <article><span>02</span><div><h3>التسليم وطريقة الاستلام</h3><p>اسأل عن الموعد المتوقع لإصدار التقرير، وصيغة الصور المتاحة وكيفية استلامهما أو مشاركتهما مع طبيبك.</p></div></article>
+          <article><span>03</span><div><h3>قراءة النتيجة في سياق حالتك</h3><p>راجع الصور والتقرير مع الطبيب صاحب الإحالة، واحتفظ بالفحوص السابقة ذات الصلة عندما تكون المقارنة مطلوبة.</p></div></article>
+        </div>
+      </div></section>
       <section className="section editorial-standards" aria-labelledby="editorial-heading">
         <div className="container article-layout">
           <div className="section-head">

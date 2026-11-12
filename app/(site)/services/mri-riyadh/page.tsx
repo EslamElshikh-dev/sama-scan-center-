@@ -1,7 +1,7 @@
 import type { ServicePageContent } from "@/components/service-detail-page";
 import { MriLandingPage } from "@/components/mri-landing-page";
 import { createPageMetadata } from "@/lib/metadata";
-import { services } from "@/lib/site";
+import { services, site } from "@/lib/site";
 
 const service = services.find((item) => item.slug === "mri-riyadh")!;
 
@@ -11,6 +11,7 @@ export const metadata = createPageMetadata({
     "رنين مغناطيسي MRI في مركز سما سكان بحي المربع بالرياض. اسأل عن سعر فحصك وأقرب موعد عبر الاتصال أو واتساب، وتعرف على التحضير والسلامة قبل الزيارة.",
   keywords: ["رنين مغناطيسي بالرياض", "مركز اشعة رنين مغناطيسي بالرياض", "سعر الرنين المغناطيسي الرياض", "حجز MRI الرياض", "MRI Riyadh"],
   path: "/services/mri-riyadh",
+  languageAlternates: { "ar-SA": `${site.siteUrl}/services/mri-riyadh`, "en-SA": `${site.siteUrl}/en/services/mri-riyadh`, "x-default": `${site.siteUrl}/services/mri-riyadh` },
 });
 
 const content: ServicePageContent = {

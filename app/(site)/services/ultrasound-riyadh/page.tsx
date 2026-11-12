@@ -1,7 +1,7 @@
 import type { ServicePageContent } from "@/components/service-detail-page";
 import { UltrasoundLandingPage } from "@/components/ultrasound-landing-page";
 import { createPageMetadata } from "@/lib/metadata";
-import { services } from "@/lib/site";
+import { services, site } from "@/lib/site";
 
 const service = services.find((item) => item.slug === "ultrasound-riyadh")!;
 
@@ -11,6 +11,7 @@ export const metadata = createPageMetadata({
     "احجز سونار في مركز سما سكان بحي المربع بالرياض. اسأل عن سعر فحصك وأقرب موعد، وأكد تعليمات الصيام أو شرب الماء حسب نوع السونار عبر الاتصال أو واتساب.",
   keywords: ["سونار بالرياض", "موجات فوق صوتية بالرياض", "مركز سونار بالرياض", "حجز سونار الرياض", "Ultrasound Riyadh"],
   path: "/services/ultrasound-riyadh",
+  languageAlternates: { "ar-SA": `${site.siteUrl}/services/ultrasound-riyadh`, "en-SA": `${site.siteUrl}/en/services/ultrasound-riyadh`, "x-default": `${site.siteUrl}/services/ultrasound-riyadh` },
 });
 
 const content: ServicePageContent = {
