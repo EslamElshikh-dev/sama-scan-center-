@@ -214,14 +214,18 @@ export function getAnalyticsAttribution(attribution: SessionAttribution) {
   };
 }
 
-export function sendAnalyticsEvent(
+export function sendGoogleTagEvent(
   eventName: string,
   parameters: Record<string, unknown>,
 ) {
-  window.dataLayer ??= [];
-  if (window.gtag) {
-    window.gtag("event", eventName, { ...parameters, send_to: "analytics" });
-    return;
-  }
-  window.dataLayer.push({ event: eventName, ...parameters });
+  window.gtag ??= function () {
+    // Keep Google's dataLayer command format when the tag has not initialized.
+    // eslint-disable-next-line prefer-rest-params
+    (window.dataLayer ??= []).push(arguments);
+  };
+  window.gtag("event", eventName, parameters);
+}
+
+export function sendAnalyticsEvent(eventName: string, parameters: Record<string, unknown>) {
+  sendGoogleTagEvent(eventName, { ...parameters, send_to: "analytics" });
 }

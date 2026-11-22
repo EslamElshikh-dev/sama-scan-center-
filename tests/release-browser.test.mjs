@@ -11,8 +11,9 @@ test('mobile/desktop services, contact actions, real browser login and booking s
     browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({ reducedMotion: 'reduce' });
     // Even browser analytics, maps and external links cannot contact live systems.
-    await context.route('**/*', route => new URL(route.request().url()).origin === fixture.url
-      ? route.continue() : route.abort());
+    const isolateNetwork = route => new URL(route.request().url()).origin === fixture.url
+      ? route.continue() : route.abort();
+    await context.route('**/*', isolateNetwork);
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
@@ -48,8 +49,50 @@ test('mobile/desktop services, contact actions, real browser login and booking s
     await page.locator('.mobile-nav nav a[href="/services"]').click();
     await page.waitForURL(fixture.url + '/services');
 
+    await t.test('tagged landing is sent once before the browser address is cleaned', async () => {
+      const landing = fixture.url + '/services/ultrasound-riyadh?utm_source=google&utm_medium=cpc&utm_campaign=isolated&gclid=test-click';
+      await page.goto(landing, { waitUntil: 'networkidle' });
+      assert.equal(new URL(page.url()).search, '?gclid=test-click');
+      assert.equal(await page.locator('main img[fetchpriority="high"]').getAttribute('loading'), 'eager');
+
+      const commands = await page.evaluate(() => window.dataLayer.map(command => Array.from(command)));
+      assert.ok(commands.some(([command, id, settings]) =>
+        command === 'config' && id.startsWith('AW-') && settings.send_page_view === false));
+      const ga4 = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+      if (ga4) {
+        assert.ok(commands.some(([command, id, settings]) =>
+          command === 'config' && id === ga4 && settings.send_page_view === false));
+        assert.deepEqual(commands.filter(([command, name]) => command === 'event' && name === 'page_view'), [
+          ['event', 'page_view', { page_location: landing, send_to: 'analytics' }],
+        ]);
+      }
+    });
+
+    await t.test('booking has usable contact links without JavaScript', async () => {
+      const offlineContext = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+      try {
+        await offlineContext.route('**/*', isolateNetwork);
+        const offlinePage = await offlineContext.newPage();
+        await offlinePage.goto(fixture.url + '/contact?service=ultrasound-riyadh');
+        const fallback = offlinePage.locator('.booking-fallback');
+        assert.equal(await offlinePage.locator('#booking-form button[type="submit"]').isDisabled(), true);
+        assert.equal(await fallback.getByRole('link', { name: 'اتصل بالاستقبال' }).getAttribute('href'), 'tel:+966559617558');
+        assert.ok((await fallback.getByRole('link', { name: 'تواصل عبر واتساب' }).getAttribute('href')).startsWith('https://wa.me/966559617558'));
+      } finally {
+        await offlineContext.close();
+      }
+    });
+
     // Real browser form -> Next -> original Edge handler -> disposable SQL.
     await page.goto(fixture.url + '/contact');
+    const footer = page.locator('.site-footer');
+    const showMap = footer.getByRole('button', { name: 'عرض الخريطة' });
+    assert.equal(await footer.locator('iframe').count(), 0);
+    assert.ok((await footer.getByRole('link', { name: 'افتح الاتجاهات' }).getAttribute('href')).startsWith('https://www.google.com/maps/'));
+    await showMap.click();
+    await footer.locator('iframe').waitFor({ state: 'attached' });
+    assert.equal(await footer.getByRole('button', { name: 'إخفاء الخريطة' }).getAttribute('aria-expanded'), 'true');
+
     await page.locator('#booking-form [name="name"]').fill('طلب متصفح معزول');
     await page.locator('#booking-form [name="phone"]').fill('0500000079');
     await page.locator('#booking-form [name="service"]').selectOption('سونار');
@@ -58,6 +101,11 @@ test('mobile/desktop services, contact actions, real browser login and booking s
     await page.locator('#booking-form [name="date"]').fill(preferred.toISOString().slice(0, 10));
     await page.locator('#booking-form [name="period"]').selectOption('evening');
     await page.locator('#booking-form [name="consent"]').check();
+    await page.route('**/api/booking', route => route.fulfill({ status: 503, json: { ok: false, code: 'unavailable' } }), { times: 1 });
+    await page.getByRole('button', { name: 'إرسال طلب الحجز', exact: true }).click();
+    await page.locator('.booking-error').waitFor();
+    await page.locator('.booking-fallback [data-cta="booking_error_call"]').waitFor();
+    await page.locator('.booking-fallback [data-cta="booking_fallback_whatsapp"]').waitFor();
     await page.getByRole('button', { name: 'إرسال طلب الحجز', exact: true }).click();
     await page.getByRole('heading', { name: 'وصل طلبك إلى الاستقبال' }).waitFor();
     const records = await fixture.db.query('select count(*)::int as count from samascan_crm.inquiries');

@@ -96,7 +96,14 @@ export function UltrasoundLandingPage({ content }: { content: ServicePageContent
             </div>
             <figure className={styles.heroVisual}>
               <div className={styles.photoFrame}>
-                <Image src={service.image} alt={service.imageAlt} fill preload sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1200px) 42vw, 470px" />
+                <Image
+                  src={service.image}
+                  alt={service.imageAlt}
+                  fill
+                  loading="eager"
+                  fetchPriority="high"
+                  sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1200px) 42vw, 470px"
+                />
                 <span className={styles.photoTag}><Icon name="scan" width="19" height="19" /> من داخل سما سكان</span>
               </div>
               <figcaption><span>{service.imageCaption}</span><span lang="en" dir="ltr">SAMA SCAN · Ultrasound</span></figcaption>
