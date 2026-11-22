@@ -21,7 +21,7 @@ export function Header() {
       </div>
       <header className="site-header">
         <div className="container header-inner">
-          <Brand priority />
+          <Brand eager />
           <nav className="desktop-nav" aria-label="التنقل الرئيسي">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href}>

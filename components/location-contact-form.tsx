@@ -26,12 +26,13 @@ export function LocationContactForm({ initialService = "" }: { initialService?: 
   const [error, setError] = useState("");
   const [reference, setReference] = useState("");
   const today = useSyncExternalStore(subscribeDay, dayInRiyadh, () => "");
+  const ready = Boolean(today);
   const maxDay = new Date(`${today || "2026-01-01"}T12:00:00Z`);
   maxDay.setUTCDate(maxDay.getUTCDate() + 60);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (submitting.current) return;
+    if (!ready || submitting.current) return;
     setError("");
     const data = new FormData(event.currentTarget);
     const requestedDate = String(data.get("date") ?? "");
@@ -90,7 +91,7 @@ export function LocationContactForm({ initialService = "" }: { initialService?: 
       <span className="contact-form-icon"><Icon name="scan" width="24" height="24" /></span>
       <div><span className="eyebrow">خطوتك الأولى للموعد</span><h3>اطلب حجز فحصك</h3></div>
     </div>
-    <fieldset className="booking-fieldset" disabled={busy}>
+    <fieldset className="booking-fieldset" disabled={!ready || busy}>
       <div className="location-form-fields">
         <label><span>الاسم</span><input type="text" name="name" autoComplete="name" placeholder="اسم مقدم الطلب" minLength={2} maxLength={100} required /></label>
         <label><span>رقم الجوال للتواصل</span><input type="tel" name="phone" autoComplete="tel" inputMode="tel" maxLength={25} placeholder="05xxxxxxxx" dir="ltr" required /></label>
@@ -106,7 +107,16 @@ export function LocationContactForm({ initialService = "" }: { initialService?: 
       <p className="location-form-note" id="location-form-note">اليوم والفترة تفضيلات للحجز؛ يؤكد الاستقبال الموعد بعد مراجعة التوفر. الجمعة مغلق. لا تُرسل تقارير أو بيانات طبية حساسة هنا.</p>
       <label className="booking-consent"><input type="checkbox" name="consent" required /><span>أوافق على حفظ بيانات هذا الطلب والتواصل معي لترتيب الموعد وفق <Link href="/privacy">سياسة الخصوصية</Link>.</span></label>
     </fieldset>
-    {error && <p className="booking-error" role="alert">{error} <a href={site.phoneDial} data-cta="booking_error_call">اتصل بالمركز</a></p>}
-    <div className="location-form-actions"><button className="button" type="submit" disabled={busy}>{busy ? "جارٍ إرسال الطلب…" : "إرسال طلب الحجز"}</button></div>
+    {error && <p className="booking-error" role="alert">{error}</p>}
+    <div className="location-form-actions"><button className="button" type="submit" disabled={!ready || busy}>{busy ? "جارٍ إرسال الطلب…" : "إرسال طلب الحجز"}</button></div>
+    {(!ready || error) && (
+      <div className="booking-fallback">
+        <p>تقدر تنسّق موعدك مباشرة مع الاستقبال.</p>
+        <div className="button-row">
+          <a className="button button-secondary" href={site.phoneDial} data-cta={error ? "booking_error_call" : "booking_fallback_call"}>اتصل بالاستقبال</a>
+          <a className="button button-secondary" href={site.whatsapp} target="_blank" rel="noopener noreferrer" data-cta="booking_fallback_whatsapp">تواصل عبر واتساب</a>
+        </div>
+      </div>
+    )}
   </form>;
 }

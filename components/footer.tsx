@@ -1,6 +1,7 @@
 import { EslamDeveloperSignature } from "./eslam-developer-credit";
 import Link from "next/link";
 import { Brand } from "@/components/brand";
+import { FooterMap } from "@/components/footer-map";
 import { Icon } from "@/components/icons";
 import { MapEmbed } from "@/components/map-embed";
 import { navItems, openingHours, services, site } from "@/lib/site";
@@ -55,7 +56,9 @@ export function Footer() {
             {openingHours.weekdaysLabel}: {openingHours.display}<br />
             {openingHours.closedDay}: مغلق
           </p>
-          <MapEmbed compact />
+          <FooterMap directions={site.directions}>
+            <MapEmbed compact />
+          </FooterMap>
         </div>
       </div>
       <div className="container footer-bottom">

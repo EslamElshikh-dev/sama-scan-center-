@@ -23,9 +23,15 @@ export function recordContactClick(kind: "phone" | "whatsapp", cta: string, attr
     attribution: { channel, source, medium, campaign, content, landingPage, referrerHost } });
   // Never delay the phone/WhatsApp action or send patient details to analytics.
   try {
-    if (!navigator.sendBeacon("/api/contact-events", new Blob([body], { type: "application/json" }))) {
-      void fetch("/api/contact-events", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+    if (navigator.sendBeacon?.("/api/contact-events", new Blob([body], { type: "application/json" }))) {
+      return reference;
     }
-  } catch { /* Contact navigation always takes priority. */ }
+  } catch { /* Try the keepalive request if the browser refuses the beacon. */ }
+  void fetch("/api/contact-events", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
   return reference;
 }
