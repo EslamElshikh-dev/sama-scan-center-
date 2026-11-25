@@ -14,4 +14,14 @@ Only admin/reception users can save checkpoints. Marketing can read aggregate co
 
 Actual incoming WhatsApp messages and calls are not automatically imported. That requires a connected WhatsApp Business Platform account and a compatible phone provider. Until those integrations exist, reception records each received contact through the existing contact form; a `SC-` reference can link a website event to an inquiry, and appointments remain linked through the existing booking flow.
 
+## Initial contact versus booking follow-up
+
+The `booking_receipt_whatsapp` button follows up an already saved request. It keeps its request reference, website event and WhatsApp destination, but does not send another Google Ads WhatsApp acquisition event. Initial WhatsApp buttons still use the existing conversion action. Phone links and their existing conversion action are unchanged.
+
+The GA4 `cta_click` event includes `contact_purpose`: `booking_followup` for either receipt button and `initial_contact` for other CTAs. Website contact-event totals still include follow-ups; inspect the existing `cta` field when separating acquisition from request follow-up. A follow-up click is not evidence of an extra inquiry or completed appointment.
+
+In the reception view, record actual received conversations and calls after checking their logs, then link each inquiry to its appointment. Keep unreviewed daily totals unknown. Imported Ads costs are dated `ads_snapshot` observations, not a billing statement or a live feed; a complete cost period does not resolve missing inquiry/appointment attribution.
+
+When connector reporting is unavailable, `docs/scripts/samascan-ads-readonly-audit.js` can be run inside the correct Google Ads account. It only reads that campaign and writes CSV text to the execution log. It does not create spreadsheets, send data to another service, or alter campaign settings. Review its selected dates and any truncation/error notice before using the output.
+
 Deploy the additive SQL migration before deploying `backend/samascan-crm/index.mjs`; the frontend uses that existing gateway. Validate with `npm run test:crm`, `npm run typecheck`, `npm run lint`, and `npm run build`.
