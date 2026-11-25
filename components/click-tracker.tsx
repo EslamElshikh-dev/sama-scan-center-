@@ -61,11 +61,14 @@ export function ClickTracker() {
       const eventData = {
         cta_name: target.dataset.cta,
         cta_destination: destination,
+        contact_purpose: cta === "booking_receipt_whatsapp" || cta === "booking_receipt_call"
+          ? "booking_followup"
+          : "initial_contact",
         page_path: window.location.pathname,
         ...getAnalyticsAttribution(attribution),
       };
       sendAnalyticsEvent("cta_click", eventData);
-      sendContactConversion(destination);
+      sendContactConversion(destination, cta);
     };
 
     document.addEventListener("click", handleClick, { passive: true });
